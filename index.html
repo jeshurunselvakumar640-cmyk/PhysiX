@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhysiX — Interactive Physics Laboratory Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- =====================================
+       TOP NAVBAR
+  ===================================== -->
+  <header class="header">
+    <div class="logo">
+      <div class="atom">⚛</div>
+      <div>
+        <h1>Physi<span>X</span></h1>
+        <p>STEM PHYSICS LABS</p>
+      </div>
+    </div>
+
+    <!-- NAVIGATION ACTIONS -->
+    <nav class="nav-links">
+      <button id="btn-open-explorer" class="nav-btn nav-btn-primary">
+        <span>🧪</span>
+        <span>Labs Explorer</span>
+        <span class="badge-count">7</span>
+      </button>
+
+      <button id="btn-open-theory" class="nav-btn">
+        <span>📖</span>
+        <span>Formulas</span>
+      </button>
+
+      <!-- GUEST / AUTH CHIP -->
+      <div class="user-chip" id="user-profile-btn" title="Guest Session - Progress saved locally">
+        <div class="user-avatar">👤</div>
+        <div class="user-info">
+          <span class="user-name">Guest Student</span>
+          <span class="user-status">● Local Saved</span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- =====================================
+       MAIN LAB WORKSPACE (PROJECTILE LAB)
+  ===================================== -->
+  <main class="dashboard">
+
+    <!-- SIMULATION CANVAS & HUD -->
+    <section class="simulation-card">
+
+      <div class="simulation-top-bar">
+        <div class="current-lab-badge">
+          <span class="live-dot"></span>
+          <span>PROJECTILE MOTION LAB</span>
+        </div>
+
+        <div id="target-banner" class="target-banner hidden">
+          🎯 Target: <strong id="target-distance-text">35.0 m</strong> &nbsp;|&nbsp; Score: <strong id="target-score">0</strong>
+        </div>
+      </div>
+
+      <!-- TELEMETRY HUD OVERLAY -->
+      <div class="telemetry-hud" id="telemetry-hud">
+        <div class="hud-item">
+          <span class="hud-label">TIME (t)</span>
+          <span class="hud-value" id="hud-time">0.00 s</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">ALTITUDE (y)</span>
+          <span class="hud-value" id="hud-height">0.00 m</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">DISTANCE (x)</span>
+          <span class="hud-value" id="hud-distance">0.00 m</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">SPEED (v)</span>
+          <span class="hud-value" id="hud-speed">0.00 m/s</span>
+        </div>
+      </div>
+
+      <div id="simulation"></div>
+
+    </section>
+
+    <!-- CONTROLS PANEL -->
+    <section class="controls-card">
+
+      <div class="controls-header">
+        <h2>LAB CONTROLS</h2>
+      </div>
+
+      <!-- VELOCITY -->
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-name">
+            <span class="icon">🚀</span> Initial Velocity (v₀)
+          </span>
+          <strong id="velocity-value" class="val-velocity">20.0 m/s</strong>
+        </div>
+        <input id="velocity" type="range" min="1" max="40" value="20" step="0.5">
+        <div class="range-labels">
+          <span>1 m/s</span>
+          <span>20 m/s</span>
+          <span>40 m/s</span>
+        </div>
+      </div>
+
+      <!-- ANGLE -->
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-name">
+            <span class="icon">📐</span> Launch Angle (θ)
+          </span>
+          <strong id="angle-value" class="val-angle">45°</strong>
+        </div>
+        <input id="angle" type="range" min="0" max="90" value="45" step="1">
+        <div class="range-labels">
+          <span>0° (Flat)</span>
+          <span>45° (Optimal)</span>
+          <span>90° (Vertical)</span>
+        </div>
+      </div>
+
+      <!-- GRAVITY -->
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-name">
+            <span class="icon">↓</span> Gravity (g)
+          </span>
+          <strong id="gravity-value" class="val-gravity">9.8 m/s²</strong>
+        </div>
+        <input id="gravity" type="range" min="1.0" max="25.0" step="0.1" value="9.8">
+        
+        <!-- PLANETARY PRESETS -->
+        <div class="planetary-presets">
+          <button type="button" class="planet-btn active" data-gravity="9.8" id="preset-earth">🌍 Earth (9.8)</button>
+          <button type="button" class="planet-btn" data-gravity="1.62" id="preset-moon">🌕 Moon (1.6)</button>
+          <button type="button" class="planet-btn" data-gravity="3.72" id="preset-mars">🔴 Mars (3.7)</button>
+          <button type="button" class="planet-btn" data-gravity="24.79" id="preset-jupiter">🪐 Jupiter (24.8)</button>
+        </div>
+      </div>
+
+      <!-- SIMULATION TOGGLES -->
+      <div class="toggles-group">
+        <label class="toggle-control">
+          <input type="checkbox" id="toggle-vectors" checked>
+          <span class="toggle-slider"></span>
+          <span class="toggle-text">🏹 Velocity Vectors</span>
+        </label>
+
+        <label class="toggle-control">
+          <input type="checkbox" id="toggle-ghosts" checked>
+          <span class="toggle-slider"></span>
+          <span class="toggle-text">👻 Ghost Trails</span>
+        </label>
+
+        <label class="toggle-control">
+          <input type="checkbox" id="toggle-target">
+          <span class="toggle-slider"></span>
+          <span class="toggle-text">🎯 Target Challenge</span>
+        </label>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="buttons">
+        <button id="launch" class="launch-btn">
+          ▶ Launch
+        </button>
+        <button id="reset" class="reset-btn" title="Reset current projectile">
+          ↺ Reset
+        </button>
+        <button id="clear-trails" class="clear-btn" title="Clear ghost comparison trails">
+          🗑 Trails
+        </button>
+      </div>
+
+    </section>
+
+    <!-- METRICS & RESULTS -->
+    <section class="results-card">
+
+      <div class="result">
+        <div class="result-icon icon-height">
+          <span>↗</span>
+        </div>
+        <div>
+          <p>MAX HEIGHT (H)</p>
+          <strong id="max-height">0.00 m</strong>
+          <span>Peak vertical displacement</span>
+        </div>
+      </div>
+
+      <div class="result">
+        <div class="result-icon icon-range">
+          <span>➔</span>
+        </div>
+        <div>
+          <p>TOTAL RANGE (R)</p>
+          <strong id="range">0.00 m</strong>
+          <span>Horizontal ground distance</span>
+        </div>
+      </div>
+
+      <div class="result">
+        <div class="result-icon icon-time">
+          <span>⏱</span>
+        </div>
+        <div>
+          <p>FLIGHT TIME (T)</p>
+          <strong id="flight-time">0.00 s</strong>
+          <span>Total air duration</span>
+        </div>
+      </div>
+
+      <div class="result">
+        <div class="result-icon icon-impact">
+          <span>⚡</span>
+        </div>
+        <div>
+          <p>IMPACT SPEED (v_f)</p>
+          <strong id="impact-velocity">0.00 m/s</strong>
+          <span>Terminal impact velocity</span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =====================================
+       LABS EXPLORER MODAL
+  ===================================== -->
+  <div id="explorer-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>🧪 Physics Laboratory Hub</h2>
+          <p>Explore interactive experiments in Classical Mechanics and Dynamics</p>
+        </div>
+        <button id="btn-close-explorer" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="lab-categories">
+        <button class="cat-pill active">All Mechanics (7)</button>
+        <button class="cat-pill">Kinematics</button>
+        <button class="cat-pill">Energy & Forces</button>
+        <button class="cat-pill">Rotational</button>
+      </div>
+
+      <div class="labs-grid">
+
+        <!-- 1. PROJECTILE MOTION (ACTIVE) -->
+        <div class="lab-card active-lab" data-lab="projectile">
+          <div class="lab-status-badge status-live">● LIVE NOW</div>
+          <div class="lab-icon">🚀</div>
+          <h3>Projectile Motion Lab</h3>
+          <p>Kinematic trajectories, launch angle optimization, elevation offsets, and planetary gravity variations.</p>
+          <div class="lab-tags">
+            <span>2D Kinematics</span>
+            <span>Vectors</span>
+            <span>Gravity</span>
+          </div>
+          <button class="lab-card-btn btn-active-lab">Current Lab</button>
+        </div>
+
+        <!-- 2. PENDULUM (IN DEV) -->
+        <div class="lab-card dev-lab" data-name="Simple Pendulum & Harmonic Oscillator">
+          <div class="lab-status-badge status-dev">⚡ IN DEVELOPMENT</div>
+          <div class="lab-icon">⏱️</div>
+          <h3>Simple Pendulum & SHM</h3>
+          <p>Investigate small-angle approximations, string length $L$, damping coefficients, and phase portraits.</p>
+          <div class="lab-tags">
+            <span>Harmonic Motion</span>
+            <span>T = 2π√(L/g)</span>
+            <span>Energy</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 3. 2D COLLISIONS (COMING SOON) -->
+        <div class="lab-card coming-lab" data-name="2D Elastic & Inelastic Collisions">
+          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
+          <div class="lab-icon">💥</div>
+          <h3>2D Collisions & Momentum</h3>
+          <p>Conservation of linear momentum, coefficient of restitution $e$, kinetic energy loss, and center of mass.</p>
+          <div class="lab-tags">
+            <span>p = mv</span>
+            <span>Elastic/Inelastic</span>
+            <span>Vectors</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 4. INCLINED PLANE (COMING SOON) -->
+        <div class="lab-card coming-lab" data-name="Friction & Inclined Plane Lab">
+          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
+          <div class="lab-icon">📐</div>
+          <h3>Friction & Inclined Plane</h3>
+          <p>Static vs kinetic friction ($\mu_s, \mu_k$), normal force resolution, critical incline angle, and block sliding.</p>
+          <div class="lab-tags">
+            <span>Forces</span>
+            <span>F = μN</span>
+            <span>Free Body Diagram</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 5. ORBITAL MECHANICS (COMING SOON) -->
+        <div class="lab-card coming-lab" data-name="Orbital Mechanics & Kepler's Laws">
+          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
+          <div class="lab-icon">🪐</div>
+          <h3>Orbital Mechanics & Kepler</h3>
+          <p>N-body celestial gravitational attraction, elliptical orbits, escape velocity, and satellite transfer orbits.</p>
+          <div class="lab-tags">
+            <span>Gravity</span>
+            <span>Kepler's 3rd Law</span>
+            <span>v_esc</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 6. CENTRIPETAL FORCE (COMING SOON) -->
+        <div class="lab-card coming-lab" data-name="Centripetal Force & Circular Motion">
+          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
+          <div class="lab-icon">🌀</div>
+          <h3>Centripetal Circular Motion</h3>
+          <p>Angular speed $\omega$, centripetal acceleration $a_c = v^2/r$, banked turns, and string tension dynamics.</p>
+          <div class="lab-tags">
+            <span>Rotation</span>
+            <span>F_c = mv²/r</span>
+            <span>Tension</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 7. ATWOOD MACHINE (COMING SOON) -->
+        <div class="lab-card coming-lab" data-name="Atwood Machine & Coupled Pulleys">
+          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
+          <div class="lab-icon">⚖️</div>
+          <h3>Atwood Pulley Machine</h3>
+          <p>Coupled mass systems, rotational pulley inertia, rope tension, and acceleration of two counterweights.</p>
+          <div class="lab-tags">
+            <span>Newton's 2nd Law</span>
+            <span>Pulley Inertia</span>
+            <span>Tension</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================
+       THEORY & FORMULAS MODAL
+  ===================================== -->
+  <div id="theory-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <div>
+          <h2>📖 Classical Mechanics Formulas</h2>
+          <p>Mathematical foundations used by the PhysiX simulation engine</p>
+        </div>
+        <button id="btn-close-theory" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="theory-content">
+        <div class="formula-block">
+          <h4>🚀 Projectile Motion (Active Lab)</h4>
+          <div class="formula-grid">
+            <div class="formula-item">
+              <span class="f-name">Time of Flight (with elevation $h_0$):</span>
+              <code>T = (v₀ sinθ + √(v₀² sin²θ + 2gh₀)) / g</code>
+            </div>
+            <div class="formula-item">
+              <span class="f-name">Maximum Height (Peak):</span>
+              <code>H = h₀ + (v₀² sin²θ) / (2g)</code>
+            </div>
+            <div class="formula-item">
+              <span class="f-name">Total Horizontal Range:</span>
+              <code>R = d₀ + (v₀ cosθ) × T</code>
+            </div>
+            <div class="formula-item">
+              <span class="f-name">Impact Speed at Touchdown:</span>
+              <code>v_f = √(v₀² + 2gh₀)</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="formula-block">
+          <h4>⏱️ Simple Pendulum (Upcoming)</h4>
+          <div class="formula-grid">
+            <div class="formula-item">
+              <span class="f-name">Oscillation Period (Small Angles):</span>
+              <code>T = 2π √(L / g)</code>
+            </div>
+            <div class="formula-item">
+              <span class="f-name">Angular Frequency:</span>
+              <code>ω = √(g / L)</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="formula-block">
+          <h4>💥 Collisions & Momentum (Upcoming)</h4>
+          <div class="formula-grid">
+            <div class="formula-item">
+              <span class="f-name">Conservation of Momentum:</span>
+              <code>m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂</code>
+            </div>
+            <div class="formula-item">
+              <span class="f-name">Coefficient of Restitution (e):</span>
+              <code>e = (v₂ - v₁) / (u₁ - u₂)</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================
+       GUEST / PROFILE POPUP
+  ===================================== -->
+  <div id="profile-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <div>
+          <h2>👤 Student Session Profile</h2>
+          <p>Manage your simulation data and learning sync</p>
+        </div>
+        <button id="btn-close-profile" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="profile-card-content">
+        <div class="profile-avatar-large">👤</div>
+        <h3>Guest Student</h3>
+        <p class="profile-desc">You are currently using <strong>Guest Mode</strong>. All your Target High Scores and custom presets are stored in your local browser storage.</p>
+
+        <div class="sync-banner">
+          <div class="sync-icon">☁️</div>
+          <div>
+            <strong>Cloud Sync & Classrooms (v2.1)</strong>
+            <p>Save custom lab notebooks, submit assignments to teachers, and access across devices.</p>
+          </div>
+        </div>
+
+        <button class="sign-in-btn" id="btn-mock-signin">
+          <span>Google</span> Sign in with Google (Preview)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="/src/main.js"></script>
+
+</body>
+
+</html>
