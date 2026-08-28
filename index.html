@@ -130,6 +130,22 @@
         </div>
       </div>
 
+      <!-- INITIAL HEIGHT -->
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-name">
+            <span class="icon">📏</span> Initial Height (h₀)
+          </span>
+          <strong id="height-value" class="val-height">0.0 m</strong>
+        </div>
+        <input id="height" type="range" min="0" max="20" value="0" step="0.5">
+        <div class="range-labels">
+          <span>0 m (Ground)</span>
+          <span>10 m</span>
+          <span>20 m (Cliff)</span>
+        </div>
+      </div>
+
       <!-- GRAVITY -->
       <div class="control-group">
         <div class="control-header">
@@ -378,7 +394,11 @@
           <h4>🚀 Projectile Motion (Active Lab)</h4>
           <div class="formula-grid">
             <div class="formula-item">
-              <span class="f-name">Time of Flight (with elevation $h_0$):</span>
+              <span class="f-name">Flat Ground Range (h₀ = 0):</span>
+              <code>R = (v₀² sin 2θ) / g  (Symmetric: R(30°) = R(60°))</code>
+            </div>
+            <div class="formula-item">
+              <span class="f-name">Time of Flight (with elevation h₀):</span>
               <code>T = (v₀ sinθ + √(v₀² sin²θ + 2gh₀)) / g</code>
             </div>
             <div class="formula-item">
@@ -386,8 +406,8 @@
               <code>H = h₀ + (v₀² sin²θ) / (2g)</code>
             </div>
             <div class="formula-item">
-              <span class="f-name">Total Horizontal Range:</span>
-              <code>R = d₀ + (v₀ cosθ) × T</code>
+              <span class="f-name">Total Horizontal Range (General):</span>
+              <code>R = (v₀ cosθ) × T</code>
             </div>
             <div class="formula-item">
               <span class="f-name">Impact Speed at Touchdown:</span>

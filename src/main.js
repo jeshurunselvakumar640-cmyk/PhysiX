@@ -15,7 +15,7 @@ const {
 // CONSTANTS & CALIBRATION SCALE
 // ==========================================
 // 12 screen pixels = 1.0 physical meter
-const SCALE = 12; 
+const SCALE = 12;
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 600;
 const GROUND_Y = 540; // Ground surface y coordinate
@@ -24,12 +24,13 @@ const ORIGIN_X = 80;  // X=0m anchor coordinate
 const DEFAULT_VELOCITY = 20.0;
 const DEFAULT_ANGLE = 45;
 const DEFAULT_GRAVITY = 9.8;
+const DEFAULT_HEIGHT = 0.0;
 
 // Launcher specs
-const PIVOT = { x: ORIGIN_X, y: 495 }; // 45px (3.75m) above ground
-const BARREL_LENGTH = 54;              // 4.5m
-const BARREL_WIDTH = 18;
-const PROJECTILE_RADIUS = 10;          // 0.83m radius
+const PIVOT = { x: ORIGIN_X, y: GROUND_Y }; // Anchored at ground origin by default
+const BARREL_LENGTH = 48;                   // 4.0m
+const BARREL_WIDTH = 16;
+const PROJECTILE_RADIUS = 9;                // 0.75m radius
 
 // ==========================================
 // SIMULATION STATE
@@ -42,22 +43,22 @@ let simState = {
   currentVx: 0,
   currentVy: 0,
   currentSpeed: 0,
-  
+
   // Kinematic parameters for current shot
-  launchX: 0,
-  launchY: 0,
+  launchX: ORIGIN_X,
+  launchY: GROUND_Y,
   v0x: 0,
   v0y: 0,
   g: 9.8,
   totalFlightTime: 0,
-  
+
   showVectors: true,
   showGhosts: true,
   targetMode: false,
   targetDistance: 35.0, // meters
   targetScore: 0,
   targetHitEffect: 0,
-  
+
   currentTrail: [],
   ghostTrails: []
 };
@@ -106,9 +107,9 @@ Composite.add(world, groundBody);
 // Create Launcher Base and Wheel (sensors to avoid collision blocking)
 const launcherBase = Bodies.rectangle(
   PIVOT.x - 10,
-  GROUND_Y - 20,
-  60,
-  40,
+  GROUND_Y - 15,
+  50,
+  30,
   {
     isStatic: true,
     isSensor: true,
@@ -118,8 +119,8 @@ const launcherBase = Bodies.rectangle(
 
 const launcherWheel = Bodies.circle(
   PIVOT.x,
-  PIVOT.y + 15,
-  18,
+  PIVOT.y,
+  14,
   {
     isStatic: true,
     isSensor: true,
@@ -146,9 +147,18 @@ const launcherBarrel = Bodies.rectangle(
   }
 );
 
-Composite.add(world, [launcherBase, launcherBarrel, launcherWheel]);
+// Initialize projectile body so it is immediately visible on screen
+let projectile = Bodies.circle(PIVOT.x, PIVOT.y, PROJECTILE_RADIUS, {
+  isSensor: true,
+  render: {
+    fillStyle: "#ff4757",
+    strokeStyle: "#ffffff",
+    lineWidth: 2
+  }
+});
 
-let projectile = null;
+Composite.add(world, [launcherBase, launcherBarrel, launcherWheel, projectile]);
+
 let launchTimestamp = 0;
 
 // ==========================================
@@ -156,10 +166,12 @@ let launchTimestamp = 0;
 // ==========================================
 const velocitySlider = document.getElementById("velocity");
 const angleSlider = document.getElementById("angle");
+const heightSlider = document.getElementById("height");
 const gravitySlider = document.getElementById("gravity");
 
 const velocityValue = document.getElementById("velocity-value");
 const angleValue = document.getElementById("angle-value");
+const heightValue = document.getElementById("height-value");
 const gravityValue = document.getElementById("gravity-value");
 
 const launchButton = document.getElementById("launch");
@@ -222,19 +234,21 @@ function showToast(message) {
 // ==========================================
 function updateLauncher(angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;
+  const h0 = Number(heightSlider ? heightSlider.value : 0);
+  PIVOT.y = GROUND_Y - h0 * SCALE;
+
   const centerX = PIVOT.x + (BARREL_LENGTH / 2) * Math.cos(rad);
   const centerY = PIVOT.y - (BARREL_LENGTH / 2) * Math.sin(rad);
 
   Body.setPosition(launcherBarrel, { x: centerX, y: centerY });
   Body.setAngle(launcherBarrel, -rad);
-}
 
-// Calculate tip position where projectile spawns
-function getBarrelTip(angleDeg) {
-  const rad = (angleDeg * Math.PI) / 180;
-  const tipX = PIVOT.x + (BARREL_LENGTH + PROJECTILE_RADIUS) * Math.cos(rad);
-  const tipY = PIVOT.y - (BARREL_LENGTH + PROJECTILE_RADIUS) * Math.sin(rad);
-  return { x: tipX, y: tipY, rad };
+  Body.setPosition(launcherWheel, { x: PIVOT.x, y: PIVOT.y });
+  Body.setPosition(launcherBase, { x: PIVOT.x - 10, y: GROUND_Y - 15 });
+
+  if (projectile && !simState.isRunning) {
+    Body.setPosition(projectile, { x: PIVOT.x, y: PIVOT.y });
+  }
 }
 
 // ==========================================
@@ -244,35 +258,35 @@ function calculateTheoreticalResults() {
   const v0 = Number(velocitySlider.value);
   const angleDeg = Number(angleSlider.value);
   const g = Number(gravitySlider.value);
+  const h0 = Number(heightSlider ? heightSlider.value : 0);
   const rad = (angleDeg * Math.PI) / 180;
-
-  const tip = getBarrelTip(angleDeg);
-  
-  // Heights and offsets relative to origin ground (Origin_X = 80, Ground_Y = 540)
-  const h0 = Math.max(0, (GROUND_Y - tip.y) / SCALE);
-  const d0 = Math.max(0, (tip.x - ORIGIN_X) / SCALE);
 
   if (g <= 0.01) {
     maxHeightDisplay.textContent = "∞";
     rangeDisplay.textContent = "∞";
     flightTimeDisplay.textContent = "∞";
     impactVelocityDisplay.textContent = `${v0.toFixed(2)} m/s`;
-    return { maxHeight: Infinity, totalRange: Infinity, timeOfFlight: Infinity, impactSpeed: v0 };
+    return { maxHeight: Infinity, totalRange: Infinity, timeOfFlight: Infinity, impactSpeed: v0, h0 };
   }
 
   const v0y = v0 * Math.sin(rad);
   const v0x = v0 * Math.cos(rad);
 
-  // Time of flight T: 0.5*g*T^2 - v0y*T - h0 = 0
-  const discriminant = v0y * v0y + 2 * g * h0;
-  const timeOfFlight = (v0y + Math.sqrt(Math.max(0, discriminant))) / g;
+  // Time of flight T
+  let timeOfFlight = 0;
+  if (h0 <= 0.001) {
+    timeOfFlight = (2 * v0y) / g;
+  } else {
+    const discriminant = v0y * v0y + 2 * g * h0;
+    timeOfFlight = (v0y + Math.sqrt(Math.max(0, discriminant))) / g;
+  }
 
   // Max Height from ground H = h0 + (v0y^2)/(2g)
   const peakFromRelease = (v0y * v0y) / (2 * g);
   const maxHeight = h0 + peakFromRelease;
 
-  // Total Range R = d0 + v0x * T
-  const totalRange = d0 + v0x * timeOfFlight;
+  // Total Range R = v0x * T
+  const totalRange = v0x * timeOfFlight;
 
   // Impact Velocity vf = sqrt(v0^2 + 2*g*h0)
   const impactSpeed = Math.sqrt(v0 * v0 + 2 * g * h0);
@@ -282,7 +296,7 @@ function calculateTheoreticalResults() {
   flightTimeDisplay.textContent = `${timeOfFlight.toFixed(2)} s`;
   impactVelocityDisplay.textContent = `${impactSpeed.toFixed(2)} m/s`;
 
-  return { maxHeight, totalRange, timeOfFlight, impactSpeed, h0, d0 };
+  return { maxHeight, totalRange, timeOfFlight, impactSpeed, h0 };
 }
 
 // ==========================================
@@ -292,14 +306,17 @@ function launchProjectile() {
   const v0 = Number(velocitySlider.value);
   const angleDeg = Number(angleSlider.value);
   const g = Number(gravitySlider.value);
+  const h0 = Number(heightSlider ? heightSlider.value : 0);
   const rad = (angleDeg * Math.PI) / 180;
+
+  const theoretical = calculateTheoreticalResults();
 
   // Save current trail to ghost trails if comparison mode is enabled
   if (simState.currentTrail.length > 5 && simState.showGhosts) {
     simState.ghostTrails.push({
       points: [...simState.currentTrail],
       color: getRandomGhostColor(),
-      label: `${angleDeg}° | ${v0.toFixed(0)}m/s | g=${g.toFixed(1)}`
+      label: `${angleDeg}° | ${v0.toFixed(0)}m/s | R=${theoretical.totalRange.toFixed(1)}m`
     });
     if (simState.ghostTrails.length > 6) {
       simState.ghostTrails.shift();
@@ -313,18 +330,15 @@ function launchProjectile() {
     projectile = null;
   }
 
-  const tip = getBarrelTip(angleDeg);
-  simState.launchX = tip.x;
-  simState.launchY = tip.y;
+  simState.launchX = ORIGIN_X;
+  simState.launchY = GROUND_Y - h0 * SCALE;
   simState.v0x = v0 * Math.cos(rad);
   simState.v0y = v0 * Math.sin(rad);
   simState.g = g;
-
-  const theoretical = calculateTheoreticalResults();
   simState.totalFlightTime = theoretical.timeOfFlight;
 
   // Create Projectile Rigid Body
-  projectile = Bodies.circle(tip.x, tip.y, PROJECTILE_RADIUS, {
+  projectile = Bodies.circle(simState.launchX, simState.launchY, PROJECTILE_RADIUS, {
     isSensor: true,
     render: {
       fillStyle: "#ff4757",
@@ -356,17 +370,29 @@ function getRandomGhostColor() {
 // RESET SIMULATION
 // ==========================================
 function resetSimulation() {
-  if (projectile) {
-    Composite.remove(world, projectile);
-    projectile = null;
-  }
-
   simState.isRunning = false;
   simState.flightTime = 0;
   simState.currentTrail = [];
 
+  const h0 = Number(heightSlider ? heightSlider.value : 0);
+  PIVOT.y = GROUND_Y - h0 * SCALE;
+
+  if (projectile) {
+    Body.setPosition(projectile, { x: PIVOT.x, y: PIVOT.y });
+  } else {
+    projectile = Bodies.circle(PIVOT.x, PIVOT.y, PROJECTILE_RADIUS, {
+      isSensor: true,
+      render: {
+        fillStyle: "#ff4757",
+        strokeStyle: "#ffffff",
+        lineWidth: 2
+      }
+    });
+    Composite.add(world, projectile);
+  }
+
   hudTime.textContent = "0.00 s";
-  hudHeight.textContent = "0.00 m";
+  hudHeight.textContent = `${h0.toFixed(2)} m`;
   hudDistance.textContent = "0.00 m";
   hudSpeed.textContent = "0.00 m/s";
 
@@ -441,17 +467,26 @@ Events.on(engine, "beforeUpdate", () => {
 
   // Add trail point
   const lastPoint = simState.currentTrail[simState.currentTrail.length - 1];
-  if (!lastPoint || Math.hypot(px - lastPoint.x, py - lastPoint.y) >= 4) {
+  if (!lastPoint || Math.hypot(px - lastPoint.x, py - lastPoint.y) >= 3) {
     simState.currentTrail.push({ x: px, y: py });
   }
 
   // Check Touchdown at Ground or End of Canvas
-  if (py >= GROUND_Y - PROJECTILE_RADIUS || px > CANVAS_WIDTH + 50 || t >= simState.totalFlightTime) {
-    const finalY = GROUND_Y - PROJECTILE_RADIUS;
-    Body.setPosition(projectile, { x: px, y: finalY });
-    simState.currentTrail.push({ x: px, y: finalY });
+  if (py >= GROUND_Y || px > CANVAS_WIDTH + 50 || t >= simState.totalFlightTime) {
+    const finalY = GROUND_Y;
+    const finalX = simState.launchX + (simState.v0x * simState.totalFlightTime) * SCALE;
+    Body.setPosition(projectile, { x: finalX, y: finalY });
+    simState.currentTrail.push({ x: finalX, y: finalY });
     simState.isRunning = false;
-    checkTargetHit(px);
+
+    // Set exact landing metrics in HUD
+    const theoretical = calculateTheoreticalResults();
+    hudTime.textContent = `${theoretical.timeOfFlight.toFixed(2)} s`;
+    hudHeight.textContent = "0.00 m";
+    hudDistance.textContent = `${theoretical.totalRange.toFixed(2)} m`;
+    hudSpeed.textContent = `${theoretical.impactSpeed.toFixed(2)} m/s`;
+
+    checkTargetHit(finalX);
     return;
   }
 
@@ -484,12 +519,30 @@ Events.on(render, "afterRender", () => {
   // 4. DRAW ACTIVE TRAJECTORY TRAIL
   drawActiveTrail(ctx);
 
-  // 5. DRAW VELOCITY VECTORS
+  // 5. DRAW ACTIVE PROJECTILE (Glowing Red Projectile with White Core Highlight)
+  if (projectile) {
+    const pos = projectile.position;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, PROJECTILE_RADIUS, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff4757";
+    ctx.shadowColor = "#ff4757";
+    ctx.shadowBlur = 14;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(pos.x - 2, pos.y - 2, PROJECTILE_RADIUS / 2.8, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // 6. DRAW VELOCITY VECTORS
   if (projectile && simState.isRunning && simState.showVectors) {
     drawVelocityVectors(ctx, simState.currentX, simState.currentY);
   }
 
-  // 6. DRAW CANNON DETAILS & ACCENTS
+  // 7. DRAW CANNON DETAILS & ACCENTS
   drawCannonAccent(ctx);
 
   ctx.restore();
@@ -724,6 +777,33 @@ function drawArrow(ctx, fromX, fromY, toX, toY, color, width) {
 }
 
 function drawCannonAccent(ctx) {
+  const h0 = Number(heightSlider ? heightSlider.value : 0);
+  const pivotY = GROUND_Y - h0 * SCALE;
+
+  // If elevated, draw sci-fi support pedestal
+  if (h0 > 0) {
+    ctx.save();
+    ctx.fillStyle = "rgba(18, 25, 42, 0.95)";
+    ctx.strokeStyle = "rgba(139, 92, 246, 0.6)";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = "#8b5cf6";
+    ctx.shadowBlur = 8;
+    ctx.fillRect(ORIGIN_X - 14, pivotY, 28, GROUND_Y - pivotY);
+    ctx.strokeRect(ORIGIN_X - 14, pivotY, 28, GROUND_Y - pivotY);
+    ctx.shadowBlur = 0;
+
+    // Pedestal base plate
+    ctx.fillStyle = "#2a3756";
+    ctx.fillRect(ORIGIN_X - 22, GROUND_Y - 6, 44, 6);
+
+    // Height indicator text on pillar
+    ctx.fillStyle = "#c084fc";
+    ctx.font = "10px 'JetBrains Mono', monospace";
+    ctx.textAlign = "right";
+    ctx.fillText(`${h0.toFixed(1)}m`, ORIGIN_X - 18, pivotY + 14);
+    ctx.restore();
+  }
+
   // Glowing cannon pivot hub
   ctx.beginPath();
   ctx.arc(PIVOT.x, PIVOT.y, 8, 0, Math.PI * 2);
@@ -755,10 +835,17 @@ angleSlider.addEventListener("input", () => {
   calculateTheoreticalResults();
 });
 
+heightSlider.addEventListener("input", () => {
+  const h0 = Number(heightSlider.value);
+  heightValue.textContent = `${h0.toFixed(1)} m`;
+  updateLauncher(Number(angleSlider.value));
+  calculateTheoreticalResults();
+});
+
 gravitySlider.addEventListener("input", () => {
   const g = Number(gravitySlider.value);
   gravityValue.textContent = `${g.toFixed(1)} m/s²`;
-  
+
   // Highlight active planet button if match
   planetBtns.forEach(btn => {
     const btnG = Number(btn.getAttribute("data-gravity"));
