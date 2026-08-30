@@ -8,6 +8,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+  <style>
+    /* Critical anti-FOUC styles */
+    html, body {
+      background-color: #070a12;
+      color: #f1f5f9;
+      margin: 0;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -27,19 +39,22 @@
     <!-- NAVIGATION ACTIONS -->
     <nav class="nav-links">
       <button id="btn-open-explorer" class="nav-btn nav-btn-primary">
-        <span>🧪</span>
         <span>Labs Explorer</span>
         <span class="badge-count">7</span>
       </button>
 
       <button id="btn-open-theory" class="nav-btn">
-        <span>📖</span>
         <span>Formulas</span>
+      </button>
+
+      <button id="btn-open-quiz" class="nav-btn nav-btn-quiz">
+        <span>Lab Quiz</span>
+        <span class="badge-count badge-quiz">10 Qs</span>
       </button>
 
       <!-- GUEST / AUTH CHIP -->
       <div class="user-chip" id="user-profile-btn" title="Guest Session - Progress saved locally">
-        <div class="user-avatar">👤</div>
+        <div class="user-avatar">GS</div>
         <div class="user-info">
           <span class="user-name">Guest Student</span>
           <span class="user-status">● Local Saved</span>
@@ -62,8 +77,14 @@
           <span>PROJECTILE MOTION LAB</span>
         </div>
 
+        <div class="top-bar-actions">
+          <button id="btn-quick-quiz" class="quick-quiz-btn" title="Take Projectile Motion Lab Quiz">
+            Take Quiz
+          </button>
+        </div>
+
         <div id="target-banner" class="target-banner hidden">
-          🎯 Target: <strong id="target-distance-text">35.0 m</strong> &nbsp;|&nbsp; Score: <strong id="target-score">0</strong>
+          Target: <strong id="target-distance-text">35.0 m</strong> &nbsp;|&nbsp; Score: <strong id="target-score">0</strong>
         </div>
       </div>
 
@@ -102,7 +123,7 @@
       <div class="control-group">
         <div class="control-header">
           <span class="control-name">
-            <span class="icon">🚀</span> Initial Velocity (v₀)
+            Initial Velocity (v₀)
           </span>
           <strong id="velocity-value" class="val-velocity">20.0 m/s</strong>
         </div>
@@ -118,7 +139,7 @@
       <div class="control-group">
         <div class="control-header">
           <span class="control-name">
-            <span class="icon">📐</span> Launch Angle (θ)
+            Launch Angle (θ)
           </span>
           <strong id="angle-value" class="val-angle">45°</strong>
         </div>
@@ -134,7 +155,7 @@
       <div class="control-group">
         <div class="control-header">
           <span class="control-name">
-            <span class="icon">📏</span> Initial Height (h₀)
+            Initial Height (h₀)
           </span>
           <strong id="height-value" class="val-height">0.0 m</strong>
         </div>
@@ -150,7 +171,7 @@
       <div class="control-group">
         <div class="control-header">
           <span class="control-name">
-            <span class="icon">↓</span> Gravity (g)
+            Gravity (g)
           </span>
           <strong id="gravity-value" class="val-gravity">9.8 m/s²</strong>
         </div>
@@ -158,10 +179,10 @@
         
         <!-- PLANETARY PRESETS -->
         <div class="planetary-presets">
-          <button type="button" class="planet-btn active" data-gravity="9.8" id="preset-earth">🌍 Earth (9.8)</button>
-          <button type="button" class="planet-btn" data-gravity="1.62" id="preset-moon">🌕 Moon (1.6)</button>
-          <button type="button" class="planet-btn" data-gravity="3.72" id="preset-mars">🔴 Mars (3.7)</button>
-          <button type="button" class="planet-btn" data-gravity="24.79" id="preset-jupiter">🪐 Jupiter (24.8)</button>
+          <button type="button" class="planet-btn active" data-gravity="9.8" id="preset-earth">Earth (9.8)</button>
+          <button type="button" class="planet-btn" data-gravity="1.62" id="preset-moon">Moon (1.6)</button>
+          <button type="button" class="planet-btn" data-gravity="3.72" id="preset-mars">Mars (3.7)</button>
+          <button type="button" class="planet-btn" data-gravity="24.79" id="preset-jupiter">Jupiter (24.8)</button>
         </div>
       </div>
 
@@ -170,32 +191,32 @@
         <label class="toggle-control">
           <input type="checkbox" id="toggle-vectors" checked>
           <span class="toggle-slider"></span>
-          <span class="toggle-text">🏹 Velocity Vectors</span>
+          <span class="toggle-text">Velocity Vectors</span>
         </label>
 
         <label class="toggle-control">
           <input type="checkbox" id="toggle-ghosts" checked>
           <span class="toggle-slider"></span>
-          <span class="toggle-text">👻 Ghost Trails</span>
+          <span class="toggle-text">Ghost Trails</span>
         </label>
 
         <label class="toggle-control">
           <input type="checkbox" id="toggle-target">
           <span class="toggle-slider"></span>
-          <span class="toggle-text">🎯 Target Challenge</span>
+          <span class="toggle-text">Target Challenge</span>
         </label>
       </div>
 
       <!-- BUTTONS -->
       <div class="buttons">
         <button id="launch" class="launch-btn">
-          ▶ Launch
+          Launch
         </button>
         <button id="reset" class="reset-btn" title="Reset current projectile">
-          ↺ Reset
+          Reset
         </button>
         <button id="clear-trails" class="clear-btn" title="Clear ghost comparison trails">
-          🗑 Trails
+          Clear Trails
         </button>
       </div>
 
@@ -206,7 +227,7 @@
 
       <div class="result">
         <div class="result-icon icon-height">
-          <span>↗</span>
+          <span>H</span>
         </div>
         <div>
           <p>MAX HEIGHT (H)</p>
@@ -217,7 +238,7 @@
 
       <div class="result">
         <div class="result-icon icon-range">
-          <span>➔</span>
+          <span>R</span>
         </div>
         <div>
           <p>TOTAL RANGE (R)</p>
@@ -228,7 +249,7 @@
 
       <div class="result">
         <div class="result-icon icon-time">
-          <span>⏱</span>
+          <span>T</span>
         </div>
         <div>
           <p>FLIGHT TIME (T)</p>
@@ -239,7 +260,7 @@
 
       <div class="result">
         <div class="result-icon icon-impact">
-          <span>⚡</span>
+          <span>V</span>
         </div>
         <div>
           <p>IMPACT SPEED (v_f)</p>
@@ -259,7 +280,7 @@
     <div class="modal-card">
       <div class="modal-header">
         <div>
-          <h2>🧪 Physics Laboratory Hub</h2>
+          <h2>Physics Laboratory Hub</h2>
           <p>Explore interactive experiments in Classical Mechanics and Dynamics</p>
         </div>
         <button id="btn-close-explorer" class="modal-close-btn">&times;</button>
@@ -277,7 +298,7 @@
         <!-- 1. PROJECTILE MOTION (ACTIVE) -->
         <div class="lab-card active-lab" data-lab="projectile">
           <div class="lab-status-badge status-live">● LIVE NOW</div>
-          <div class="lab-icon">🚀</div>
+          <div class="lab-icon-text">LAB 01</div>
           <h3>Projectile Motion Lab</h3>
           <p>Kinematic trajectories, launch angle optimization, elevation offsets, and planetary gravity variations.</p>
           <div class="lab-tags">
@@ -290,10 +311,10 @@
 
         <!-- 2. PENDULUM (IN DEV) -->
         <div class="lab-card dev-lab" data-name="Simple Pendulum & Harmonic Oscillator">
-          <div class="lab-status-badge status-dev">⚡ IN DEVELOPMENT</div>
-          <div class="lab-icon">⏱️</div>
+          <div class="lab-status-badge status-dev">IN DEVELOPMENT</div>
+          <div class="lab-icon-text">LAB 02</div>
           <h3>Simple Pendulum & SHM</h3>
-          <p>Investigate small-angle approximations, string length $L$, damping coefficients, and phase portraits.</p>
+          <p>Investigate small-angle approximations, string length L, damping coefficients, and phase portraits.</p>
           <div class="lab-tags">
             <span>Harmonic Motion</span>
             <span>T = 2π√(L/g)</span>
@@ -304,10 +325,10 @@
 
         <!-- 3. 2D COLLISIONS (COMING SOON) -->
         <div class="lab-card coming-lab" data-name="2D Elastic & Inelastic Collisions">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">💥</div>
+          <div class="lab-status-badge status-coming">COMING SOON</div>
+          <div class="lab-icon-text">LAB 03</div>
           <h3>2D Collisions & Momentum</h3>
-          <p>Conservation of linear momentum, coefficient of restitution $e$, kinetic energy loss, and center of mass.</p>
+          <p>Conservation of linear momentum, coefficient of restitution e, kinetic energy loss, and center of mass.</p>
           <div class="lab-tags">
             <span>p = mv</span>
             <span>Elastic/Inelastic</span>
@@ -318,10 +339,10 @@
 
         <!-- 4. INCLINED PLANE (COMING SOON) -->
         <div class="lab-card coming-lab" data-name="Friction & Inclined Plane Lab">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">📐</div>
+          <div class="lab-status-badge status-coming">COMING SOON</div>
+          <div class="lab-icon-text">LAB 04</div>
           <h3>Friction & Inclined Plane</h3>
-          <p>Static vs kinetic friction ($\mu_s, \mu_k$), normal force resolution, critical incline angle, and block sliding.</p>
+          <p>Static vs kinetic friction (μs, μk), normal force resolution, critical incline angle, and block sliding.</p>
           <div class="lab-tags">
             <span>Forces</span>
             <span>F = μN</span>
@@ -332,8 +353,8 @@
 
         <!-- 5. ORBITAL MECHANICS (COMING SOON) -->
         <div class="lab-card coming-lab" data-name="Orbital Mechanics & Kepler's Laws">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">🪐</div>
+          <div class="lab-status-badge status-coming">COMING SOON</div>
+          <div class="lab-icon-text">LAB 05</div>
           <h3>Orbital Mechanics & Kepler</h3>
           <p>N-body celestial gravitational attraction, elliptical orbits, escape velocity, and satellite transfer orbits.</p>
           <div class="lab-tags">
@@ -346,13 +367,13 @@
 
         <!-- 6. CENTRIPETAL FORCE (COMING SOON) -->
         <div class="lab-card coming-lab" data-name="Centripetal Force & Circular Motion">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">🌀</div>
+          <div class="lab-status-badge status-coming">COMING SOON</div>
+          <div class="lab-icon-text">LAB 06</div>
           <h3>Centripetal Circular Motion</h3>
-          <p>Angular speed $\omega$, centripetal acceleration $a_c = v^2/r$, banked turns, and string tension dynamics.</p>
+          <p>Angular speed ω, centripetal acceleration ac = v²/r, banked turns, and string tension dynamics.</p>
           <div class="lab-tags">
             <span>Rotation</span>
-            <span>F_c = mv²/r</span>
+            <span>Fc = mv²/r</span>
             <span>Tension</span>
           </div>
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
@@ -360,8 +381,8 @@
 
         <!-- 7. ATWOOD MACHINE (COMING SOON) -->
         <div class="lab-card coming-lab" data-name="Atwood Machine & Coupled Pulleys">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">⚖️</div>
+          <div class="lab-status-badge status-coming">COMING SOON</div>
+          <div class="lab-icon-text">LAB 07</div>
           <h3>Atwood Pulley Machine</h3>
           <p>Coupled mass systems, rotational pulley inertia, rope tension, and acceleration of two counterweights.</p>
           <div class="lab-tags">
@@ -383,7 +404,7 @@
     <div class="modal-card modal-card-sm">
       <div class="modal-header">
         <div>
-          <h2>📖 Classical Mechanics Formulas</h2>
+          <h2>Classical Mechanics Formulas</h2>
           <p>Mathematical foundations used by the PhysiX simulation engine</p>
         </div>
         <button id="btn-close-theory" class="modal-close-btn">&times;</button>
@@ -391,7 +412,7 @@
 
       <div class="theory-content">
         <div class="formula-block">
-          <h4>🚀 Projectile Motion (Active Lab)</h4>
+          <h4>Projectile Motion (Active Lab)</h4>
           <div class="formula-grid">
             <div class="formula-item">
               <span class="f-name">Flat Ground Range (h₀ = 0):</span>
@@ -417,7 +438,7 @@
         </div>
 
         <div class="formula-block">
-          <h4>⏱️ Simple Pendulum (Upcoming)</h4>
+          <h4>Simple Pendulum (Upcoming)</h4>
           <div class="formula-grid">
             <div class="formula-item">
               <span class="f-name">Oscillation Period (Small Angles):</span>
@@ -431,7 +452,7 @@
         </div>
 
         <div class="formula-block">
-          <h4>💥 Collisions & Momentum (Upcoming)</h4>
+          <h4>Collisions & Momentum (Upcoming)</h4>
           <div class="formula-grid">
             <div class="formula-item">
               <span class="f-name">Conservation of Momentum:</span>
@@ -454,19 +475,18 @@
     <div class="modal-card modal-card-sm">
       <div class="modal-header">
         <div>
-          <h2>👤 Student Session Profile</h2>
+          <h2>Student Session Profile</h2>
           <p>Manage your simulation data and learning sync</p>
         </div>
         <button id="btn-close-profile" class="modal-close-btn">&times;</button>
       </div>
 
       <div class="profile-card-content">
-        <div class="profile-avatar-large">👤</div>
+        <div class="profile-avatar-large">GS</div>
         <h3>Guest Student</h3>
         <p class="profile-desc">You are currently using <strong>Guest Mode</strong>. All your Target High Scores and custom presets are stored in your local browser storage.</p>
 
         <div class="sync-banner">
-          <div class="sync-icon">☁️</div>
           <div>
             <strong>Cloud Sync & Classrooms (v2.1)</strong>
             <p>Save custom lab notebooks, submit assignments to teachers, and access across devices.</p>
@@ -474,9 +494,189 @@
         </div>
 
         <button class="sign-in-btn" id="btn-mock-signin">
-          <span>Google</span> Sign in with Google (Preview)
+          Sign in with Google (Preview)
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- =====================================
+       QUIZ MODAL
+  ===================================== -->
+  <div id="quiz-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-quiz">
+      <div class="modal-header">
+        <div class="quiz-modal-title-group">
+          <div class="quiz-badge-icon">Q</div>
+          <div>
+            <h2 id="quiz-modal-title">Projectile Motion Quiz</h2>
+            <p id="quiz-modal-subtitle">Mastery assessment for 2D kinematics and dynamics</p>
+          </div>
+        </div>
+        <button id="btn-close-quiz" class="modal-close-btn" aria-label="Close Quiz">&times;</button>
+      </div>
+
+      <!-- VIEW 1: START SCREEN -->
+      <div id="quiz-start-view" class="quiz-view">
+        <div class="quiz-intro-card">
+          <h3>Projectile Motion Assessment</h3>
+          <p class="quiz-intro-desc">
+            Test your conceptual grasp and calculation skills across 10 physics challenges.
+            Topics include range optimization, velocity vector resolution, flight duration, cliff launches, and planetary gravity.
+          </p>
+
+          <div class="quiz-stats-grid">
+            <div class="quiz-stat-pill">
+              <span class="quiz-stat-label">QUESTIONS</span>
+              <strong id="quiz-stat-total">10</strong>
+            </div>
+            <div class="quiz-stat-pill">
+              <span class="quiz-stat-label">FORMAT</span>
+              <strong>Multiple Choice</strong>
+            </div>
+            <div class="quiz-stat-pill">
+              <span class="quiz-stat-label">DIFFICULTY</span>
+              <strong class="text-gradient-amber">Standard</strong>
+            </div>
+            <div class="quiz-stat-pill">
+              <span class="quiz-stat-label">PERSONAL BEST</span>
+              <strong id="quiz-best-score-display">-- / 10</strong>
+            </div>
+          </div>
+
+          <div class="quiz-topics-covered">
+            <span class="topic-tag">Launch Angles</span>
+            <span class="topic-tag">Trajectory Apex</span>
+            <span class="topic-tag">Moon & Earth Gravity</span>
+            <span class="topic-tag">Complementary Symmetry</span>
+            <span class="topic-tag">Energy Conservation</span>
+          </div>
+
+          <div class="quiz-start-actions">
+            <button id="btn-start-quiz" class="quiz-action-btn btn-primary-quiz">
+              Start Quiz
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: ACTIVE QUESTION SCREEN -->
+      <div id="quiz-active-view" class="quiz-view hidden">
+        <!-- Progress & Trackers -->
+        <div class="quiz-progress-bar-wrapper">
+          <div class="quiz-progress-info">
+            <span class="quiz-progress-text" id="quiz-progress-text">Question 1 of 10</span>
+            <span class="quiz-category-tag" id="quiz-question-category">2D Kinematics</span>
+          </div>
+          <div class="quiz-progress-track">
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width: 10%;"></div>
+          </div>
+        </div>
+
+        <!-- Question Body -->
+        <div class="quiz-question-container">
+          <div class="quiz-question-header">
+            <span class="quiz-difficulty-pill" id="quiz-difficulty-pill">Easy</span>
+            <h3 class="quiz-question-text" id="quiz-question-text">Question goes here...</h3>
+          </div>
+
+          <!-- Options Grid -->
+          <div class="quiz-options-grid" id="quiz-options-container">
+            <!-- Dynamically populated options A, B, C, D -->
+          </div>
+
+          <!-- Collapsible Hint / Formula block -->
+          <div class="quiz-hint-accordion" id="quiz-hint-accordion">
+            <button type="button" class="quiz-hint-toggle" id="btn-toggle-hint">
+              <span>Formula Hint</span>
+              <span class="hint-chevron" id="hint-chevron">▼</span>
+            </button>
+            <div class="quiz-hint-body hidden" id="quiz-hint-body">
+              <code id="quiz-hint-formula">R = (v₀² sin 2θ) / g</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Navigation Actions -->
+        <div class="quiz-nav-actions">
+          <button id="btn-prev-question" class="quiz-btn-secondary" disabled>
+            Previous
+          </button>
+
+          <div class="quiz-stepper-dots" id="quiz-stepper-dots">
+            <!-- Question dots 1..10 -->
+          </div>
+
+          <button id="btn-next-question" class="quiz-action-btn btn-primary-quiz">
+            Next
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW 3: RESULTS SCREEN -->
+      <div id="quiz-results-view" class="quiz-view hidden">
+        <div class="quiz-results-hero">
+          <!-- Animated Circular Score Ring -->
+          <div class="score-circle-container">
+            <svg class="score-svg" viewBox="0 0 120 120">
+              <circle class="score-circle-bg" cx="60" cy="60" r="52"></circle>
+              <circle class="score-circle-bar" id="score-circle-bar" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div class="score-circle-text">
+              <span class="score-percent" id="results-score-percent">0%</span>
+              <span class="score-fraction" id="results-score-fraction">0/10</span>
+            </div>
+          </div>
+
+          <div class="results-summary-content">
+            <div class="results-badge" id="results-tier-badge">Proficiency: Advanced</div>
+            <h3 id="results-headline">Assessment Completed</h3>
+            <p id="results-message">You have completed the projectile motion assessment.</p>
+
+            <div class="results-quick-stats">
+              <div class="results-stat-box">
+                <span class="res-stat-lbl">Correct</span>
+                <strong class="text-green" id="results-correct-count">0</strong>
+              </div>
+              <div class="results-stat-box">
+                <span class="res-stat-lbl">Incorrect</span>
+                <strong class="text-coral" id="results-incorrect-count">0</strong>
+              </div>
+              <div class="results-stat-box">
+                <span class="res-stat-lbl">Time Taken</span>
+                <strong id="results-time-taken">0s</strong>
+              </div>
+              <div class="results-stat-box">
+                <span class="res-stat-lbl">Personal Best</span>
+                <strong class="text-purple" id="results-high-score">0 / 10</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Question by Question -->
+        <div class="quiz-review-section">
+          <div class="review-header">
+            <h4>Solution & Concept Review</h4>
+            <span class="review-subtitle">Examine answer derivations and formulas</span>
+          </div>
+
+          <div class="quiz-review-list" id="quiz-review-list">
+            <!-- Dynamically populated review cards with explanations -->
+          </div>
+        </div>
+
+        <!-- Result Footer Actions -->
+        <div class="quiz-results-footer">
+          <button id="btn-retake-quiz" class="quiz-action-btn btn-primary-quiz">
+            Retake Quiz
+          </button>
+          <button id="btn-finish-quiz" class="quiz-btn-secondary">
+            Return to Simulation
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 

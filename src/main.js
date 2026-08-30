@@ -1,5 +1,6 @@
 import Matter from "matter-js";
 import "./style.css";
+import quizData from "../quiz.json";
 
 const {
   Engine,
@@ -204,6 +205,7 @@ const impactVelocityDisplay = document.getElementById("impact-velocity");
 const explorerModal = document.getElementById("explorer-modal");
 const theoryModal = document.getElementById("theory-modal");
 const profileModal = document.getElementById("profile-modal");
+const quizModal = document.getElementById("quiz-modal");
 
 const btnOpenExplorer = document.getElementById("btn-open-explorer");
 const btnCloseExplorer = document.getElementById("btn-close-explorer");
@@ -213,6 +215,62 @@ const btnCloseTheory = document.getElementById("btn-close-theory");
 
 const userProfileBtn = document.getElementById("user-profile-btn");
 const btnCloseProfile = document.getElementById("btn-close-profile");
+
+// Quiz DOM Elements
+const btnOpenQuiz = document.getElementById("btn-open-quiz");
+const btnQuickQuiz = document.getElementById("btn-quick-quiz");
+const btnCloseQuiz = document.getElementById("btn-close-quiz");
+const btnStartQuiz = document.getElementById("btn-start-quiz");
+const btnPrevQuestion = document.getElementById("btn-prev-question");
+const btnNextQuestion = document.getElementById("btn-next-question");
+const btnToggleHint = document.getElementById("btn-toggle-hint");
+const btnRetakeQuiz = document.getElementById("btn-retake-quiz");
+const btnFinishQuiz = document.getElementById("btn-finish-quiz");
+
+const quizStartView = document.getElementById("quiz-start-view");
+const quizActiveView = document.getElementById("quiz-active-view");
+const quizResultsView = document.getElementById("quiz-results-view");
+
+const quizStatTotal = document.getElementById("quiz-stat-total");
+const quizBestScoreDisplay = document.getElementById("quiz-best-score-display");
+const quizProgressText = document.getElementById("quiz-progress-text");
+const quizQuestionCategory = document.getElementById("quiz-question-category");
+const quizProgressFill = document.getElementById("quiz-progress-fill");
+const quizDifficultyPill = document.getElementById("quiz-difficulty-pill");
+const quizQuestionText = document.getElementById("quiz-question-text");
+const quizOptionsContainer = document.getElementById("quiz-options-container");
+const quizHintAccordion = document.getElementById("quiz-hint-accordion");
+const quizHintBody = document.getElementById("quiz-hint-body");
+const quizHintFormula = document.getElementById("quiz-hint-formula");
+const hintChevron = document.getElementById("hint-chevron");
+const quizStepperDots = document.getElementById("quiz-stepper-dots");
+
+// Quiz Results Elements
+const scoreCircleBar = document.getElementById("score-circle-bar");
+const resultsScorePercent = document.getElementById("results-score-percent");
+const resultsScoreFraction = document.getElementById("results-score-fraction");
+const resultsTierBadge = document.getElementById("results-tier-badge");
+const resultsHeadline = document.getElementById("results-headline");
+const resultsMessage = document.getElementById("results-message");
+const resultsCorrectCount = document.getElementById("results-correct-count");
+const resultsIncorrectCount = document.getElementById("results-incorrect-count");
+const resultsTimeTaken = document.getElementById("results-time-taken");
+const resultsHighScore = document.getElementById("results-high-score");
+const quizReviewList = document.getElementById("quiz-review-list");
+
+// ==========================================
+// QUIZ STATE
+// ==========================================
+let quizState = {
+  questions: quizData.questions || [],
+  currentIndex: 0,
+  userAnswers: new Array((quizData.questions || []).length).fill(null),
+  isSubmitted: false,
+  startTime: null,
+  timeTaken: 0,
+  score: 0,
+  highScore: parseInt(localStorage.getItem("physix_quiz_highscore") || "0", 10)
+};
 
 const toastEl = document.getElementById("toast");
 
@@ -412,13 +470,13 @@ function checkTargetHit(landX) {
     // Bullseye!
     simState.targetScore += 100;
     simState.targetHitEffect = 35;
-    showToast("🎯 DIRECT HIT! Bullseye (+100 pts)");
+    showToast("Target Hit: Bullseye (+100 pts)");
     spawnNewTarget();
   } else if (diffMeters <= 3.5) {
     // Near hit
     simState.targetScore += 50;
     simState.targetHitEffect = 25;
-    showToast("✨ NEAR HIT! (+50 pts)");
+    showToast("Target Hit: Near Miss (+50 pts)");
     spawnNewTarget();
   }
   targetScoreText.textContent = simState.targetScore;
@@ -901,6 +959,439 @@ clearTrailsButton.addEventListener("click", () => {
 });
 
 // ==========================================
+// QUIZ HELPERS & ANSWER MATCHING LOGIC
+// ==========================================
+function getQuestionCorrectIndex(q) {
+  if (!q || !Array.isArray(q.options) || q.options.length === 0) return 0;
+
+  // 1. Explicit 0-based index property
+  if (typeof q.correctIndex === "number" && q.correctIndex >= 0 && q.correctIndex < q.options.length) {
+    return q.correctIndex;
+  }
+  if (typeof q.answerIndex === "number" && q.answerIndex >= 0 && q.answerIndex < q.options.length) {
+    return q.answerIndex;
+  }
+  if (typeof q.correct_index === "number" && q.correct_index >= 0 && q.correct_index < q.options.length) {
+    return q.correct_index;
+  }
+
+  // 2. Answer key field
+  const ans = q.answer !== undefined ? q.answer : (q.correctAnswer !== undefined ? q.correctAnswer : q.correct_answer);
+  if (ans === undefined || ans === null) return 0;
+
+  if (typeof ans === "number") {
+    if (ans >= 0 && ans < q.options.length) return ans;
+    if (ans >= 1 && ans <= q.options.length) return ans - 1;
+  }
+
+  if (typeof ans === "string") {
+    const trimmed = ans.trim();
+
+    // Direct match against option strings (case-insensitive & trimmed)
+    const exactIdx = q.options.findIndex(opt => opt.trim().toLowerCase() === trimmed.toLowerCase());
+    if (exactIdx !== -1) return exactIdx;
+
+    // Single letter option reference (e.g. "A", "B", "C", "D", "Option A")
+    const letterMatch = trimmed.match(/^(?:Option\s*)?([A-D])$/i);
+    if (letterMatch) {
+      const idx = letterMatch[1].toUpperCase().charCodeAt(0) - 65;
+      if (idx >= 0 && idx < q.options.length) return idx;
+    }
+
+    // Numerical index as string ("0", "1", "2", "3")
+    const parsedNum = parseInt(trimmed, 10);
+    if (!isNaN(parsedNum)) {
+      if (parsedNum >= 0 && parsedNum < q.options.length) return parsedNum;
+      if (parsedNum >= 1 && parsedNum <= q.options.length) return parsedNum - 1;
+    }
+  }
+
+  return 0;
+}
+
+function getQuestionFormula(q) {
+  if (q.formula) return q.formula;
+  const text = (q.question || "").toLowerCase();
+  if (text.includes("maximum") && text.includes("height")) return "H = (v₀² sin²θ) / (2g)";
+  if (text.includes("time") || text.includes("air")) return "T = (2v₀ sinθ) / g";
+  if (text.includes("20 m/s") || (text.includes("45°") && text.includes("range"))) return "R = (v₀² sin 2θ) / g";
+  if (text.includes("acceleration")) return "a_x = 0, a_y = -g";
+  if (text.includes("force")) return "F_net = m · g (downward)";
+  if (text.includes("angle") || text.includes("speed")) return "R = (v₀² sin 2θ) / g";
+  return "R = (v₀² sin 2θ) / g";
+}
+
+function getQuestionExplanation(q, correctIdx) {
+  if (q.explanation) return q.explanation;
+  const correctText = q.options && q.options[correctIdx] ? q.options[correctIdx] : "";
+  const questionLower = (q.question || "").toLowerCase();
+
+  if (questionLower.includes("30° to 45°")) {
+    return "Horizontal range on level ground is given by R = (v₀² sin 2θ) / g. Since sin(2 × 45°) = sin(90°) = 1.0 is greater than sin(2 × 30°) = sin(60°) ≈ 0.866, the range increases.";
+  }
+  if (questionLower.includes("maximum horizontal range") || (questionLower.includes("which angle") && questionLower.includes("maximum"))) {
+    return "For level ground launches, the factor sin(2θ) reaches its maximum possible value of 1 when 2θ = 90°, which means θ = 45°.";
+  }
+  if (questionLower.includes("force acts on an ideal projectile")) {
+    return "In ideal projectile motion (neglecting air drag), the only force acting after release is the gravitational force (F = mg directed downward).";
+  }
+  if (questionLower.includes("horizontal acceleration")) {
+    return "Because there are no forces acting along the horizontal axis (F_x = 0), Newton's second law gives a_x = 0 m/s², so horizontal velocity v_x remains constant.";
+  }
+  if (questionLower.includes("speed is increased")) {
+    return "Horizontal range is directly proportional to the square of initial speed (R ∝ v₀²). Therefore, increasing launch speed increases the total range.";
+  }
+  if (questionLower.includes("highest point") || questionLower.includes("vertical velocity")) {
+    return "At the peak apex of flight, the projectile momentarily ceases upward motion before falling, so the vertical velocity v_y is 0 m/s.";
+  }
+  if (questionLower.includes("20 m/s at 45°")) {
+    return "Using R = (v₀² sin 2θ) / g with v₀ = 20 m/s, θ = 45°, and g = 10 m/s²: R = (20² × sin 90°) / 10 = (400 × 1) / 10 = 40 meters.";
+  }
+  if (questionLower.includes("30° and 60°")) {
+    return "Complementary launch angles (angles summing to 90°) yield identical ranges because sin(2 × 30°) = sin(60°) and sin(2 × 60°) = sin(120°) = sin(60°).";
+  }
+  if (questionLower.includes("remains in the air") || questionLower.includes("how long")) {
+    return "Flight duration is governed strictly by vertical motion: T = 2(v₀ sin θ) / g. Thus, the vertical velocity component determines the total air time.";
+  }
+  if (questionLower.includes("parameter should be changed")) {
+    return "In a scientific experiment, to study the effect of launch angle on range, the launch angle is the independent variable while speed and gravity are held constant.";
+  }
+
+  return `The correct answer is "${correctText}". This follows directly from the kinematic laws governing 2D projectile motion.`;
+}
+
+// ==========================================
+// QUIZ CONTROLLER & STATE LOGIC
+// ==========================================
+function initQuizStartView() {
+  if (quizStatTotal) quizStatTotal.textContent = quizState.questions.length;
+  if (quizBestScoreDisplay) {
+    quizBestScoreDisplay.textContent = quizState.highScore > 0
+      ? `${quizState.highScore} / ${quizState.questions.length}`
+      : `-- / ${quizState.questions.length}`;
+  }
+}
+
+function openQuizModal() {
+  quizModal.classList.remove("hidden");
+  if (!quizState.isSubmitted && quizState.startTime !== null) {
+    // Resume in-progress quiz
+    quizStartView.classList.add("hidden");
+    quizActiveView.classList.remove("hidden");
+    quizResultsView.classList.add("hidden");
+    renderQuestion(quizState.currentIndex);
+  } else if (quizState.isSubmitted) {
+    // Show results
+    renderResultsView();
+  } else {
+    // Show start view
+    quizStartView.classList.remove("hidden");
+    quizActiveView.classList.add("hidden");
+    quizResultsView.classList.add("hidden");
+    initQuizStartView();
+  }
+}
+
+function closeQuizModal() {
+  quizModal.classList.add("hidden");
+}
+
+function startQuiz() {
+  quizState.currentIndex = 0;
+  quizState.userAnswers = new Array(quizState.questions.length).fill(null);
+  quizState.isSubmitted = false;
+  quizState.startTime = performance.now();
+
+  quizStartView.classList.add("hidden");
+  quizActiveView.classList.remove("hidden");
+  quizResultsView.classList.add("hidden");
+
+  renderQuestion(0);
+}
+
+function renderQuestion(index) {
+  if (index < 0 || index >= quizState.questions.length) return;
+  quizState.currentIndex = index;
+  const q = quizState.questions[index];
+
+  // Tracker and category
+  if (quizProgressText) {
+    quizProgressText.textContent = `Question ${index + 1} of ${quizState.questions.length}`;
+  }
+  if (quizQuestionCategory) {
+    quizQuestionCategory.textContent = q.category || "2D Kinematics";
+  }
+
+  // Progress bar
+  if (quizProgressFill) {
+    const pct = ((index + 1) / quizState.questions.length) * 100;
+    quizProgressFill.style.width = `${pct}%`;
+  }
+
+  // Difficulty badge
+  if (quizDifficultyPill) {
+    const diff = (q.difficulty || "standard").toLowerCase();
+    quizDifficultyPill.textContent = q.difficulty || "Standard";
+    quizDifficultyPill.className = `quiz-difficulty-pill ${diff}`;
+  }
+
+  // Question statement
+  if (quizQuestionText) {
+    quizQuestionText.textContent = q.question;
+  }
+
+  // Hint Formula reset
+  if (quizHintFormula) {
+    quizHintFormula.textContent = q.formula || getQuestionFormula(q);
+  }
+  if (quizHintBody) {
+    quizHintBody.classList.add("hidden");
+  }
+  if (hintChevron) {
+    hintChevron.classList.remove("open");
+  }
+
+  // Render option choices A, B, C, D
+  if (quizOptionsContainer) {
+    quizOptionsContainer.innerHTML = "";
+    const letters = ["A", "B", "C", "D"];
+
+    q.options.forEach((optText, optIdx) => {
+      const card = document.createElement("div");
+      card.className = "quiz-option-card";
+      if (quizState.userAnswers[index] === optIdx) {
+        card.classList.add("selected");
+      }
+
+      card.innerHTML = `
+        <div class="option-key-badge">${letters[optIdx]}</div>
+        <div class="option-text">${optText}</div>
+      `;
+
+      card.addEventListener("click", () => {
+        selectOption(index, optIdx);
+      });
+
+      quizOptionsContainer.appendChild(card);
+    });
+  }
+
+  // Stepper dots
+  renderStepperDots(index);
+
+  // Button labels & states
+  if (btnPrevQuestion) {
+    btnPrevQuestion.disabled = (index === 0);
+  }
+  if (btnNextQuestion) {
+    if (index === quizState.questions.length - 1) {
+      btnNextQuestion.innerHTML = `Submit Quiz`;
+    } else {
+      btnNextQuestion.innerHTML = `Next`;
+    }
+  }
+}
+
+function renderStepperDots(currentIndex) {
+  if (!quizStepperDots) return;
+  quizStepperDots.innerHTML = "";
+
+  quizState.questions.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "stepper-dot";
+    if (i === currentIndex) dot.classList.add("active");
+    if (quizState.userAnswers[i] !== null) dot.classList.add("answered");
+    dot.title = `Question ${i + 1}`;
+
+    dot.addEventListener("click", () => {
+      renderQuestion(i);
+    });
+
+    quizStepperDots.appendChild(dot);
+  });
+}
+
+function selectOption(qIdx, optIdx) {
+  quizState.userAnswers[qIdx] = optIdx;
+
+  // Update visual selection
+  if (quizOptionsContainer) {
+    const optionCards = quizOptionsContainer.querySelectorAll(".quiz-option-card");
+    optionCards.forEach((c, idx) => {
+      if (idx === optIdx) {
+        c.classList.add("selected");
+      } else {
+        c.classList.remove("selected");
+      }
+    });
+  }
+
+  renderStepperDots(qIdx);
+}
+
+function nextQuestion() {
+  if (quizState.currentIndex === quizState.questions.length - 1) {
+    submitQuiz();
+  } else {
+    renderQuestion(quizState.currentIndex + 1);
+  }
+}
+
+function prevQuestion() {
+  if (quizState.currentIndex > 0) {
+    renderQuestion(quizState.currentIndex - 1);
+  }
+}
+
+function toggleHint() {
+  if (quizHintBody) {
+    quizHintBody.classList.toggle("hidden");
+  }
+  if (hintChevron) {
+    hintChevron.classList.toggle("open");
+  }
+}
+
+function submitQuiz() {
+  const unansweredCount = quizState.userAnswers.filter(a => a === null).length;
+  if (unansweredCount > 0) {
+    const proceed = window.confirm(
+      `You have ${unansweredCount} unanswered question(s). Do you want to submit anyway?`
+    );
+    if (!proceed) return;
+  }
+
+  quizState.isSubmitted = true;
+  quizState.timeTaken = Math.max(1, Math.round((performance.now() - (quizState.startTime || performance.now())) / 1000));
+
+  let correctCount = 0;
+  quizState.questions.forEach((q, i) => {
+    const correctIdx = getQuestionCorrectIndex(q);
+    if (quizState.userAnswers[i] === correctIdx) {
+      correctCount++;
+    }
+  });
+  quizState.score = correctCount;
+
+  if (correctCount > quizState.highScore) {
+    quizState.highScore = correctCount;
+    localStorage.setItem("physix_quiz_highscore", correctCount.toString());
+    showToast(`New Personal Best: ${correctCount}/${quizState.questions.length}`);
+  }
+
+  renderResultsView();
+}
+
+function renderResultsView() {
+  quizStartView.classList.add("hidden");
+  quizActiveView.classList.add("hidden");
+  quizResultsView.classList.remove("hidden");
+
+  const total = quizState.questions.length;
+  const score = quizState.score;
+  const pct = Math.round((score / total) * 100);
+
+  // Animate circular gauge
+  const circumference = 2 * Math.PI * 52; // ~326.7
+  const offset = circumference - (pct / 100) * circumference;
+
+  if (scoreCircleBar) {
+    scoreCircleBar.style.strokeDashoffset = offset;
+    if (pct >= 80) {
+      scoreCircleBar.style.stroke = "#10b981";
+      scoreCircleBar.style.filter = "drop-shadow(0 0 10px rgba(16, 185, 129, 0.4))";
+    } else if (pct >= 50) {
+      scoreCircleBar.style.stroke = "#f59e0b";
+      scoreCircleBar.style.filter = "drop-shadow(0 0 10px rgba(245, 158, 11, 0.4))";
+    } else {
+      scoreCircleBar.style.stroke = "#ff4757";
+      scoreCircleBar.style.filter = "drop-shadow(0 0 10px rgba(255, 71, 87, 0.4))";
+    }
+  }
+
+  if (resultsScorePercent) resultsScorePercent.textContent = `${pct}%`;
+  if (resultsScoreFraction) resultsScoreFraction.textContent = `${score}/${total}`;
+  if (resultsCorrectCount) resultsCorrectCount.textContent = score;
+  if (resultsIncorrectCount) resultsIncorrectCount.textContent = total - score;
+  if (resultsTimeTaken) resultsTimeTaken.textContent = `${quizState.timeTaken}s`;
+  if (resultsHighScore) resultsHighScore.textContent = `${quizState.highScore} / ${total}`;
+
+  // Tier badge & custom feedback
+  if (pct === 100) {
+    if (resultsTierBadge) resultsTierBadge.textContent = "Mastery: Advanced";
+    if (resultsHeadline) resultsHeadline.textContent = "Score: 100% (Perfect)";
+    if (resultsMessage) {
+      resultsMessage.textContent = "You demonstrated complete understanding of projectile motion kinematics, symmetry, and gravity.";
+    }
+  } else if (pct >= 80) {
+    if (resultsTierBadge) resultsTierBadge.textContent = "Mastery: Proficient";
+    if (resultsHeadline) resultsHeadline.textContent = "High Proficiency";
+    if (resultsMessage) {
+      resultsMessage.textContent = "You demonstrated strong mastery over 2D kinematic calculations and trajectory principles.";
+    }
+  } else if (pct >= 50) {
+    if (resultsTierBadge) resultsTierBadge.textContent = "Mastery: Intermediate";
+    if (resultsHeadline) resultsHeadline.textContent = "Assessment Completed";
+    if (resultsMessage) {
+      resultsMessage.textContent = "Solid foundational grasp. Review the detailed solutions below to master advanced cliff and planetary cases.";
+    }
+  } else {
+    if (resultsTierBadge) resultsTierBadge.textContent = "Mastery: Foundational";
+    if (resultsHeadline) resultsHeadline.textContent = "Needs Review";
+    if (resultsMessage) {
+      resultsMessage.textContent = "Review the physics solution derivations below and test the scenarios in the simulation.";
+    }
+  }
+
+  // Detailed Review Breakdown
+  if (quizReviewList) {
+    quizReviewList.innerHTML = "";
+    const letters = ["A", "B", "C", "D"];
+
+    quizState.questions.forEach((q, i) => {
+      const userChoice = quizState.userAnswers[i];
+      const correctIdx = getQuestionCorrectIndex(q);
+      const isCorrect = userChoice === correctIdx;
+
+      const card = document.createElement("div");
+      card.className = `review-card ${isCorrect ? "correct" : "incorrect"}`;
+
+      const userAnsText = userChoice !== null
+        ? `${letters[userChoice]}: ${q.options[userChoice]}`
+        : "Not answered (Skipped)";
+      const correctAnsText = `${letters[correctIdx]}: ${q.options[correctIdx]}`;
+
+      const explanation = q.explanation || getQuestionExplanation(q, correctIdx);
+      const formula = q.formula || getQuestionFormula(q);
+
+      card.innerHTML = `
+        <div class="review-card-top">
+          <span class="review-q-num">Q${i + 1} &bull; ${q.category || "Kinematics"}</span>
+          <span class="review-q-status ${isCorrect ? "correct" : "incorrect"}">
+            ${isCorrect ? "Correct (+1)" : "Incorrect"}
+          </span>
+        </div>
+        <p class="review-q-text">${q.question}</p>
+        <div class="review-answers-grid">
+          <div class="review-ans-pill ${isCorrect ? "correct-ans" : "your-wrong"}">
+            <strong>Your Choice:</strong> ${userAnsText}
+          </div>
+          <div class="review-ans-pill correct-ans">
+            <strong>Correct Answer:</strong> ${correctAnsText}
+          </div>
+        </div>
+        <div class="review-explanation-box">
+          <div><strong>Scientific Derivation:</strong> ${explanation}</div>
+          ${formula ? `<div class="review-formula">Formula: <code>${formula}</code></div>` : ""}
+        </div>
+      `;
+
+      quizReviewList.appendChild(card);
+    });
+  }
+}
+
+// ==========================================
 // MODALS & NAVIGATION LOGIC
 // ==========================================
 // Explorer Modal
@@ -927,8 +1418,20 @@ btnCloseProfile.addEventListener("click", () => {
   profileModal.classList.add("hidden");
 });
 
+// Quiz Modal triggers
+if (btnOpenQuiz) btnOpenQuiz.addEventListener("click", openQuizModal);
+if (btnQuickQuiz) btnQuickQuiz.addEventListener("click", openQuizModal);
+if (btnCloseQuiz) btnCloseQuiz.addEventListener("click", closeQuizModal);
+if (btnStartQuiz) btnStartQuiz.addEventListener("click", startQuiz);
+if (btnPrevQuestion) btnPrevQuestion.addEventListener("click", prevQuestion);
+if (btnNextQuestion) btnNextQuestion.addEventListener("click", nextQuestion);
+if (btnToggleHint) btnToggleHint.addEventListener("click", toggleHint);
+if (btnRetakeQuiz) btnRetakeQuiz.addEventListener("click", startQuiz);
+if (btnFinishQuiz) btnFinishQuiz.addEventListener("click", closeQuizModal);
+
 // Close modals on backdrop click
-[explorerModal, theoryModal, profileModal].forEach(modal => {
+[explorerModal, theoryModal, profileModal, quizModal].forEach(modal => {
+  if (!modal) return;
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       modal.classList.add("hidden");
@@ -936,12 +1439,31 @@ btnCloseProfile.addEventListener("click", () => {
   });
 });
 
-// Close modals on Escape key
+// Keyboard Navigation & Shortcuts
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     explorerModal.classList.add("hidden");
     theoryModal.classList.add("hidden");
     profileModal.classList.add("hidden");
+    quizModal.classList.add("hidden");
+    return;
+  }
+
+  // If Quiz Modal is open and in active question view
+  if (quizModal && !quizModal.classList.contains("hidden") && quizActiveView && !quizActiveView.classList.contains("hidden")) {
+    if (e.key === "1" || e.key === "a" || e.key === "A") {
+      selectOption(quizState.currentIndex, 0);
+    } else if (e.key === "2" || e.key === "b" || e.key === "B") {
+      selectOption(quizState.currentIndex, 1);
+    } else if (e.key === "3" || e.key === "c" || e.key === "C") {
+      selectOption(quizState.currentIndex, 2);
+    } else if (e.key === "4" || e.key === "d" || e.key === "D") {
+      selectOption(quizState.currentIndex, 3);
+    } else if (e.key === "ArrowRight" || e.key === "Enter") {
+      nextQuestion();
+    } else if (e.key === "ArrowLeft") {
+      prevQuestion();
+    }
   }
 });
 
@@ -951,17 +1473,17 @@ labCards.forEach(card => {
   card.addEventListener("click", () => {
     if (card.classList.contains("active-lab")) {
       explorerModal.classList.add("hidden");
-      showToast("🚀 Viewing Projectile Motion Lab");
+      showToast("Viewing Projectile Motion Lab");
     } else {
       const name = card.getAttribute("data-name") || "This experiment";
-      showToast(`⚡ ${name} is currently in development!`);
+      showToast(`${name} is in development.`);
     }
   });
 });
 
 // Mock Sign in button
 document.getElementById("btn-mock-signin").addEventListener("click", () => {
-  showToast("🔐 Google Classroom sync will be available in v2.1!");
+  showToast("Google Classroom sync will be available in v2.1.");
   profileModal.classList.add("hidden");
 });
 
@@ -978,6 +1500,7 @@ catPills.forEach(pill => {
 // ==========================================
 // INITIAL SETUP & RUN
 // ==========================================
+initQuizStartView();
 updateLauncher(DEFAULT_ANGLE);
 calculateTheoreticalResults();
 
