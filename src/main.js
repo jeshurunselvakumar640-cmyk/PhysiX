@@ -1,5 +1,15 @@
 import Matter from "matter-js";
 import "./style.css";
+import {
+  auth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  updatePassword,
+  onAuthStateChanged
+} from "./firebase.js";
+import { QUIZ_DATA } from "./quiz-data.js";
 
 const {
   Engine,
@@ -15,7 +25,7 @@ const {
 // CONSTANTS & CALIBRATION SCALE
 // ==========================================
 // 12 screen pixels = 1.0 physical meter
-const SCALE = 12; 
+const SCALE = 12;
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 600;
 const GROUND_Y = 540; // Ground surface y coordinate
@@ -23,10 +33,10 @@ const ORIGIN_X = 80;  // X=0m anchor coordinate
 
 const DEFAULT_VELOCITY = 20.0;
 const DEFAULT_ANGLE = 45;
+const DEFAULT_HEIGHT = 0.0;
 const DEFAULT_GRAVITY = 9.8;
 
 // Launcher specs
-const PIVOT = { x: ORIGIN_X, y: 495 }; // 45px (3.75m) above ground
 const BARREL_LENGTH = 54;              // 4.5m
 const BARREL_WIDTH = 18;
 const PROJECTILE_RADIUS = 10;          // 0.83m radius
@@ -42,22 +52,23 @@ let simState = {
   currentVx: 0,
   currentVy: 0,
   currentSpeed: 0,
-  
+
   // Kinematic parameters for current shot
-  launchX: 0,
-  launchY: 0,
+  launchX: ORIGIN_X,
+  launchY: GROUND_Y - PROJECTILE_RADIUS,
   v0x: 0,
   v0y: 0,
+  h0: 0,
   g: 9.8,
   totalFlightTime: 0,
-  
+
   showVectors: true,
   showGhosts: true,
   targetMode: false,
   targetDistance: 35.0, // meters
   targetScore: 0,
   targetHitEffect: 0,
-  
+
   currentTrail: [],
   ghostTrails: []
 };
@@ -105,10 +116,10 @@ Composite.add(world, groundBody);
 
 // Create Launcher Base and Wheel (sensors to avoid collision blocking)
 const launcherBase = Bodies.rectangle(
-  PIVOT.x - 10,
-  GROUND_Y - 20,
-  60,
-  40,
+  ORIGIN_X - 10,
+  GROUND_Y - 15,
+  56,
+  30,
   {
     isStatic: true,
     isSensor: true,
@@ -117,9 +128,9 @@ const launcherBase = Bodies.rectangle(
 );
 
 const launcherWheel = Bodies.circle(
-  PIVOT.x,
-  PIVOT.y + 15,
-  18,
+  ORIGIN_X,
+  GROUND_Y - 10,
+  16,
   {
     isStatic: true,
     isSensor: true,
@@ -129,8 +140,8 @@ const launcherWheel = Bodies.circle(
 
 // Launcher Barrel Body
 const initialRadians = (DEFAULT_ANGLE * Math.PI) / 180;
-const initialBarrelX = PIVOT.x + (BARREL_LENGTH / 2) * Math.cos(initialRadians);
-const initialBarrelY = PIVOT.y - (BARREL_LENGTH / 2) * Math.sin(initialRadians);
+const initialBarrelX = ORIGIN_X + (BARREL_LENGTH / 2) * Math.cos(initialRadians);
+const initialBarrelY = GROUND_Y - (BARREL_LENGTH / 2) * Math.sin(initialRadians);
 
 const launcherBarrel = Bodies.rectangle(
   initialBarrelX,
@@ -156,10 +167,12 @@ let launchTimestamp = 0;
 // ==========================================
 const velocitySlider = document.getElementById("velocity");
 const angleSlider = document.getElementById("angle");
+const heightSlider = document.getElementById("height");
 const gravitySlider = document.getElementById("gravity");
 
 const velocityValue = document.getElementById("velocity-value");
 const angleValue = document.getElementById("angle-value");
+const heightValue = document.getElementById("height-value");
 const gravityValue = document.getElementById("gravity-value");
 
 const launchButton = document.getElementById("launch");
@@ -175,6 +188,7 @@ const targetDistanceText = document.getElementById("target-distance-text");
 const targetScoreText = document.getElementById("target-score");
 
 const planetBtns = document.querySelectorAll(".planet-btn");
+const heightBtns = document.querySelectorAll(".height-btn");
 
 // HUD Elements
 const hudTime = document.getElementById("hud-time");
@@ -182,7 +196,7 @@ const hudHeight = document.getElementById("hud-height");
 const hudDistance = document.getElementById("hud-distance");
 const hudSpeed = document.getElementById("hud-speed");
 
-// Results Display
+// Results Display & Kinematic Analytics
 const maxHeightDisplay = document.getElementById("max-height");
 const rangeDisplay = document.getElementById("range");
 const flightTimeDisplay = document.getElementById("flight-time");
@@ -192,6 +206,7 @@ const impactVelocityDisplay = document.getElementById("impact-velocity");
 const explorerModal = document.getElementById("explorer-modal");
 const theoryModal = document.getElementById("theory-modal");
 const profileModal = document.getElementById("profile-modal");
+const quizModal = document.getElementById("quiz-modal");
 
 const btnOpenExplorer = document.getElementById("btn-open-explorer");
 const btnCloseExplorer = document.getElementById("btn-close-explorer");
@@ -199,10 +214,69 @@ const btnCloseExplorer = document.getElementById("btn-close-explorer");
 const btnOpenTheory = document.getElementById("btn-open-theory");
 const btnCloseTheory = document.getElementById("btn-close-theory");
 
+const btnOpenQuiz = document.getElementById("btn-open-quiz");
+const btnCloseQuiz = document.getElementById("btn-close-quiz");
+
 const userProfileBtn = document.getElementById("user-profile-btn");
 const btnCloseProfile = document.getElementById("btn-close-profile");
 
 const toastEl = document.getElementById("toast");
+
+// ==========================================
+// FIREBASE AUTH DOM ELEMENTS
+// ==========================================
+const authModalTitle = document.getElementById("auth-modal-title");
+const authModalSubtitle = document.getElementById("auth-modal-subtitle");
+
+const authViewLogin = document.getElementById("auth-view-login");
+const authViewSignup = document.getElementById("auth-view-signup");
+const authViewForgot = document.getElementById("auth-view-forgot");
+const authViewChangePassword = document.getElementById("auth-view-change-password");
+const authViewDashboard = document.getElementById("auth-view-dashboard");
+
+const formLogin = document.getElementById("form-login");
+const formSignup = document.getElementById("form-signup");
+const formForgot = document.getElementById("form-forgot");
+const formChangePassword = document.getElementById("form-change-password");
+
+const loginEmail = document.getElementById("login-email");
+const loginPassword = document.getElementById("login-password");
+const loginErrorMsg = document.getElementById("login-error-msg");
+
+const signupEmail = document.getElementById("signup-email");
+const signupPassword = document.getElementById("signup-password");
+const signupConfirm = document.getElementById("signup-confirm");
+const signupErrorMsg = document.getElementById("signup-error-msg");
+
+const forgotEmail = document.getElementById("forgot-email");
+const forgotErrorMsg = document.getElementById("forgot-error-msg");
+const forgotSuccessMsg = document.getElementById("forgot-success-msg");
+
+const changeNewPassword = document.getElementById("change-new-password");
+const changeConfirmPassword = document.getElementById("change-confirm-password");
+const changeErrorMsg = document.getElementById("change-error-msg");
+
+const btnGotoForgot = document.getElementById("btn-goto-forgot");
+const btnGotoSignup = document.getElementById("btn-goto-signup");
+const btnSignupGotoLogin = document.getElementById("btn-signup-goto-login");
+const btnForgotGotoLogin = document.getElementById("btn-forgot-goto-login");
+const btnDashboardChangePwd = document.getElementById("btn-dashboard-change-pwd");
+const btnChangeGotoDashboard = document.getElementById("btn-change-goto-dashboard");
+const btnDashboardLogout = document.getElementById("btn-dashboard-logout");
+
+const profileUserEmail = document.getElementById("profile-user-email");
+const profileAvatarChar = document.getElementById("profile-avatar-char");
+const profileStatQuiz = document.getElementById("profile-stat-quiz");
+const profileStatTarget = document.getElementById("profile-stat-target");
+
+// ==========================================
+// QUIZ STATE
+// ==========================================
+let quizState = {
+  currentQuestionIndex: 0,
+  userAnswers: {},
+  score: 0
+};
 
 // ==========================================
 // TOAST NOTIFICATIONS
@@ -218,23 +292,23 @@ function showToast(message) {
 }
 
 // ==========================================
-// BARREL POSITIONING
+// BARREL & LAUNCHER POSITIONING
 // ==========================================
-function updateLauncher(angleDeg) {
+function updateLauncher(angleDeg, heightMeters) {
+  const h = heightMeters !== undefined ? heightMeters : Number(heightSlider.value);
+  const pivotY = GROUND_Y - h * SCALE;
   const rad = (angleDeg * Math.PI) / 180;
-  const centerX = PIVOT.x + (BARREL_LENGTH / 2) * Math.cos(rad);
-  const centerY = PIVOT.y - (BARREL_LENGTH / 2) * Math.sin(rad);
+
+  // Center of barrel rectangle
+  const centerX = ORIGIN_X + (BARREL_LENGTH / 2) * Math.cos(rad);
+  const centerY = pivotY - (BARREL_LENGTH / 2) * Math.sin(rad);
 
   Body.setPosition(launcherBarrel, { x: centerX, y: centerY });
   Body.setAngle(launcherBarrel, -rad);
-}
 
-// Calculate tip position where projectile spawns
-function getBarrelTip(angleDeg) {
-  const rad = (angleDeg * Math.PI) / 180;
-  const tipX = PIVOT.x + (BARREL_LENGTH + PROJECTILE_RADIUS) * Math.cos(rad);
-  const tipY = PIVOT.y - (BARREL_LENGTH + PROJECTILE_RADIUS) * Math.sin(rad);
-  return { x: tipX, y: tipY, rad };
+  // Position base and wheel under pivot
+  Body.setPosition(launcherBase, { x: ORIGIN_X - 10, y: pivotY + 14 });
+  Body.setPosition(launcherWheel, { x: ORIGIN_X, y: pivotY + 10 });
 }
 
 // ==========================================
@@ -243,27 +317,23 @@ function getBarrelTip(angleDeg) {
 function calculateTheoreticalResults() {
   const v0 = Number(velocitySlider.value);
   const angleDeg = Number(angleSlider.value);
+  const h0 = Number(heightSlider.value);
   const g = Number(gravitySlider.value);
   const rad = (angleDeg * Math.PI) / 180;
-
-  const tip = getBarrelTip(angleDeg);
-  
-  // Heights and offsets relative to origin ground (Origin_X = 80, Ground_Y = 540)
-  const h0 = Math.max(0, (GROUND_Y - tip.y) / SCALE);
-  const d0 = Math.max(0, (tip.x - ORIGIN_X) / SCALE);
 
   if (g <= 0.01) {
     maxHeightDisplay.textContent = "∞";
     rangeDisplay.textContent = "∞";
     flightTimeDisplay.textContent = "∞";
     impactVelocityDisplay.textContent = `${v0.toFixed(2)} m/s`;
-    return { maxHeight: Infinity, totalRange: Infinity, timeOfFlight: Infinity, impactSpeed: v0 };
+    return { maxHeight: Infinity, totalRange: Infinity, timeOfFlight: Infinity, impactSpeed: v0, h0 };
   }
 
   const v0y = v0 * Math.sin(rad);
   const v0x = v0 * Math.cos(rad);
 
   // Time of flight T: 0.5*g*T^2 - v0y*T - h0 = 0
+  // T = (v0y + sqrt(v0y^2 + 2*g*h0)) / g
   const discriminant = v0y * v0y + 2 * g * h0;
   const timeOfFlight = (v0y + Math.sqrt(Math.max(0, discriminant))) / g;
 
@@ -271,8 +341,8 @@ function calculateTheoreticalResults() {
   const peakFromRelease = (v0y * v0y) / (2 * g);
   const maxHeight = h0 + peakFromRelease;
 
-  // Total Range R = d0 + v0x * T
-  const totalRange = d0 + v0x * timeOfFlight;
+  // Total Range R = v0x * T
+  const totalRange = v0x * timeOfFlight;
 
   // Impact Velocity vf = sqrt(v0^2 + 2*g*h0)
   const impactSpeed = Math.sqrt(v0 * v0 + 2 * g * h0);
@@ -282,7 +352,7 @@ function calculateTheoreticalResults() {
   flightTimeDisplay.textContent = `${timeOfFlight.toFixed(2)} s`;
   impactVelocityDisplay.textContent = `${impactSpeed.toFixed(2)} m/s`;
 
-  return { maxHeight, totalRange, timeOfFlight, impactSpeed, h0, d0 };
+  return { maxHeight, totalRange, timeOfFlight, impactSpeed, h0, v0x, v0y };
 }
 
 // ==========================================
@@ -291,17 +361,18 @@ function calculateTheoreticalResults() {
 function launchProjectile() {
   const v0 = Number(velocitySlider.value);
   const angleDeg = Number(angleSlider.value);
+  const h0 = Number(heightSlider.value);
   const g = Number(gravitySlider.value);
   const rad = (angleDeg * Math.PI) / 180;
 
   // Save current trail to ghost trails if comparison mode is enabled
-  if (simState.currentTrail.length > 5 && simState.showGhosts) {
+  if (simState.currentTrail.length > 2 && simState.showGhosts) {
     simState.ghostTrails.push({
       points: [...simState.currentTrail],
       color: getRandomGhostColor(),
-      label: `${angleDeg}° | ${v0.toFixed(0)}m/s | g=${g.toFixed(1)}`
+      label: `${angleDeg}° | ${v0.toFixed(0)}m/s | h=${h0.toFixed(1)}m`
     });
-    if (simState.ghostTrails.length > 6) {
+    if (simState.ghostTrails.length > 8) {
       simState.ghostTrails.shift();
     }
   }
@@ -313,18 +384,19 @@ function launchProjectile() {
     projectile = null;
   }
 
-  const tip = getBarrelTip(angleDeg);
-  simState.launchX = tip.x;
-  simState.launchY = tip.y;
+  const launchY = GROUND_Y - h0 * SCALE - PROJECTILE_RADIUS;
+  simState.launchX = ORIGIN_X;
+  simState.launchY = launchY;
   simState.v0x = v0 * Math.cos(rad);
   simState.v0y = v0 * Math.sin(rad);
+  simState.h0 = h0;
   simState.g = g;
 
   const theoretical = calculateTheoreticalResults();
   simState.totalFlightTime = theoretical.timeOfFlight;
 
   // Create Projectile Rigid Body
-  projectile = Bodies.circle(tip.x, tip.y, PROJECTILE_RADIUS, {
+  projectile = Bodies.circle(ORIGIN_X, launchY, PROJECTILE_RADIUS, {
     isSensor: true,
     render: {
       fillStyle: "#ff4757",
@@ -335,6 +407,9 @@ function launchProjectile() {
 
   Composite.add(world, projectile);
 
+  // Initial trail point
+  simState.currentTrail = [{ x: ORIGIN_X, y: launchY }];
+
   simState.isRunning = true;
   simState.flightTime = 0;
   launchTimestamp = performance.now();
@@ -342,12 +417,12 @@ function launchProjectile() {
 
 function getRandomGhostColor() {
   const colors = [
-    "rgba(139, 92, 246, 0.55)",  // Purple
-    "rgba(59, 130, 246, 0.55)",  // Blue
-    "rgba(16, 185, 129, 0.55)",  // Emerald
-    "rgba(245, 158, 11, 0.55)",  // Amber
-    "rgba(236, 72, 153, 0.55)",  // Pink
-    "rgba(6, 182, 212, 0.55)"    // Cyan
+    "rgba(139, 92, 246, 0.65)",  // Purple
+    "rgba(59, 130, 246, 0.65)",  // Blue
+    "rgba(16, 185, 129, 0.65)",  // Emerald
+    "rgba(245, 158, 11, 0.65)",  // Amber
+    "rgba(236, 72, 153, 0.65)",  // Pink
+    "rgba(6, 182, 212, 0.65)"    // Cyan
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 }
@@ -365,8 +440,9 @@ function resetSimulation() {
   simState.flightTime = 0;
   simState.currentTrail = [];
 
+  const h0 = Number(heightSlider.value);
   hudTime.textContent = "0.00 s";
-  hudHeight.textContent = "0.00 m";
+  hudHeight.textContent = `${h0.toFixed(2)} m`;
   hudDistance.textContent = "0.00 m";
   hudSpeed.textContent = "0.00 m/s";
 
@@ -396,6 +472,7 @@ function checkTargetHit(landX) {
     spawnNewTarget();
   }
   targetScoreText.textContent = simState.targetScore;
+  if (profileStatTarget) profileStatTarget.textContent = `${simState.targetScore} pts`;
 }
 
 function spawnNewTarget() {
@@ -410,22 +487,47 @@ Events.on(engine, "beforeUpdate", () => {
   if (!projectile || !simState.isRunning) return;
 
   // Real-world elapsed time in seconds
-  const t = (performance.now() - launchTimestamp) / 1000;
+  let t = (performance.now() - launchTimestamp) / 1000;
+  if (t <= 0) return;
+
+  // Check Touchdown / End of Flight
+  if (t >= simState.totalFlightTime || simState.totalFlightTime <= 0) {
+    t = simState.totalFlightTime;
+    simState.flightTime = t;
+
+    const finalRangeMeters = simState.v0x * t;
+    const finalPx = ORIGIN_X + finalRangeMeters * SCALE;
+    const finalPy = GROUND_Y - PROJECTILE_RADIUS;
+
+    Body.setPosition(projectile, { x: finalPx, y: finalPy });
+    simState.currentTrail.push({ x: finalPx, y: finalPy });
+    simState.isRunning = false;
+
+    // Update HUD with impact values
+    hudTime.textContent = `${t.toFixed(2)} s`;
+    hudHeight.textContent = "0.00 m";
+    hudDistance.textContent = `${finalRangeMeters.toFixed(2)} m`;
+    const finalVy = simState.v0y - simState.g * t;
+    const finalSpeed = Math.sqrt(simState.v0x * simState.v0x + finalVy * finalVy);
+    hudSpeed.textContent = `${finalSpeed.toFixed(2)} m/s`;
+
+    checkTargetHit(finalPx);
+    return;
+  }
+
   simState.flightTime = t;
 
-  // Kinematic Position:
-  // x(t) = launchX + (v0x * t) * SCALE
-  // y(t) = launchY - (v0y * t - 0.5 * g * t^2) * SCALE
-  const px = simState.launchX + (simState.v0x * t) * SCALE;
-  const py = simState.launchY - (simState.v0y * t - 0.5 * simState.g * t * t) * SCALE;
+  // Exact Kinematics
+  const xMeters = simState.v0x * t;
+  const yMeters = Math.max(0, simState.h0 + simState.v0y * t - 0.5 * simState.g * t * t);
+
+  const px = ORIGIN_X + xMeters * SCALE;
+  const py = GROUND_Y - yMeters * SCALE - PROJECTILE_RADIUS;
 
   // Kinematic Velocities:
   const vx = simState.v0x;
   const vy = simState.v0y - simState.g * t;
   const speed = Math.hypot(vx, vy);
-
-  const realDistance = Math.max(0, (px - ORIGIN_X) / SCALE);
-  const realAltitude = Math.max(0, (GROUND_Y - py) / SCALE);
 
   simState.currentX = px;
   simState.currentY = py;
@@ -435,8 +537,8 @@ Events.on(engine, "beforeUpdate", () => {
 
   // Update HUD
   hudTime.textContent = `${t.toFixed(2)} s`;
-  hudHeight.textContent = `${realAltitude.toFixed(2)} m`;
-  hudDistance.textContent = `${realDistance.toFixed(2)} m`;
+  hudHeight.textContent = `${yMeters.toFixed(2)} m`;
+  hudDistance.textContent = `${xMeters.toFixed(2)} m`;
   hudSpeed.textContent = `${speed.toFixed(2)} m/s`;
 
   // Add trail point
@@ -445,13 +547,9 @@ Events.on(engine, "beforeUpdate", () => {
     simState.currentTrail.push({ x: px, y: py });
   }
 
-  // Check Touchdown at Ground or End of Canvas
-  if (py >= GROUND_Y - PROJECTILE_RADIUS || px > CANVAS_WIDTH + 50 || t >= simState.totalFlightTime) {
-    const finalY = GROUND_Y - PROJECTILE_RADIUS;
-    Body.setPosition(projectile, { x: px, y: finalY });
-    simState.currentTrail.push({ x: px, y: finalY });
+  // End of Canvas boundary
+  if (px > CANVAS_WIDTH + 60) {
     simState.isRunning = false;
-    checkTargetHit(px);
     return;
   }
 
@@ -460,7 +558,7 @@ Events.on(engine, "beforeUpdate", () => {
 
 // ==========================================
 // CUSTOM CANVAS OVERLAY RENDER
-// (Coordinate Grid, Rulers, Vectors, Target, Glowing Trails)
+// (Coordinate Grid, Elevation Tower, Target, Glowing Trails)
 // ==========================================
 Events.on(render, "afterRender", () => {
   const ctx = render.context;
@@ -489,7 +587,7 @@ Events.on(render, "afterRender", () => {
     drawVelocityVectors(ctx, simState.currentX, simState.currentY);
   }
 
-  // 6. DRAW CANNON DETAILS & ACCENTS
+  // 6. DRAW CANNON ACCENTS & ELEVATION PEDESTAL
   drawCannonAccent(ctx);
 
   ctx.restore();
@@ -724,20 +822,574 @@ function drawArrow(ctx, fromX, fromY, toX, toY, color, width) {
 }
 
 function drawCannonAccent(ctx) {
-  // Glowing cannon pivot hub
+  const h0 = Number(heightSlider.value);
+  const pivotY = GROUND_Y - h0 * SCALE;
+
+  // Draw Elevation Tower / Pedestal if elevated
+  if (h0 > 0.05) {
+    const towerLeft = ORIGIN_X - 22;
+    const towerRight = ORIGIN_X + 18;
+    const towerTop = pivotY + 16;
+    const towerBottom = GROUND_Y;
+
+    // Metal Truss Tower Pillars
+    ctx.fillStyle = "#1e293b";
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 2;
+
+    ctx.fillRect(towerLeft, towerTop, 6, towerBottom - towerTop);
+    ctx.strokeRect(towerLeft, towerTop, 6, towerBottom - towerTop);
+
+    ctx.fillRect(towerRight - 6, towerTop, 6, towerBottom - towerTop);
+    ctx.strokeRect(towerRight - 6, towerTop, 6, towerBottom - towerTop);
+
+    // Cross Braces (X-patterns)
+    ctx.beginPath();
+    ctx.strokeStyle = "rgba(100, 116, 139, 0.6)";
+    ctx.lineWidth = 1.5;
+    const step = 24;
+    for (let y = towerTop + 10; y < towerBottom; y += step) {
+      const nextY = Math.min(y + step, towerBottom);
+      ctx.moveTo(towerLeft + 3, y);
+      ctx.lineTo(towerRight - 3, nextY);
+      ctx.moveTo(towerRight - 3, y);
+      ctx.lineTo(towerLeft + 3, nextY);
+    }
+    ctx.stroke();
+
+    // Top Platform Stage
+    ctx.fillStyle = "#334155";
+    ctx.strokeStyle = "#fbbf24";
+    ctx.lineWidth = 2;
+    ctx.fillRect(towerLeft - 6, towerTop - 4, (towerRight - towerLeft) + 12, 6);
+    ctx.strokeRect(towerLeft - 6, towerTop - 4, (towerRight - towerLeft) + 12, 6);
+
+    // Height Marker Tag
+    ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+    ctx.strokeStyle = "#f59e0b";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(ORIGIN_X - 70, pivotY - 4, 44, 18, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#fbbf24";
+    ctx.font = "9.5px 'JetBrains Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(`${h0.toFixed(1)}m`, ORIGIN_X - 48, pivotY + 9);
+  }
+
+  // Glowing Cannon Pivot Hub
   ctx.beginPath();
-  ctx.arc(PIVOT.x, PIVOT.y, 8, 0, Math.PI * 2);
+  ctx.arc(ORIGIN_X, pivotY, 8, 0, Math.PI * 2);
   ctx.fillStyle = "#8b5cf6";
   ctx.shadowColor = "#8b5cf6";
   ctx.shadowBlur = 10;
   ctx.fill();
   ctx.shadowBlur = 0;
 
-  // Origin Marker
+  // Origin Ground Marker
   ctx.fillStyle = "#94a3b8";
   ctx.font = "10px 'JetBrains Mono', monospace";
   ctx.textAlign = "center";
   ctx.fillText("x=0m", ORIGIN_X, GROUND_Y + 36);
+}
+
+// ==========================================
+// FIREBASE AUTHENTICATION CONTROLLER
+// ==========================================
+function showAuthView(viewName) {
+  // Hide all auth views
+  [authViewLogin, authViewSignup, authViewForgot, authViewChangePassword, authViewDashboard].forEach(v => {
+    if (v) v.classList.add("hidden");
+  });
+
+  // Clear messages
+  [loginErrorMsg, signupErrorMsg, forgotErrorMsg, forgotSuccessMsg, changeErrorMsg].forEach(el => {
+    if (el) {
+      el.classList.add("hidden");
+      el.textContent = "";
+    }
+  });
+
+  if (viewName === "login") {
+    authModalTitle.textContent = "🔐 Student Sign In";
+    authModalSubtitle.textContent = "Log in with your Firebase credentials to sync your lab progress.";
+    authViewLogin.classList.remove("hidden");
+  } else if (viewName === "signup") {
+    authModalTitle.textContent = "✨ Create PhysiX Account";
+    authModalSubtitle.textContent = "Sign up with Firebase to save experiments and quiz mastery.";
+    authViewSignup.classList.remove("hidden");
+  } else if (viewName === "forgot") {
+    authModalTitle.textContent = "🔑 Reset Your Password";
+    authModalSubtitle.textContent = "Enter your email to receive a password reset link.";
+    authViewForgot.classList.remove("hidden");
+  } else if (viewName === "change-password") {
+    authModalTitle.textContent = "🔒 Change Password";
+    authModalSubtitle.textContent = "Update your account password securely.";
+    authViewChangePassword.classList.remove("hidden");
+  } else if (viewName === "dashboard") {
+    authModalTitle.textContent = "👤 Student Session Profile";
+    authModalSubtitle.textContent = "Firebase Authenticated Account & Lab Notebook";
+    authViewDashboard.classList.remove("hidden");
+
+    // Update dashboard statistics
+    const highQuiz = localStorage.getItem("physix_quiz_highscore") || 0;
+    profileStatQuiz.textContent = `${highQuiz} / 10`;
+    profileStatTarget.textContent = `${simState.targetScore} pts`;
+  }
+}
+
+// Login Handler
+formLogin.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+
+  if (!email || !password) {
+    loginErrorMsg.textContent = "Please fill in all fields.";
+    loginErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    loginErrorMsg.classList.add("hidden");
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    showToast(`🎉 Welcome back, ${userCredential.user.email}!`);
+    loginEmail.value = "";
+    loginPassword.value = "";
+    showAuthView("dashboard");
+  } catch (error) {
+    console.error("Login error:", error);
+    loginErrorMsg.textContent = formatAuthError(error.message);
+    loginErrorMsg.classList.remove("hidden");
+  }
+});
+
+// Signup Handler
+formSignup.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = signupEmail.value.trim();
+  const password = signupPassword.value.trim();
+  const confirm = signupConfirm.value.trim();
+
+  if (!email || !password || !confirm) {
+    signupErrorMsg.textContent = "Please fill in all fields.";
+    signupErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  if (password !== confirm) {
+    signupErrorMsg.textContent = "Passwords do not match.";
+    signupErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  if (password.length < 6) {
+    signupErrorMsg.textContent = "Password must be at least 6 characters long.";
+    signupErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    signupErrorMsg.classList.add("hidden");
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    showToast(`✨ Account created for ${userCredential.user.email}!`);
+    signupEmail.value = "";
+    signupPassword.value = "";
+    signupConfirm.value = "";
+    showAuthView("dashboard");
+  } catch (error) {
+    console.error("Signup error:", error);
+    signupErrorMsg.textContent = formatAuthError(error.message);
+    signupErrorMsg.classList.remove("hidden");
+  }
+});
+
+// Forgot Password Handler
+formForgot.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = forgotEmail.value.trim();
+
+  if (!email) {
+    forgotErrorMsg.textContent = "Please enter your email.";
+    forgotErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    forgotErrorMsg.classList.add("hidden");
+    await sendPasswordResetEmail(auth, email);
+    forgotSuccessMsg.textContent = `Password reset link sent to ${email}! Check your inbox.`;
+    forgotSuccessMsg.classList.remove("hidden");
+    showToast("✉️ Password reset email sent!");
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    forgotErrorMsg.textContent = formatAuthError(error.message);
+    forgotErrorMsg.classList.remove("hidden");
+  }
+});
+
+// Change Password Handler
+formChangePassword.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const newPwd = changeNewPassword.value.trim();
+  const confirmPwd = changeConfirmPassword.value.trim();
+
+  if (!newPwd || !confirmPwd) {
+    changeErrorMsg.textContent = "Please fill in all fields.";
+    changeErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  if (newPwd !== confirmPwd) {
+    changeErrorMsg.textContent = "Passwords do not match.";
+    changeErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  if (newPwd.length < 6) {
+    changeErrorMsg.textContent = "Password must be at least 6 characters.";
+    changeErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  if (!auth.currentUser) {
+    changeErrorMsg.textContent = "You must be logged in to change your password.";
+    changeErrorMsg.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    changeErrorMsg.classList.add("hidden");
+    await updatePassword(auth.currentUser, newPwd);
+    showToast("🔒 Password changed successfully!");
+    changeNewPassword.value = "";
+    changeConfirmPassword.value = "";
+    showAuthView("dashboard");
+  } catch (error) {
+    console.error("Change password error:", error);
+    changeErrorMsg.textContent = formatAuthError(error.message);
+    changeErrorMsg.classList.remove("hidden");
+  }
+});
+
+// Logout Handler
+btnDashboardLogout.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+    showToast("👋 Logged out successfully!");
+    showAuthView("login");
+  } catch (error) {
+    showToast(`Error: ${error.message}`);
+  }
+});
+
+// Navigation between Auth views
+btnGotoForgot.addEventListener("click", () => showAuthView("forgot"));
+btnGotoSignup.addEventListener("click", () => showAuthView("signup"));
+btnSignupGotoLogin.addEventListener("click", () => showAuthView("login"));
+btnForgotGotoLogin.addEventListener("click", () => showAuthView("login"));
+btnDashboardChangePwd.addEventListener("click", () => showAuthView("change-password"));
+btnChangeGotoDashboard.addEventListener("click", () => showAuthView("dashboard"));
+
+// Password Visibility Toggle (Show / Hide Password)
+document.querySelectorAll(".btn-toggle-password").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const targetId = btn.getAttribute("data-target");
+    const input = document.getElementById(targetId);
+    if (!input) return;
+    if (input.type === "password") {
+      input.type = "text";
+      btn.innerHTML = `<span class="eye-icon">🙈</span>`;
+      btn.title = "Hide Password";
+    } else {
+      input.type = "password";
+      btn.innerHTML = `<span class="eye-icon">👁️</span>`;
+      btn.title = "Show Password";
+    }
+  });
+});
+
+function formatAuthError(msg) {
+  if (msg.includes("invalid-credential") || msg.includes("wrong-password") || msg.includes("user-not-found")) {
+    return "Invalid email or password. Please try again.";
+  }
+  if (msg.includes("email-already-in-use")) {
+    return "This email is already registered. Please sign in instead.";
+  }
+  if (msg.includes("invalid-email")) {
+    return "Please enter a valid email address.";
+  }
+  if (msg.includes("weak-password")) {
+    return "Password is too weak. Must be at least 6 characters.";
+  }
+  if (msg.includes("requires-recent-login")) {
+    return "This action requires recent login. Please log in again first.";
+  }
+  return msg.replace("Firebase: ", "").replace(/\(auth\/.*\)\.?/, "").trim();
+}
+
+// Edit Profile Modal Elements
+const editProfileModal = document.getElementById("edit-profile-modal");
+const btnOpenEditProfile = document.getElementById("btn-open-edit-profile");
+const btnCloseEditProfile = document.getElementById("btn-close-edit-profile");
+const formEditProfile = document.getElementById("form-edit-profile");
+const avatarButtons = document.querySelectorAll(".avatar-opt-btn");
+let selectedAvatar = "🧑‍🔬";
+
+function loadUserProfile() {
+  let profileData = {};
+  try {
+    profileData = JSON.parse(localStorage.getItem("physix_user_profile") || "{}");
+  } catch (e) {
+    profileData = {};
+  }
+
+  const name = profileData.name || (auth.currentUser ? auth.currentUser.email.split("@")[0] : "Guest Student");
+  const avatar = profileData.avatar || "🧑‍🔬";
+  selectedAvatar = avatar;
+
+  const userNameEl = userProfileBtn.querySelector(".user-name");
+  const userStatusEl = userProfileBtn.querySelector(".user-status");
+  const navAvatarChar = document.getElementById("nav-avatar-char");
+
+  if (navAvatarChar) navAvatarChar.textContent = avatar;
+  if (userNameEl) userNameEl.textContent = name;
+
+  if (auth.currentUser) {
+    if (userStatusEl) {
+      userStatusEl.textContent = "● Firebase Online";
+      userStatusEl.style.color = "#34d399";
+    }
+    if (profileUserEmail) profileUserEmail.textContent = auth.currentUser.email;
+    if (profileAvatarChar) profileAvatarChar.textContent = avatar;
+  } else {
+    if (userStatusEl) {
+      userStatusEl.textContent = "● Guest Mode";
+      userStatusEl.style.color = "";
+    }
+    if (profileUserEmail) profileUserEmail.textContent = "Guest Student";
+    if (profileAvatarChar) profileAvatarChar.textContent = "👤";
+  }
+
+  const nameInput = document.getElementById("profile-name-input");
+  const eduInput = document.getElementById("profile-edu-status");
+  const occInput = document.getElementById("profile-occupation-input");
+  const bioInput = document.getElementById("profile-interests-input");
+
+  if (nameInput) nameInput.value = profileData.name || "";
+  if (eduInput) eduInput.value = profileData.edu || "Undergraduate Student";
+  if (occInput) occInput.value = profileData.occ || "";
+  if (bioInput) bioInput.value = profileData.bio || "";
+
+  avatarButtons.forEach(b => {
+    if (b.getAttribute("data-avatar") === selectedAvatar) {
+      b.classList.add("selected");
+    } else {
+      b.classList.remove("selected");
+    }
+  });
+}
+
+avatarButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    avatarButtons.forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    selectedAvatar = btn.getAttribute("data-avatar");
+  });
+});
+
+if (formEditProfile) {
+  formEditProfile.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nameInput = document.getElementById("profile-name-input");
+    const eduInput = document.getElementById("profile-edu-status");
+    const occInput = document.getElementById("profile-occupation-input");
+    const bioInput = document.getElementById("profile-interests-input");
+
+    const profileData = {
+      name: nameInput?.value.trim() || "Student Physicist",
+      avatar: selectedAvatar,
+      edu: eduInput?.value || "Undergraduate Student",
+      occ: occInput?.value.trim() || "Physics Explorer",
+      bio: bioInput?.value.trim() || "Exploring simulations and kinematics."
+    };
+
+    localStorage.setItem("physix_user_profile", JSON.stringify(profileData));
+    loadUserProfile();
+    editProfileModal?.classList.add("hidden");
+    showToast("✨ Profile updated successfully!");
+  });
+}
+
+btnOpenEditProfile?.addEventListener("click", () => {
+  profileModal?.classList.add("hidden");
+  editProfileModal?.classList.remove("hidden");
+});
+
+btnCloseEditProfile?.addEventListener("click", () => {
+  editProfileModal?.classList.add("hidden");
+});
+
+// Track Auth State in Real-Time
+onAuthStateChanged(auth, () => {
+  loadUserProfile();
+});
+
+// Profile Button click opens modal
+userProfileBtn.addEventListener("click", () => {
+  if (auth.currentUser) {
+    showAuthView("dashboard");
+  } else {
+    showAuthView("login");
+  }
+  profileModal.classList.remove("hidden");
+});
+
+// ==========================================
+// QUIZ ENGINE & INTERACTIVITY (SECRET EVALUATION)
+// ==========================================
+const quizCurrentNum = document.getElementById("quiz-current-num");
+const quizTotalNum = document.getElementById("quiz-total-num");
+const quizProgressBar = document.getElementById("quiz-progress-bar");
+const quizQuestionText = document.getElementById("quiz-question-text");
+const quizOptionsList = document.getElementById("quiz-options-list");
+const btnQuizPrev = document.getElementById("btn-quiz-prev");
+const btnQuizNext = document.getElementById("btn-quiz-next");
+
+const quizActiveView = document.getElementById("quiz-active-view");
+const quizResultsView = document.getElementById("quiz-results-view");
+const quizFinalScore = document.getElementById("quiz-final-score");
+const quizFinalPercent = document.getElementById("quiz-final-percent");
+const quizGradeBadge = document.getElementById("quiz-grade-badge");
+const quizReviewList = document.getElementById("quiz-review-list");
+const btnRetakeQuiz = document.getElementById("btn-retake-quiz");
+const btnQuizToSim = document.getElementById("btn-quiz-to-sim");
+
+function initQuiz() {
+  quizState = {
+    currentQuestionIndex: 0,
+    userAnswers: {},
+    score: 0
+  };
+  quizTotalNum.textContent = QUIZ_DATA.questions.length;
+  quizActiveView.classList.remove("hidden");
+  quizResultsView.classList.add("hidden");
+  renderQuizQuestion(0);
+}
+
+function renderQuizQuestion(index) {
+  quizState.currentQuestionIndex = index;
+  const q = QUIZ_DATA.questions[index];
+
+  quizCurrentNum.textContent = index + 1;
+  const progressPercent = ((index + 1) / QUIZ_DATA.questions.length) * 100;
+  quizProgressBar.style.width = `${progressPercent}%`;
+
+  quizQuestionText.textContent = `${index + 1}. ${q.question}`;
+  quizOptionsList.innerHTML = "";
+
+  const savedAnswer = quizState.userAnswers[q.id];
+  const chosenOption = savedAnswer ? savedAnswer.chosenOption : null;
+
+  const letters = ["A", "B", "C", "D"];
+  q.options.forEach((opt, optIdx) => {
+    const card = document.createElement("div");
+    card.className = "quiz-option-card";
+    if (opt === chosenOption) {
+      card.classList.add("selected");
+    }
+
+    card.innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span class="quiz-option-marker">${letters[optIdx]}</span>
+        <span>${opt}</span>
+      </div>
+      <span style="font-size:18px;">${opt === chosenOption ? "●" : "○"}</span>
+    `;
+
+    card.addEventListener("click", () => handleSelectOption(q, opt));
+    quizOptionsList.appendChild(card);
+  });
+
+  btnQuizPrev.disabled = index === 0;
+  btnQuizNext.disabled = !chosenOption;
+  btnQuizNext.textContent = index === QUIZ_DATA.questions.length - 1 ? "Finish Quiz & View Evaluation 🏁" : "Next Question →";
+}
+
+function handleSelectOption(question, chosenOption) {
+  // Save answer in secret
+  quizState.userAnswers[question.id] = { chosenOption };
+  renderQuizQuestion(quizState.currentQuestionIndex);
+}
+
+function showQuizResults() {
+  quizActiveView.classList.add("hidden");
+  quizResultsView.classList.remove("hidden");
+
+  // Calculate final score
+  let score = 0;
+  const total = QUIZ_DATA.questions.length;
+
+  QUIZ_DATA.questions.forEach(q => {
+    const userAns = quizState.userAnswers[q.id];
+    if (userAns && userAns.chosenOption === q.answer) {
+      score += 1;
+    }
+  });
+  quizState.score = score;
+
+  const pct = Math.round((score / total) * 100);
+  quizFinalScore.textContent = score;
+  quizFinalPercent.textContent = `${pct}%`;
+
+  if (pct >= 90) {
+    quizGradeBadge.textContent = "🏆 Kinematics Master (Outstanding!)";
+    quizGradeBadge.style.color = "#fde68a";
+  } else if (pct >= 70) {
+    quizGradeBadge.textContent = "🚀 Physics Ace (Proficient)";
+    quizGradeBadge.style.color = "#a7f3d0";
+  } else if (pct >= 50) {
+    quizGradeBadge.textContent = "📚 Apprentice Physicist (Good Effort)";
+    quizGradeBadge.style.color = "#93c5fd";
+  } else {
+    quizGradeBadge.textContent = "🔭 Keep Exploring Simulator!";
+    quizGradeBadge.style.color = "#fca5a5";
+  }
+
+  // Populate Review List
+  quizReviewList.innerHTML = "";
+  QUIZ_DATA.questions.forEach((q, i) => {
+    const userAns = quizState.userAnswers[q.id];
+    const userChoice = userAns ? userAns.chosenOption : "Not Answered";
+    const isCorrect = userChoice === q.answer;
+
+    const item = document.createElement("div");
+    item.className = `review-item ${isCorrect ? "is-correct" : "is-incorrect"}`;
+    item.innerHTML = `
+      <div class="review-q">${i + 1}. ${q.question}</div>
+      <div class="review-ans-row">
+        <span class="review-user-ans ${isCorrect ? "" : "wrong"}">
+          Your Answer: <strong>${userChoice} ${isCorrect ? "✓ (Correct)" : "✗ (Incorrect)"}</strong>
+        </span>
+        ${!isCorrect ? `<span class="review-correct-ans">Correct Answer: <strong>${q.answer}</strong></span>` : ""}
+      </div>
+      <div class="review-exp">💡 <strong>Solution & Concept:</strong> ${q.explanation}</div>
+    `;
+    quizReviewList.appendChild(item);
+  });
+
+  // Save High Score
+  try {
+    const currentHigh = Number(localStorage.getItem("physix_quiz_highscore") || 0);
+    if (score > currentHigh) {
+      localStorage.setItem("physix_quiz_highscore", score);
+      showToast(`🌟 New Quiz High Score: ${score}/${total}!`);
+    }
+  } catch (e) {
+    console.warn("Storage error", e);
+  }
 }
 
 // ==========================================
@@ -755,21 +1407,45 @@ angleSlider.addEventListener("input", () => {
   calculateTheoreticalResults();
 });
 
+heightSlider.addEventListener("input", () => {
+  const h = Number(heightSlider.value);
+  heightValue.textContent = `${h.toFixed(1)} m`;
+
+  heightBtns.forEach(btn => {
+    const btnH = Number(btn.getAttribute("data-height"));
+    if (Math.abs(btnH - h) < 0.1) btn.classList.add("active");
+    else btn.classList.remove("active");
+  });
+
+  updateLauncher(Number(angleSlider.value), h);
+  calculateTheoreticalResults();
+});
+
 gravitySlider.addEventListener("input", () => {
   const g = Number(gravitySlider.value);
   gravityValue.textContent = `${g.toFixed(1)} m/s²`;
-  
-  // Highlight active planet button if match
+
   planetBtns.forEach(btn => {
     const btnG = Number(btn.getAttribute("data-gravity"));
-    if (Math.abs(btnG - g) < 0.1) {
-      btn.classList.add("active");
-    } else {
-      btn.classList.remove("active");
-    }
+    if (Math.abs(btnG - g) < 0.1) btn.classList.add("active");
+    else btn.classList.remove("active");
   });
 
   calculateTheoreticalResults();
+});
+
+// Height Presets Buttons
+heightBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    heightBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const h = Number(btn.getAttribute("data-height"));
+    heightSlider.value = h;
+    heightValue.textContent = `${h.toFixed(1)} m`;
+    updateLauncher(Number(angleSlider.value), h);
+    calculateTheoreticalResults();
+  });
 });
 
 // Planetary Presets Buttons
@@ -804,7 +1480,7 @@ toggleTarget.addEventListener("change", (e) => {
   }
 });
 
-// Buttons
+// Simulation Action Buttons
 launchButton.addEventListener("click", launchProjectile);
 resetButton.addEventListener("click", resetSimulation);
 clearTrailsButton.addEventListener("click", () => {
@@ -813,9 +1489,54 @@ clearTrailsButton.addEventListener("click", () => {
   showToast("Trajectory comparison trails cleared");
 });
 
+// Quiz Controls Navigation
+btnQuizPrev.addEventListener("click", () => {
+  if (quizState.currentQuestionIndex > 0) {
+    renderQuizQuestion(quizState.currentQuestionIndex - 1);
+  }
+});
+
+btnQuizNext.addEventListener("click", () => {
+  if (quizState.currentQuestionIndex < QUIZ_DATA.questions.length - 1) {
+    renderQuizQuestion(quizState.currentQuestionIndex + 1);
+  } else {
+    showQuizResults();
+  }
+});
+
+btnRetakeQuiz.addEventListener("click", initQuiz);
+
+btnQuizToSim.addEventListener("click", () => {
+  quizModal.classList.add("hidden");
+  // Set simulator to Question 7 values (v=20, theta=45, g=10 -> Range = 40m)
+  velocitySlider.value = 20;
+  velocityValue.textContent = "20.0 m/s";
+  angleSlider.value = 45;
+  angleValue.textContent = "45°";
+  heightSlider.value = 0;
+  heightValue.textContent = "0.0 m";
+  gravitySlider.value = 10;
+  gravityValue.textContent = "10.0 m/s²";
+
+  updateLauncher(45, 0);
+  calculateTheoreticalResults();
+  launchProjectile();
+
+  showToast("🚀 Loaded Quiz Q7 Setup: v₀=20m/s, θ=45°, g=10m/s² ➔ R=40.0m!");
+});
+
 // ==========================================
 // MODALS & NAVIGATION LOGIC
 // ==========================================
+// Quiz Modal
+btnOpenQuiz.addEventListener("click", () => {
+  initQuiz();
+  quizModal.classList.remove("hidden");
+});
+btnCloseQuiz.addEventListener("click", () => {
+  quizModal.classList.add("hidden");
+});
+
 // Explorer Modal
 btnOpenExplorer.addEventListener("click", () => {
   explorerModal.classList.remove("hidden");
@@ -832,21 +1553,20 @@ btnCloseTheory.addEventListener("click", () => {
   theoryModal.classList.add("hidden");
 });
 
-// Profile Modal
-userProfileBtn.addEventListener("click", () => {
-  profileModal.classList.remove("hidden");
-});
+// Close Profile Modal
 btnCloseProfile.addEventListener("click", () => {
   profileModal.classList.add("hidden");
 });
 
 // Close modals on backdrop click
-[explorerModal, theoryModal, profileModal].forEach(modal => {
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.add("hidden");
-    }
-  });
+[explorerModal, theoryModal, profileModal, quizModal, editProfileModal].forEach(modal => {
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.add("hidden");
+      }
+    });
+  }
 });
 
 // Close modals on Escape key
@@ -855,6 +1575,8 @@ window.addEventListener("keydown", (e) => {
     explorerModal.classList.add("hidden");
     theoryModal.classList.add("hidden");
     profileModal.classList.add("hidden");
+    quizModal.classList.add("hidden");
+    editProfileModal.classList.add("hidden");
   }
 });
 
@@ -872,12 +1594,6 @@ labCards.forEach(card => {
   });
 });
 
-// Mock Sign in button
-document.getElementById("btn-mock-signin").addEventListener("click", () => {
-  showToast("🔐 Google Classroom sync will be available in v2.1!");
-  profileModal.classList.add("hidden");
-});
-
 // Category filter pills
 const catPills = document.querySelectorAll(".cat-pill");
 catPills.forEach(pill => {
@@ -891,7 +1607,7 @@ catPills.forEach(pill => {
 // ==========================================
 // INITIAL SETUP & RUN
 // ==========================================
-updateLauncher(DEFAULT_ANGLE);
+updateLauncher(DEFAULT_ANGLE, DEFAULT_HEIGHT);
 calculateTheoreticalResults();
 
 const runner = Runner.create();

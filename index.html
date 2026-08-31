@@ -1,273 +1,291 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PhysiX — Interactive Physics Laboratory Hub</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhysiX — 2D Projectile Motion Virtual Laboratory</title>
+  <meta name="description"
+    content="High-precision interactive 2D projectile motion virtual physics laboratory with real-time vector breakdowns, planetary gravity, target challenges, Firebase login, and customized student profile." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
 </head>
 
 <body>
 
   <!-- =====================================
-       TOP NAVBAR
+       TOP NAVIGATION BAR
   ===================================== -->
   <header class="header">
     <div class="logo">
-      <div class="atom">⚛</div>
+      <span class="atom">⚛️</span>
       <div>
         <h1>Physi<span>X</span></h1>
-        <p>STEM PHYSICS LABS</p>
+        <p>An Interactive Physics Laboratory</p>
       </div>
     </div>
 
-    <!-- NAVIGATION ACTIONS -->
-    <nav class="nav-links">
-      <button id="btn-open-explorer" class="nav-btn nav-btn-primary">
-        <span>🧪</span>
-        <span>Labs Explorer</span>
-        <span class="badge-count">7</span>
-      </button>
-
+    <div class="nav-links">
       <button id="btn-open-theory" class="nav-btn">
-        <span>📖</span>
-        <span>Formulas</span>
+        <span>📖</span> Theory & Formulas
       </button>
+      <button id="btn-open-quiz" class="nav-btn nav-btn-quiz">
+        <span>🧠</span> Physics Quiz <span class="badge-count">10Q</span>
+      </button>
+      <button id="btn-open-explorer" class="nav-btn">
+        <span>🔬</span> Explore Labs Hub
+      </button>
+    </div>
 
-      <!-- GUEST / AUTH CHIP -->
-      <div class="user-chip" id="user-profile-btn" title="Guest Session - Progress saved locally">
-        <div class="user-avatar">👤</div>
-        <div class="user-info">
-          <span class="user-name">Guest Student</span>
-          <span class="user-status">● Local Saved</span>
-        </div>
+    <!-- User Profile Chip -->
+    <div id="user-profile-btn" class="user-chip" title="Manage Profile & Authentication">
+      <div class="user-avatar" id="nav-avatar-char">👤</div>
+      <div class="user-info">
+        <span class="user-name">Guest Student</span>
+        <span class="user-status">● Guest Mode</span>
       </div>
-    </nav>
+    </div>
   </header>
 
   <!-- =====================================
-       MAIN LAB WORKSPACE (PROJECTILE LAB)
+       MAIN EXPERIMENT DASHBOARD
   ===================================== -->
   <main class="dashboard">
-
-    <!-- SIMULATION CANVAS & HUD -->
+    <!-- LEFT: SIMULATION VIEWPORT -->
     <section class="simulation-card">
-
       <div class="simulation-top-bar">
         <div class="current-lab-badge">
           <span class="live-dot"></span>
-          <span>PROJECTILE MOTION LAB</span>
+          <span>● 2D PROJECTILE TRAJECTORY KINEMATICS</span>
         </div>
 
         <div id="target-banner" class="target-banner hidden">
-          🎯 Target: <strong id="target-distance-text">35.0 m</strong> &nbsp;|&nbsp; Score: <strong id="target-score">0</strong>
+          <span>🎯 TARGET: <strong id="target-distance-text">35.0m</strong> | SCORE: <strong
+              id="target-score">0</strong> pts</span>
         </div>
       </div>
 
-      <!-- TELEMETRY HUD OVERLAY -->
-      <div class="telemetry-hud" id="telemetry-hud">
+      <!-- Simulation Canvas Container -->
+      <div id="simulation"></div>
+
+      <!-- Live Telemetry HUD -->
+      <div class="telemetry-hud">
         <div class="hud-item">
           <span class="hud-label">TIME (t)</span>
-          <span class="hud-value" id="hud-time">0.00 s</span>
+          <span id="hud-time" class="hud-value">0.00 s</span>
         </div>
         <div class="hud-item">
           <span class="hud-label">ALTITUDE (y)</span>
-          <span class="hud-value" id="hud-height">0.00 m</span>
+          <span id="hud-height" class="hud-value">0.00 m</span>
         </div>
         <div class="hud-item">
           <span class="hud-label">DISTANCE (x)</span>
-          <span class="hud-value" id="hud-distance">0.00 m</span>
+          <span id="hud-distance" class="hud-value">0.00 m</span>
         </div>
         <div class="hud-item">
-          <span class="hud-label">SPEED (v)</span>
-          <span class="hud-value" id="hud-speed">0.00 m/s</span>
+          <span class="hud-label">VELOCITY (v)</span>
+          <span id="hud-speed" class="hud-value">0.00 m/s</span>
         </div>
       </div>
-
-      <div id="simulation"></div>
-
     </section>
 
-    <!-- CONTROLS PANEL -->
-    <section class="controls-card">
-
+    <!-- RIGHT: CONTROLS PANEL -->
+    <aside class="controls-card">
       <div class="controls-header">
-        <h2>LAB CONTROLS</h2>
+        <h2>⚡ Control Deck</h2>
+        <span
+          style="font-size:11px; font-weight:800; color:#8b5cf6; letter-spacing:1px; background:rgba(139,92,246,0.12); padding:3px 8px; border-radius:6px; border:1px solid rgba(139,92,246,0.3);">
+          KINEMATICS v2.0
+        </span>
       </div>
 
-      <!-- VELOCITY -->
+      <!-- 1. Initial Velocity Slider -->
       <div class="control-group">
         <div class="control-header">
-          <span class="control-name">
-            <span class="icon">🚀</span> Initial Velocity (v₀)
-          </span>
+          <span class="control-name">Initial Velocity (v₀)</span>
           <strong id="velocity-value" class="val-velocity">20.0 m/s</strong>
         </div>
-        <input id="velocity" type="range" min="1" max="40" value="20" step="0.5">
+        <input type="range" id="velocity" min="5" max="50" step="0.5" value="20" />
         <div class="range-labels">
-          <span>1 m/s</span>
-          <span>20 m/s</span>
-          <span>40 m/s</span>
+          <span>5 m/s</span>
+          <span>25 m/s</span>
+          <span>50 m/s</span>
         </div>
       </div>
 
-      <!-- ANGLE -->
+      <!-- 2. Launch Angle Slider -->
       <div class="control-group">
         <div class="control-header">
-          <span class="control-name">
-            <span class="icon">📐</span> Launch Angle (θ)
-          </span>
+          <span class="control-name">Launch Angle (θ)</span>
           <strong id="angle-value" class="val-angle">45°</strong>
         </div>
-        <input id="angle" type="range" min="0" max="90" value="45" step="1">
+        <input type="range" id="angle" min="0" max="90" step="1" value="45" />
         <div class="range-labels">
           <span>0° (Flat)</span>
-          <span>45° (Optimal)</span>
+          <span>45° (Max Range)</span>
           <span>90° (Vertical)</span>
         </div>
       </div>
 
-      <!-- GRAVITY -->
+      <!-- 3. Launch Initial Height (h0) -->
       <div class="control-group">
         <div class="control-header">
-          <span class="control-name">
-            <span class="icon">↓</span> Gravity (g)
-          </span>
+          <span class="control-name">Initial Height (h₀)</span>
+          <strong id="height-value" class="val-height">0.0 m</strong>
+        </div>
+        <input type="range" id="height" min="0" max="30" step="0.5" value="0" />
+        <div class="range-labels">
+          <span>0 m (Ground)</span>
+          <span>15 m</span>
+          <span>30 m</span>
+        </div>
+        <div class="height-presets">
+          <button type="button" class="height-btn active" data-height="0">0m Ground</button>
+          <button type="button" class="height-btn" data-height="5">5m</button>
+          <button type="button" class="height-btn" data-height="10">10m Tower</button>
+          <button type="button" class="height-btn" data-height="20">20m Platform</button>
+        </div>
+      </div>
+
+      <!-- 4. Planetary Gravity (g) -->
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-name">Planetary Gravity (g)</span>
           <strong id="gravity-value" class="val-gravity">9.8 m/s²</strong>
         </div>
-        <input id="gravity" type="range" min="1.0" max="25.0" step="0.1" value="9.8">
-        
-        <!-- PLANETARY PRESETS -->
+        <input type="range" id="gravity" min="0" max="25" step="0.1" value="9.8" />
         <div class="planetary-presets">
-          <button type="button" class="planet-btn active" data-gravity="9.8" id="preset-earth">🌍 Earth (9.8)</button>
-          <button type="button" class="planet-btn" data-gravity="1.62" id="preset-moon">🌕 Moon (1.6)</button>
-          <button type="button" class="planet-btn" data-gravity="3.72" id="preset-mars">🔴 Mars (3.7)</button>
-          <button type="button" class="planet-btn" data-gravity="24.79" id="preset-jupiter">🪐 Jupiter (24.8)</button>
+          <button class="planet-btn" data-gravity="1.6">🌙 Moon (1.6)</button>
+          <button class="planet-btn" data-gravity="3.7">🔴 Mars (3.7)</button>
+          <button class="planet-btn active" data-gravity="9.8">🌍 Earth (9.8)</button>
+          <button class="planet-btn" data-gravity="24.8">🪐 Jupiter (24.8)</button>
         </div>
       </div>
 
-      <!-- SIMULATION TOGGLES -->
+      <!-- 5. Toggles Group -->
       <div class="toggles-group">
         <label class="toggle-control">
-          <input type="checkbox" id="toggle-vectors" checked>
+          <input type="checkbox" id="toggle-vectors" checked />
           <span class="toggle-slider"></span>
-          <span class="toggle-text">🏹 Velocity Vectors</span>
+          <span class="toggle-text">Show Velocity Vectors (vx, vy, v)</span>
         </label>
 
         <label class="toggle-control">
-          <input type="checkbox" id="toggle-ghosts" checked>
+          <input type="checkbox" id="toggle-ghosts" checked />
           <span class="toggle-slider"></span>
-          <span class="toggle-text">👻 Ghost Trails</span>
+          <span class="toggle-text">Keep Comparison Ghost Trails</span>
         </label>
 
         <label class="toggle-control">
-          <input type="checkbox" id="toggle-target">
+          <input type="checkbox" id="toggle-target" />
           <span class="toggle-slider"></span>
-          <span class="toggle-text">🎯 Target Challenge</span>
+          <span class="toggle-text">🎯 Target Landing Challenge Mode</span>
         </label>
       </div>
 
-      <!-- BUTTONS -->
+      <!-- 6. Action Buttons -->
       <div class="buttons">
         <button id="launch" class="launch-btn">
-          ▶ Launch
+          🚀 Fire Cannon
         </button>
-        <button id="reset" class="reset-btn" title="Reset current projectile">
+        <button id="reset" class="reset-btn" title="Reset Simulation State">
           ↺ Reset
         </button>
-        <button id="clear-trails" class="clear-btn" title="Clear ghost comparison trails">
-          🗑 Trails
+        <button id="clear-trails" class="clear-btn" title="Clear Comparison Ghost Trails">
+          🧹 Clear Trails
         </button>
       </div>
-
-    </section>
-
-    <!-- METRICS & RESULTS -->
-    <section class="results-card">
-
-      <div class="result">
-        <div class="result-icon icon-height">
-          <span>↗</span>
-        </div>
-        <div>
-          <p>MAX HEIGHT (H)</p>
-          <strong id="max-height">0.00 m</strong>
-          <span>Peak vertical displacement</span>
-        </div>
-      </div>
-
-      <div class="result">
-        <div class="result-icon icon-range">
-          <span>➔</span>
-        </div>
-        <div>
-          <p>TOTAL RANGE (R)</p>
-          <strong id="range">0.00 m</strong>
-          <span>Horizontal ground distance</span>
-        </div>
-      </div>
-
-      <div class="result">
-        <div class="result-icon icon-time">
-          <span>⏱</span>
-        </div>
-        <div>
-          <p>FLIGHT TIME (T)</p>
-          <strong id="flight-time">0.00 s</strong>
-          <span>Total air duration</span>
-        </div>
-      </div>
-
-      <div class="result">
-        <div class="result-icon icon-impact">
-          <span>⚡</span>
-        </div>
-        <div>
-          <p>IMPACT SPEED (v_f)</p>
-          <strong id="impact-velocity">0.00 m/s</strong>
-          <span>Terminal impact velocity</span>
-        </div>
-      </div>
-
-    </section>
-
+    </aside>
   </main>
 
   <!-- =====================================
-       LABS EXPLORER MODAL
+       KINEMATIC ANALYTICS & RESULTS CARDS
+  ===================================== -->
+  <section class="results-container">
+    <div class="analytics-section-header">
+      <div class="analytics-title-group">
+
+
+      </div>
+
+    </div>
+
+    <div class="results-card">
+      <div class="result-box card-height">
+        <div class="result-icon icon-height">📐</div>
+        <div class="result-meta">
+          <span class="result-label">Peak Maximum Height</span>
+          <span id="max-height" class="result-val">0.00 m</span>
+          <span class="result-sub">H = h₀ + (v₀² sin²θ)/(2g)</span>
+        </div>
+      </div>
+
+      <div class="result-box card-range">
+        <div class="result-icon icon-range">🎯</div>
+        <div class="result-meta">
+          <span class="result-label">Total Ground Range</span>
+          <span id="range" class="result-val">0.00 m</span>
+          <span class="result-sub">R = v₀ cosθ × T_flight</span>
+        </div>
+      </div>
+
+      <div class="result-box card-time">
+        <div class="result-icon icon-time">⏱️</div>
+        <div class="result-meta">
+          <span class="result-label">Total Time of Flight</span>
+          <span id="flight-time" class="result-val">0.00 s</span>
+          <span class="result-sub">T = (v₀y + √(v₀y² + 2gh₀))/g</span>
+        </div>
+      </div>
+
+      <div class="result-box card-impact">
+        <div class="result-icon icon-impact">⚡</div>
+        <div class="result-meta">
+          <span class="result-label">Impact Landing Velocity</span>
+          <span id="impact-velocity" class="result-val">0.00 m/s</span>
+          <span class="result-sub">v_f = √(v₀² + 2gh₀)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================
+       EXPLORE LABS HUB MODAL
   ===================================== -->
   <div id="explorer-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
         <div>
-          <h2>🧪 Physics Laboratory Hub</h2>
-          <p>Explore interactive experiments in Classical Mechanics and Dynamics</p>
+          <h2>🔬 PhysiX Virtual Physics Laboratories Hub</h2>
+          <p>Explore high-precision interactive simulations across Classical Mechanics</p>
         </div>
         <button id="btn-close-explorer" class="modal-close-btn">&times;</button>
       </div>
 
-      <div class="lab-categories">
-        <button class="cat-pill active">All Mechanics (7)</button>
+      <!-- Categories Filter -->
+      <div class="hub-filter-bar">
+        <button class="cat-pill active">All Labs (7)</button>
         <button class="cat-pill">Kinematics</button>
-        <button class="cat-pill">Energy & Forces</button>
-        <button class="cat-pill">Rotational</button>
+        <button class="cat-pill">Forces & Energy</button>
+        <button class="cat-pill">Rotational & Gravitation</button>
       </div>
 
+      <!-- Laboratory Cards Grid -->
       <div class="labs-grid">
-
-        <!-- 1. PROJECTILE MOTION (ACTIVE) -->
-        <div class="lab-card active-lab" data-lab="projectile">
-          <div class="lab-status-badge status-live">● LIVE NOW</div>
+        <!-- 1. PROJECTILE (ACTIVE) -->
+        <div class="lab-card active-lab" data-name="2D Projectile Motion">
+          <div class="lab-status-badge status-active">● ACTIVE SIMULATION</div>
           <div class="lab-icon">🚀</div>
-          <h3>Projectile Motion Lab</h3>
-          <p>Kinematic trajectories, launch angle optimization, elevation offsets, and planetary gravity variations.</p>
+          <h3>2D Projectile Motion Lab</h3>
+          <p>Explore launch angle, initial velocity, platform height $h_0$, and planetary gravity with Matter.js.</p>
           <div class="lab-tags">
-            <span>2D Kinematics</span>
+            <span>Kinematics</span>
             <span>Vectors</span>
-            <span>Gravity</span>
+            <span>Target Challenge</span>
           </div>
           <button class="lab-card-btn btn-active-lab">Current Lab</button>
         </div>
@@ -291,7 +309,8 @@
           <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
           <div class="lab-icon">💥</div>
           <h3>2D Collisions & Momentum</h3>
-          <p>Conservation of linear momentum, coefficient of restitution $e$, kinetic energy loss, and center of mass.</p>
+          <p>Conservation of linear momentum, coefficient of restitution $e$, kinetic energy loss, and center of mass.
+          </p>
           <div class="lab-tags">
             <span>p = mv</span>
             <span>Elastic/Inelastic</span>
@@ -305,7 +324,8 @@
           <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
           <div class="lab-icon">📐</div>
           <h3>Friction & Inclined Plane</h3>
-          <p>Static vs kinetic friction ($\mu_s, \mu_k$), normal force resolution, critical incline angle, and block sliding.</p>
+          <p>Static vs kinetic friction ($\mu_s, \mu_k$), normal force resolution, critical incline angle, and block
+            sliding.</p>
           <div class="lab-tags">
             <span>Forces</span>
             <span>F = μN</span>
@@ -319,7 +339,8 @@
           <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
           <div class="lab-icon">🪐</div>
           <h3>Orbital Mechanics & Kepler</h3>
-          <p>N-body celestial gravitational attraction, elliptical orbits, escape velocity, and satellite transfer orbits.</p>
+          <p>N-body celestial gravitational attraction, elliptical orbits, escape velocity, and satellite transfer
+            orbits.</p>
           <div class="lab-tags">
             <span>Gravity</span>
             <span>Kepler's 3rd Law</span>
@@ -333,7 +354,8 @@
           <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
           <div class="lab-icon">🌀</div>
           <h3>Centripetal Circular Motion</h3>
-          <p>Angular speed $\omega$, centripetal acceleration $a_c = v^2/r$, banked turns, and string tension dynamics.</p>
+          <p>Angular speed $\omega$, centripetal acceleration $a_c = v^2/r$, banked turns, and string tension dynamics.
+          </p>
           <div class="lab-tags">
             <span>Rotation</span>
             <span>F_c = mv²/r</span>
@@ -428,43 +450,307 @@
   </div>
 
   <!-- =====================================
-       GUEST / PROFILE POPUP
+       PHYSICS QUIZ EVALUATION MODAL
   ===================================== -->
-  <div id="profile-modal" class="modal-overlay hidden">
-    <div class="modal-card modal-card-sm">
+  <div id="quiz-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-quiz">
       <div class="modal-header">
         <div>
-          <h2>👤 Student Session Profile</h2>
-          <p>Manage your simulation data and learning sync</p>
+          <span class="quiz-badge-header">⚡ MASTERY EVALUATION</span>
+          <h2>🧠 2D Kinematics Knowledge Check</h2>
+          <p>Test your conceptual and mathematical understanding of projectile physics</p>
         </div>
-        <button id="btn-close-profile" class="modal-close-btn">&times;</button>
+        <button id="btn-close-quiz" class="modal-close-btn">&times;</button>
       </div>
 
-      <div class="profile-card-content">
-        <div class="profile-avatar-large">👤</div>
-        <h3>Guest Student</h3>
-        <p class="profile-desc">You are currently using <strong>Guest Mode</strong>. All your Target High Scores and custom presets are stored in your local browser storage.</p>
+      <!-- ACTIVE QUIZ VIEW -->
+      <div id="quiz-active-view" class="quiz-view">
+        <div class="quiz-top-info">
+          <span class="quiz-progress-text">Question <span id="quiz-current-num">1</span> of <span
+              id="quiz-total-num">10</span></span>
+          <span class="quiz-score-pill">🎯 PhysiX Lab Evaluation</span>
+        </div>
 
-        <div class="sync-banner">
-          <div class="sync-icon">☁️</div>
-          <div>
-            <strong>Cloud Sync & Classrooms (v2.1)</strong>
-            <p>Save custom lab notebooks, submit assignments to teachers, and access across devices.</p>
+        <div class="quiz-progress-track">
+          <div id="quiz-progress-bar" class="quiz-progress-fill" style="width: 10%;"></div>
+        </div>
+
+        <div class="quiz-question-container">
+          <h3 id="quiz-question-text" class="quiz-question">Loading question...</h3>
+          <div id="quiz-options-list" class="quiz-options-grid"></div>
+        </div>
+
+        <div class="quiz-actions-bar">
+          <button id="btn-quiz-prev" class="quiz-btn quiz-btn-secondary" disabled>← Previous</button>
+          <button id="btn-quiz-next" class="quiz-btn quiz-btn-primary" disabled>Next Question →</button>
+        </div>
+      </div>
+
+      <!-- QUIZ RESULTS VIEW -->
+      <div id="quiz-results-view" class="quiz-view hidden">
+        <div class="quiz-results-hero">
+          <div class="quiz-score-circle">
+            <span id="quiz-final-score" class="score-num">0</span>
+            <span class="score-denom">/ 10</span>
+          </div>
+          <div class="quiz-results-meta">
+            <h3 id="quiz-grade-badge">🏆 Kinematics Master!</h3>
+            <p>Score: <strong id="quiz-final-percent">0%</strong> accuracy on 2D Projectile Kinematics.</p>
           </div>
         </div>
 
-        <button class="sign-in-btn" id="btn-mock-signin">
-          <span>Google</span> Sign in with Google (Preview)
-        </button>
+        <div class="quiz-review-section">
+          <h4>Detailed Concept Review</h4>
+          <div id="quiz-review-list" class="quiz-review-list"></div>
+        </div>
+
+        <div class="quiz-actions-bar">
+          <button id="btn-retake-quiz" class="quiz-btn quiz-btn-retake">↺ Retake Quiz</button>
+          <button id="btn-quiz-to-sim" class="quiz-btn quiz-btn-sim">🚀 Practice Solution in Simulator</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
+  <!-- =====================================
+       FIREBASE AUTHENTICATION & PROFILE MODAL
+  ===================================== -->
+  <div id="profile-modal" class="modal-overlay hidden">
+    <div class="modal-card auth-modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="auth-modal-title">🔐 Student Sign In</h2>
+          <p id="auth-modal-subtitle">Log in with your Firebase credentials to sync your lab progress.</p>
+        </div>
+        <button id="btn-close-profile" class="modal-close-btn">&times;</button>
+      </div>
+
+      <!-- 1. LOGIN VIEW -->
+      <div id="auth-view-login" class="auth-view">
+        <form id="form-login" class="auth-form">
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" placeholder="name@example.com" required autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="login-password" placeholder="Enter your password" required
+                autocomplete="current-password" />
+              <button type="button" class="btn-toggle-password" data-target="login-password" title="Show Password">
+                <span class="eye-icon">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="login-error-msg" class="auth-error-msg hidden"></div>
+
+          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-login">
+            <span>🚀</span> Sign In to PhysiX
+          </button>
+
+          <div class="auth-secondary-actions">
+            <button type="button" class="auth-link-btn" id="btn-goto-forgot">Forgot password?</button>
+            <button type="button" class="auth-link-btn" id="btn-goto-signup">Don't have an account? Sign Up</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 2. SIGNUP VIEW -->
+      <div id="auth-view-signup" class="auth-view hidden">
+        <form id="form-signup" class="auth-form">
+          <div class="form-group">
+            <label for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" placeholder="name@example.com" required autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label for="signup-password">Create Password (min 6 characters)</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="signup-password" placeholder="Create a strong password" required minlength="6"
+                autocomplete="new-password" />
+              <button type="button" class="btn-toggle-password" data-target="signup-password" title="Show Password">
+                <span class="eye-icon">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-confirm">Confirm Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="signup-confirm" placeholder="Re-enter password" required minlength="6"
+                autocomplete="new-password" />
+              <button type="button" class="btn-toggle-password" data-target="signup-confirm" title="Show Password">
+                <span class="eye-icon">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="signup-error-msg" class="auth-error-msg hidden"></div>
+
+          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-signup">
+            <span>✨</span> Sign Up
+          </button>
+
+          <div class="auth-secondary-actions">
+            <button type="button" class="auth-link-btn" id="btn-signup-goto-login">Already have an account? Sign
+              In</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 3. FORGOT PASSWORD VIEW -->
+      <div id="auth-view-forgot" class="auth-view hidden">
+        <form id="form-forgot" class="auth-form">
+          <p class="auth-desc">Enter your account email to receive a password reset link from Firebase.</p>
+          <div class="form-group">
+            <label for="forgot-email">Email Address</label>
+            <input type="email" id="forgot-email" placeholder="name@example.com" required />
+          </div>
+          <div id="forgot-error-msg" class="auth-error-msg hidden"></div>
+          <div id="forgot-success-msg" class="auth-success-msg hidden"></div>
+          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-forgot">
+            <span>✉️</span> Send Reset Email
+          </button>
+          <div class="auth-secondary-actions">
+            <button type="button" class="auth-link-btn" id="btn-forgot-goto-login">← Back to Sign In</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 4. CHANGE PASSWORD VIEW -->
+      <div id="auth-view-change-password" class="auth-view hidden">
+        <form id="form-change-password" class="auth-form">
+          <div class="form-group">
+            <label for="change-new-password">New Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="change-new-password" placeholder="Enter new password" required />
+              <button type="button" class="btn-toggle-password" data-target="change-new-password" title="Show Password">
+                <span class="eye-icon">👁️</span>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="change-confirm-password">Confirm New Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="change-confirm-password" placeholder="Confirm new password" required />
+              <button type="button" class="btn-toggle-password" data-target="change-confirm-password"
+                title="Show Password">
+                <span class="eye-icon">👁️</span>
+              </button>
+            </div>
+          </div>
+          <div id="change-error-msg" class="auth-error-msg hidden"></div>
+          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-change-password">
+            <span>🔒</span> Change Password
+          </button>
+          <div class="auth-secondary-actions">
+            <button type="button" class="auth-link-btn" id="btn-change-goto-dashboard">← Back to Profile</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 5. USER DASHBOARD / LOGGED IN PROFILE VIEW -->
+      <div id="auth-view-dashboard" class="auth-view hidden">
+        <div class="profile-dashboard-card">
+          <div class="profile-avatar-large" id="profile-avatar-char">👤</div>
+          <h3 id="profile-user-email">User Email</h3>
+          <span class="auth-status-badge">● Firebase Authenticated</span>
+
+          <div class="profile-stats-grid">
+            <div class="pstat-item">
+              <span class="pstat-label">Quiz High Score</span>
+              <strong id="profile-stat-quiz">0 / 10</strong>
+            </div>
+            <div class="pstat-item">
+              <span class="pstat-label">Target Challenge</span>
+              <strong id="profile-stat-target">0 pts</strong>
+            </div>
+          </div>
+
+          <div class="profile-actions-group">
+            <button type="button" class="auth-btn auth-btn-outline" id="btn-open-edit-profile">
+              ✏️ Edit Profile
+            </button>
+            <button type="button" class="auth-btn auth-btn-outline" id="btn-dashboard-change-pwd">
+              🔑 Change Password
+            </button>
+            <button type="button" class="auth-btn auth-btn-danger" id="btn-dashboard-logout">
+              🚪 Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================
+       CUSTOMIZE STUDENT PROFILE MODAL
+  ===================================== -->
+  <div id="edit-profile-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-profile-edit">
+      <div class="modal-header">
+        <div>
+          <h2>✏️ Customize Student Profile</h2>
+          <p>Personalize your avatar, educational status, and physics focus</p>
+        </div>
+        <button id="btn-close-edit-profile" class="modal-close-btn">&times;</button>
+      </div>
+
+      <form id="form-edit-profile" class="auth-form" style="padding: 10px 0;">
+        <div class="form-group">
+          <label>Choose Avatar Preset</label>
+          <div class="avatar-selector-grid" id="avatar-presets-grid">
+            <button type="button" class="avatar-opt-btn selected" data-avatar="🧑‍🔬">🧑‍🔬</button>
+            <button type="button" class="avatar-opt-btn" data-avatar="👩‍🚀">👩‍🚀</button>
+            <button type="button" class="avatar-opt-btn" data-avatar="⚛️">⚛️</button>
+            <button type="button" class="avatar-opt-btn" data-avatar="⚡">⚡</button>
+            <button type="button" class="avatar-opt-btn" data-avatar="🧠">🧠</button>
+            <button type="button" class="avatar-opt-btn" data-avatar="🎯">🎯</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-name-input">Full Name</label>
+          <input type="text" id="profile-name-input" placeholder="e.g. Alex Henderson" required />
+        </div>
+
+        <div class="form-group">
+          <label for="profile-edu-status">Educational Status</label>
+          <select id="profile-edu-status">
+            <option value="High School Student">High School Student (AP/IB Physics)</option>
+            <option value="Undergraduate Student" selected>Undergraduate / College Student (B.Sc / B.Tech / Engineering)
+            </option>
+            <option value="Graduate / Master's / PhD">Graduate / Master's / PhD Researcher</option>
+            <option value="Physics Educator / Professor">Physics Educator / Professor</option>
+            <option value="Independent Physics Enthusiast">Independent Physics Enthusiast</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-occupation-input">Occupation / Institution</label>
+          <input type="text" id="profile-occupation-input" placeholder="e.g. Stanford University / Student" />
+        </div>
+
+        <div class="form-group">
+          <label for="profile-interests-input">Physics Interests & Focus Areas</label>
+          <textarea id="profile-interests-input"
+            placeholder="e.g. 2D Kinematics, Orbital Dynamics, Quantum Mechanics"></textarea>
+        </div>
+
+        <button type="submit" class="auth-btn auth-btn-primary" style="margin-top: 10px;">
+          💾 Save & Update Profile
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
   <div id="toast" class="toast hidden"></div>
 
+  <!-- Module Script Entry -->
   <script type="module" src="/src/main.js"></script>
-
 </body>
 
 </html>

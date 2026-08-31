@@ -12,6 +12,7 @@
     "vite": "^8.2.0"
   },
   "dependencies": {
+    "firebase": "^11.0.0",
     "matter-js": "^0.20.0"
   }
 }
