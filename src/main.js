@@ -1623,180 +1623,225 @@ function loadUserProfile() {
   // Check Express Backend Status
   checkBackendStatus();
 
-  // 1. Update Header Nav Chip
+  // 1. Update Header Nav Chip & Modal Visibility according to Auth State
   const userNameEl = userProfileBtn?.querySelector(".user-name");
   const userStatusEl = userProfileBtn?.querySelector(".user-status");
   const navAvatarChar = document.getElementById("nav-avatar-char");
+  const profileHeroCard = document.querySelector(".profile-hero-card");
+  const profileTabsBar = document.querySelector(".profile-tabs-bar");
+  const profileModalHeaderTitle = profileModal?.querySelector(".modal-header h2");
+  const profileModalHeaderDesc = profileModal?.querySelector(".modal-header p");
 
-  if (navAvatarChar) navAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
-  if (userNameEl) userNameEl.textContent = displayName;
-  if (userStatusEl) {
-    if (isAuth) {
-      userStatusEl.textContent = "● Firebase Online";
-      userStatusEl.style.color = "#34d399";
-    } else {
+  if (!isAuth) {
+    // GUEST MODE: Do not show profile or any details, show ONLY login username and password form
+    if (navAvatarChar) {
+      navAvatarChar.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+    }
+    if (userNameEl) userNameEl.textContent = "Sign In";
+    if (userStatusEl) {
       userStatusEl.textContent = "● Guest Mode";
       userStatusEl.style.color = "";
     }
-  }
 
-  // 2. Update Profile Hero Card
-  if (heroAvatarChar) heroAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
-  if (heroLevelBadge) heroLevelBadge.textContent = `LVL ${rankInfo.level}`;
-  if (heroStudentName) heroStudentName.textContent = displayName;
-  if (heroStudentHandle) heroStudentHandle.textContent = displayHandle;
-  if (heroStudentEmail) heroStudentEmail.textContent = displayEmail;
+    if (profileHeroCard) profileHeroCard.classList.add("hidden");
+    if (profileTabsBar) profileTabsBar.classList.add("hidden");
 
-  if (heroStatusBadge) {
-    if (isAuth) {
+    // Hide all personal detail tabs
+    [tabOverview, tabStats, tabBadges, tabLogs].forEach(pane => {
+      if (pane) pane.classList.add("hidden");
+    });
+    // Show only the Security/Login tab
+    if (tabSecurity) tabSecurity.classList.remove("hidden");
+    if (secGuestPanel) secGuestPanel.classList.remove("hidden");
+    if (secUserPanel) secUserPanel.classList.add("hidden");
+
+    if (profileModalHeaderTitle) {
+      profileModalHeaderTitle.innerHTML = `
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Account Sign In & Access
+      `;
+    }
+    if (profileModalHeaderDesc) {
+      profileModalHeaderDesc.textContent = "Sign in to access your student profile, cloud-synced telemetry analytics, and physics milestones";
+    }
+
+  } else {
+    // AUTHENTICATED MODE: Show complete student profile hero card and detail tabs
+    if (navAvatarChar) navAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
+    if (userNameEl) userNameEl.textContent = displayName;
+    if (userStatusEl) {
+      userStatusEl.textContent = "● Firebase Online";
+      userStatusEl.style.color = "#34d399";
+    }
+
+    if (profileHeroCard) profileHeroCard.classList.remove("hidden");
+    if (profileTabsBar) profileTabsBar.classList.remove("hidden");
+
+    if (profileModalHeaderTitle) {
+      profileModalHeaderTitle.innerHTML = `
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        PhysiX Student Dossier
+      `;
+    }
+    if (profileModalHeaderDesc) {
+      profileModalHeaderDesc.textContent = "Personalized physics credentials, telemetry analytics, and experimental kinematics records";
+    }
+
+    // 2. Update Profile Hero Card
+    if (heroAvatarChar) heroAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
+    if (heroLevelBadge) heroLevelBadge.textContent = `LVL ${rankInfo.level}`;
+    if (heroStudentName) heroStudentName.textContent = displayName;
+    if (heroStudentHandle) heroStudentHandle.textContent = displayHandle;
+    if (heroStudentEmail) heroStudentEmail.textContent = displayEmail;
+
+    if (heroStatusBadge) {
       heroStatusBadge.textContent = "● Firebase Online (Cloud Synced)";
       heroStatusBadge.className = "profile-status-badge firebase-badge";
-    } else {
-      heroStatusBadge.textContent = "● Guest Mode (Local Session)";
-      heroStatusBadge.className = "profile-status-badge guest-badge";
     }
-  }
 
-  if (heroRankPill) heroRankPill.textContent = rankInfo.rank;
-  if (heroEduPill) heroEduPill.textContent = profile.edu || "Undergraduate Student";
-  if (heroInstPill) heroInstPill.textContent = profile.occ || "PhysiX Virtual Lab";
+    if (heroRankPill) heroRankPill.textContent = rankInfo.rank;
+    if (heroEduPill) heroEduPill.textContent = profile.edu || "Undergraduate Student";
+    if (heroInstPill) heroInstPill.textContent = profile.occ || "PhysiX Virtual Lab";
 
-  // Render Progressive Doubling Level XP Tracker
-  const xpTitleEl = document.getElementById("hero-xp-level-title");
-  const xpReadoutEl = document.getElementById("hero-xp-progress-readout");
-  const xpBarFillEl = document.getElementById("hero-xp-bar-fill");
-  const xpNextNoteEl = document.getElementById("hero-xp-next-note");
+    // Render Progressive Doubling Level XP Tracker
+    const xpTitleEl = document.getElementById("hero-xp-level-title");
+    const xpReadoutEl = document.getElementById("hero-xp-progress-readout");
+    const xpBarFillEl = document.getElementById("hero-xp-bar-fill");
+    const xpNextNoteEl = document.getElementById("hero-xp-next-note");
 
-  if (xpTitleEl) xpTitleEl.textContent = rankInfo.title;
-  if (xpReadoutEl) xpReadoutEl.textContent = `${rankInfo.totalXp.toLocaleString()} / ${rankInfo.nextThreshold.toLocaleString()} XP (${Math.round(rankInfo.progressPct)}%)`;
-  if (xpBarFillEl) xpBarFillEl.style.width = `${rankInfo.progressPct}%`;
-  if (xpNextNoteEl) {
-    const needed = Math.max(0, rankInfo.nextThreshold - rankInfo.totalXp);
-    xpNextNoteEl.textContent = `Earn ${needed.toLocaleString()} XP to reach Level ${rankInfo.level + 1} • Target: ${rankInfo.nextThreshold.toLocaleString()} XP`;
-  }
+    if (xpTitleEl) xpTitleEl.textContent = rankInfo.title;
+    if (xpReadoutEl) xpReadoutEl.textContent = `${rankInfo.totalXp.toLocaleString()} / ${rankInfo.nextThreshold.toLocaleString()} XP (${Math.round(rankInfo.progressPct)}%)`;
+    if (xpBarFillEl) xpBarFillEl.style.width = `${rankInfo.progressPct}%`;
+    if (xpNextNoteEl) {
+      const needed = Math.max(0, rankInfo.nextThreshold - rankInfo.totalXp);
+      xpNextNoteEl.textContent = `Earn ${needed.toLocaleString()} XP to reach Level ${rankInfo.level + 1} • Target: ${rankInfo.nextThreshold.toLocaleString()} XP`;
+    }
 
-  if (heroAuthIcon && heroAuthLabel) {
-    if (isAuth) {
+    if (heroAuthIcon && heroAuthLabel) {
       heroAuthIcon.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`;
       heroAuthLabel.textContent = "Sign Out";
-    } else {
-      heroAuthIcon.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
-      heroAuthLabel.textContent = "Sign In / Link Account";
     }
-  }
 
-  // 3. Update Overview & Bio Tab
-  if (pOverviewName) pOverviewName.textContent = displayName;
-  if (pOverviewEdu) pOverviewEdu.textContent = profile.edu || "Undergraduate Student";
-  if (pOverviewOcc) pOverviewOcc.textContent = profile.occ || "MIT Physics Lab / Student";
-  if (pOverviewBio) pOverviewBio.textContent = profile.bio || "Exploring projectile kinematics and parabolic trajectories.";
+    // 3. Update Overview & Bio Tab
+    if (pOverviewName) pOverviewName.textContent = displayName;
+    if (pOverviewEdu) pOverviewEdu.textContent = profile.edu || "Undergraduate Student";
+    if (pOverviewOcc) pOverviewOcc.textContent = profile.occ || "MIT Physics Lab / Student";
+    if (pOverviewBio) pOverviewBio.textContent = profile.bio || "Exploring projectile kinematics and parabolic trajectories.";
 
-  if (pOverviewInterests) {
-    const rawInterests = profile.interests || "2D Kinematics, Planetary Gravity, Trajectories";
-    const tags = rawInterests.split(",").map(t => t.trim()).filter(Boolean);
-    pOverviewInterests.innerHTML = tags.map(tag => `<span class="p-interest-tag">${tag}</span>`).join("");
-  }
+    if (pOverviewInterests) {
+      const rawInterests = profile.interests || "2D Kinematics, Planetary Gravity, Trajectories";
+      const tags = rawInterests.split(",").map(t => t.trim()).filter(Boolean);
+      pOverviewInterests.innerHTML = tags.map(tag => `<span class="p-interest-tag">${tag}</span>`).join("");
+    }
 
-  if (pMetaType) pMetaType.textContent = isAuth ? "Firebase Cloud Account" : "Guest Session (Local Storage)";
-  if (pMetaUid) pMetaUid.textContent = user ? user.uid : "SESSION-LOCAL-PHYSIX";
-  if (pMetaEmail) pMetaEmail.textContent = displayEmail;
-  if (pMetaSync) {
-    if (isAuth) {
+    if (pMetaType) pMetaType.textContent = "Firebase Cloud Account";
+    if (pMetaUid) pMetaUid.textContent = user.uid;
+    if (pMetaEmail) pMetaEmail.textContent = displayEmail;
+    if (pMetaSync) {
       pMetaSync.textContent = "● Cloud Synced (Firebase Auth)";
       pMetaSync.className = "meta-val highlight-cyan";
-    } else {
-      pMetaSync.textContent = "● Local Storage (Sign In to Sync)";
-      pMetaSync.className = "meta-val status-local";
     }
-  }
-  if (pMetaRank) pMetaRank.textContent = rankInfo.title;
+    if (pMetaRank) pMetaRank.textContent = rankInfo.title;
 
-  // 4. Update Telemetry & Stats Tab
-  if (statQuizScore) statQuizScore.textContent = `${quizHigh} / 10`;
-  if (statQuizGrade) {
-    const pct = Math.round((quizHigh / 10) * 100);
-    if (quizHigh === 10) statQuizGrade.textContent = "Grade: A+ (100%)";
-    else if (quizHigh >= 8) statQuizGrade.textContent = `Grade: A (${pct}%)`;
-    else if (quizHigh >= 6) statQuizGrade.textContent = `Grade: B (${pct}%)`;
-    else if (quizHigh >= 4) statQuizGrade.textContent = `Grade: C (${pct}%)`;
-    else if (quizHigh > 0) statQuizGrade.textContent = `Grade: D (${pct}%)`;
-    else statQuizGrade.textContent = "Not Evaluated";
-  }
-
-  if (statTargetScore) statTargetScore.textContent = `${targetScore} pts`;
-  if (statTargetHits) statTargetHits.textContent = `${stats.targetHits || 0} Hits`;
-  if (statTotalLaunches) statTotalLaunches.textContent = `${stats.totalLaunches || 0}`;
-  if (statMaxRange) statMaxRange.textContent = (stats.maxRange || 0).toFixed(2);
-  if (statMaxHeight) statMaxHeight.textContent = (stats.maxHeight || 0).toFixed(2);
-  if (statMaxVelocity) statMaxVelocity.textContent = (stats.maxVelocity || 0).toFixed(1);
-  if (statTotalAirtime) statTotalAirtime.textContent = (stats.totalAirtime || 0).toFixed(2);
-
-  if (statFavPlanet) {
-    const gVal = Number(gravitySlider.value);
-    let pName = "Earth (9.8 m/s²)";
-    if (Math.abs(gVal - 1.6) < 0.1) pName = "Moon (1.6 m/s²)";
-    else if (Math.abs(gVal - 3.7) < 0.1) pName = "Mars (3.7 m/s²)";
-    else if (Math.abs(gVal - 24.8) < 0.1) pName = "Jupiter (24.8 m/s²)";
-    else if (Math.abs(gVal - 9.8) >= 0.1) pName = `Custom Planet (${gVal.toFixed(1)} m/s²)`;
-    statFavPlanet.textContent = pName;
-  }
-
-  // 5. Update Badges Tab with Dynamic Vector SVGs
-  const badgesGridContainer = document.getElementById("badges-grid-container");
-  if (badgesGridContainer) {
-    badgesGridContainer.innerHTML = ALL_BADGES.map(b => {
-      const isUnlocked = badges.includes(b.id);
-      return `
-        <div class="badge-item-card ${isUnlocked ? "unlocked" : "locked"}" id="${b.id}">
-          <div class="badge-card-icon">
-            ${BADGE_SVGS[b.id] || BADGE_SVGS["badge-profile-saved"]}
-          </div>
-          <div class="badge-card-content">
-            <h5>${b.name}</h5>
-            <p>${b.desc}</p>
-            <span class="badge-status-tag">${isUnlocked ? "Unlocked" : "Locked"}</span>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  let unlockedCount = ALL_BADGES.filter(b => badges.includes(b.id)).length;
-  if (badgesUnlockedCount) badgesUnlockedCount.textContent = unlockedCount;
-  if (badgesUnlockedPill) badgesUnlockedPill.textContent = `${unlockedCount} of ${ALL_BADGES.length} Unlocked`;
-
-  // 6. Update Flight Logs Tab
-  if (logsCountBadge) logsCountBadge.textContent = logs.length;
-  if (flightLogsTbody) {
-    if (logs.length === 0) {
-      flightLogsTbody.innerHTML = `<tr><td colspan="9" class="empty-logs-msg">No simulation flight records yet. Fire the cannon to record telemetry!</td></tr>`;
-    } else {
-      flightLogsTbody.innerHTML = logs.map((l, index) => `
-        <tr>
-          <td><strong>#${index + 1}</strong></td>
-          <td style="color:var(--text-muted);">${l.time}</td>
-          <td style="color:#c4b5fd;">${l.angle}°</td>
-          <td style="color:#93c5fd;">${Number(l.v0).toFixed(1)} m/s</td>
-          <td>${Number(l.h0).toFixed(1)} m</td>
-          <td>${Number(l.g).toFixed(1)} m/s²</td>
-          <td style="color:#34d399; font-weight:700;">${Number(l.range).toFixed(2)} m</td>
-          <td style="color:#fbbf24;">${Number(l.apex).toFixed(2)} m</td>
-          <td>${Number(l.airtime).toFixed(2)} s</td>
-        </tr>
-      `).join("");
+    // 4. Update Telemetry & Stats Tab
+    if (statQuizScore) statQuizScore.textContent = `${quizHigh} / 10`;
+    if (statQuizGrade) {
+      const pct = Math.round((quizHigh / 10) * 100);
+      if (quizHigh === 10) statQuizGrade.textContent = "Grade: A+ (100%)";
+      else if (quizHigh >= 8) statQuizGrade.textContent = `Grade: A (${pct}%)`;
+      else if (quizHigh >= 6) statQuizGrade.textContent = `Grade: B (${pct}%)`;
+      else if (quizHigh >= 4) statQuizGrade.textContent = `Grade: C (${pct}%)`;
+      else if (quizHigh > 0) statQuizGrade.textContent = `Grade: D (${pct}%)`;
+      else statQuizGrade.textContent = "Not Evaluated";
     }
-  }
 
-  // 7. Update Security Tab
-  if (isAuth) {
+    if (statTargetScore) statTargetScore.textContent = `${targetScore} pts`;
+    if (statTargetHits) statTargetHits.textContent = `${stats.targetHits || 0} Hits`;
+    if (statTotalLaunches) statTotalLaunches.textContent = `${stats.totalLaunches || 0}`;
+    if (statMaxRange) statMaxRange.textContent = (stats.maxRange || 0).toFixed(2);
+    if (statMaxHeight) statMaxHeight.textContent = (stats.maxHeight || 0).toFixed(2);
+    if (statMaxVelocity) statMaxVelocity.textContent = (stats.maxVelocity || 0).toFixed(1);
+    if (statTotalAirtime) statTotalAirtime.textContent = (stats.totalAirtime || 0).toFixed(2);
+
+    if (statFavPlanet) {
+      const gVal = Number(gravitySlider.value);
+      let pName = "Earth (9.8 m/s²)";
+      if (Math.abs(gVal - 1.6) < 0.1) pName = "Moon (1.6 m/s²)";
+      else if (Math.abs(gVal - 3.7) < 0.1) pName = "Mars (3.7 m/s²)";
+      else if (Math.abs(gVal - 24.8) < 0.1) pName = "Jupiter (24.8 m/s²)";
+      else if (Math.abs(gVal - 9.8) >= 0.1) pName = `Custom Planet (${gVal.toFixed(1)} m/s²)`;
+      statFavPlanet.textContent = pName;
+    }
+
+    // 5. Update Badges Tab with Dynamic Vector SVGs
+    const badgesGridContainer = document.getElementById("badges-grid-container");
+    if (badgesGridContainer) {
+      badgesGridContainer.innerHTML = ALL_BADGES.map(b => {
+        const isUnlocked = badges.includes(b.id);
+        return `
+          <div class="badge-item-card ${isUnlocked ? "unlocked" : "locked"}" id="${b.id}">
+            <div class="badge-card-icon">
+              ${BADGE_SVGS[b.id] || BADGE_SVGS["badge-profile-saved"]}
+            </div>
+            <div class="badge-card-content">
+              <h5>${b.name}</h5>
+              <p>${b.desc}</p>
+              <span class="badge-status-tag">${isUnlocked ? "Unlocked" : "Locked"}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    let unlockedCount = ALL_BADGES.filter(b => badges.includes(b.id)).length;
+    if (badgesUnlockedCount) badgesUnlockedCount.textContent = unlockedCount;
+    if (badgesUnlockedPill) badgesUnlockedPill.textContent = `${unlockedCount} of ${ALL_BADGES.length} Unlocked`;
+
+    // 6. Update Flight Logs Tab
+    if (logsCountBadge) logsCountBadge.textContent = logs.length;
+    if (flightLogsTbody) {
+      if (logs.length === 0) {
+        flightLogsTbody.innerHTML = `<tr><td colspan="9" class="empty-logs-msg">No simulation flight records yet. Fire the cannon to record telemetry!</td></tr>`;
+      } else {
+        flightLogsTbody.innerHTML = logs.map((l, index) => `
+          <tr>
+            <td><strong>#${index + 1}</strong></td>
+            <td style="color:var(--text-muted);">${l.time}</td>
+            <td style="color:#c4b5fd;">${l.angle}°</td>
+            <td style="color:#93c5fd;">${Number(l.v0).toFixed(1)} m/s</td>
+            <td>${Number(l.h0).toFixed(1)} m</td>
+            <td>${Number(l.g).toFixed(1)} m/s²</td>
+            <td style="color:#34d399; font-weight:700;">${Number(l.range).toFixed(2)} m</td>
+            <td style="color:#fbbf24;">${Number(l.apex).toFixed(2)} m</td>
+            <td>${Number(l.airtime).toFixed(2)} s</td>
+          </tr>
+        `).join("");
+      }
+    }
+
+    // 7. Update Security Tab
     if (secGuestPanel) secGuestPanel.classList.add("hidden");
     if (secUserPanel) secUserPanel.classList.remove("hidden");
     if (secUserEmailDisplay) secUserEmailDisplay.textContent = `Connected: ${user.email}`;
     if (secDetailEmail) secDetailEmail.textContent = user.email;
     if (secDetailUid) secDetailUid.textContent = user.uid;
-  } else {
-    if (secGuestPanel) secGuestPanel.classList.remove("hidden");
-    if (secUserPanel) secUserPanel.classList.add("hidden");
+
+    // Show active tab
+    const activeBtn = document.querySelector(".profile-tab-btn.active");
+    const activeTab = activeBtn ? activeBtn.getAttribute("data-tab") : "overview";
+    [tabOverview, tabStats, tabBadges, tabLogs, tabSecurity].forEach(pane => {
+      if (pane) pane.classList.add("hidden");
+    });
+    if (activeTab === "overview" && tabOverview) tabOverview.classList.remove("hidden");
+    else if (activeTab === "stats" && tabStats) tabStats.classList.remove("hidden");
+    else if (activeTab === "badges" && tabBadges) tabBadges.classList.remove("hidden");
+    else if (activeTab === "logs" && tabLogs) tabLogs.classList.remove("hidden");
+    else if (activeTab === "security" && tabSecurity) tabSecurity.classList.remove("hidden");
+    else if (tabOverview) tabOverview.classList.remove("hidden");
   }
 
   // 8. Sync Edit Profile Modal Inputs
@@ -2140,11 +2185,17 @@ onAuthStateChanged(auth, () => {
 // Profile Button click opens modal
 userProfileBtn?.addEventListener("click", () => {
   loadUserProfile();
+  if (!auth.currentUser) {
+    showAuthSubView("login");
+  }
   profileModal?.classList.remove("hidden");
 });
 
 btnOpenProfileNav?.addEventListener("click", () => {
   loadUserProfile();
+  if (!auth.currentUser) {
+    showAuthSubView("login");
+  }
   profileModal?.classList.remove("hidden");
 });
 
