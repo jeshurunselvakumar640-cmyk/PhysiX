@@ -236,10 +236,15 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ message, history, simulationContext })
     });
-    return res && res.success ? res : {
+    if (res && res.success && res.reply) {
+      return res;
+    }
+    // Client-side physics copilot fallback for GitHub Pages & static hosting
+    return {
       success: true,
       name: "Vectra AI",
-      reply: "### Vectra AI\nAnalyzing kinematics... Please ensure your Express server is connected on port 3001."
+      model: "Vectra AI (Client-Side Precision Engine)",
+      reply: generateClientPhysicsResponse(message, simulationContext)
     };
   },
 
@@ -248,11 +253,148 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ flightData, simulationContext })
     });
-    return res && res.success ? res.analysis : null;
+    if (res && res.success && res.analysis) return res.analysis;
+    return generateClientFlightAnalysis(flightData || simulationContext);
   },
 
   async getAiStatus() {
     const res = await fetchJson(`${API_BASE}/ai/status`);
-    return res && res.status === "ready" ? res : null;
+    if (res && res.status === "ready") return res;
+    return {
+      status: "ready",
+      name: "Vectra AI",
+      model: "Client Kinematics Core"
+    };
   }
 };
+
+// Client-Side Physics Intelligence Engine for GitHub Pages & Offline Deployments
+function isCreatorQuestion(text = "") {
+  const t = text.toLowerCase();
+  return (
+    t.includes("who built") ||
+    t.includes("who made") ||
+    t.includes("who created") ||
+    t.includes("who developed") ||
+    t.includes("who are the owners") ||
+    t.includes("who is the owner") ||
+    t.includes("who owns") ||
+    t.includes("who are the creators") ||
+    t.includes("who are the authors") ||
+    t.includes("developers of") ||
+    t.includes("creators of") ||
+    t.includes("team behind") ||
+    (t.includes("about the team") || t.includes("about the creators")) ||
+    (t.includes("who are you built by") || t.includes("who made this website") || t.includes("who built this website"))
+  );
+}
+
+function generateClientPhysicsResponse(userMessage = "", context = {}) {
+  if (isCreatorQuestion(userMessage)) {
+    return "This is a Project built by four Computer Engineering students Ojas Joshi, Jeshurun Selvakumar, Kshitij Jadhav, Adithya Iyer.";
+  }
+
+  const msg = userMessage.toLowerCase();
+
+  // Optical Fibre Numerical Aperture Calculations
+  if (
+    context?.experiment === "Optical Fibre Numerical Aperture" ||
+    msg.includes("optical fibre") ||
+    msg.includes("optical fiber") ||
+    msg.includes("numerical aperture") ||
+    msg.includes("acceptance angle") ||
+    msg.includes("spot diameter")
+  ) {
+    const L = Number(context?.distanceL) || 1.5;
+    const W = Number(context?.spotDiameterW) || 1.51;
+    const denom = Math.sqrt(4 * L * L + W * W);
+    const NA = denom > 0 ? W / denom : 0;
+    const thetaRad = Math.asin(Math.min(1, Math.max(0, NA)));
+    const thetaDeg = (thetaRad * 180) / Math.PI;
+
+    return `### Vectra AI Theoretical Analysis: Numerical Aperture ($NA$)
+
+#### 1. Fundamental Optical Principles
+The Numerical Aperture ($NA$) characterizes the light-gathering capability of an optical fiber:
+$$NA = \\sin \\theta_{max} = \\sqrt{n_{core}^2 - n_{cladding}^2}$$
+
+Using the experimental laser spot geometry at distance $L = ${L.toFixed(2)}\\text{ cm}$ with spot diameter $W = ${W.toFixed(2)}\\text{ cm}$:
+$$NA = \\frac{W}{\\sqrt{4L^2 + W^2}}$$
+
+#### 2. Quantitative Step-by-Step Derivation
+1. **Screen Distance ($L$)**: $L = ${L.toFixed(2)}\\text{ cm}$
+2. **Emerging Spot Diameter ($W$)**: $W = ${W.toFixed(2)}\\text{ cm}$
+3. **Hypotenuse $\\sqrt{4L^2 + W^2}$**: $\\sqrt{4(${L.toFixed(2)})^2 + (${W.toFixed(2)})^2} = ${denom.toFixed(4)}\\text{ cm}$
+4. **Calculated Numerical Aperture ($NA$)**:
+   $$\\mathbf{NA = \\frac{${W.toFixed(2)}}{${denom.toFixed(4)}} = ${NA.toFixed(4)}}$$
+5. **Maximum Acceptance Angle ($\\theta_a$)**:
+   $$\\mathbf{\\theta_a = \\arcsin(${NA.toFixed(4)}) = ${thetaDeg.toFixed(2)}^\\circ}$$
+
+*Physical Insight*: In step-index fibers, $NA$ remains strictly invariant with distance $L$ because spot diameter $W$ expands proportionally ($W \\propto 2L \\tan\\theta_a$).`;
+  }
+
+  // 2D Kinematics Projectile Calculations
+  const v0 = Number(context?.v0) || 20;
+  const angleDeg = Number(context?.angleDeg) || 45;
+  const h0 = Number(context?.h0) || 0;
+  const g = Number(context?.g) || 9.8;
+  const planet = context?.planet || "Earth";
+
+  const rad = (angleDeg * Math.PI) / 180;
+  const v0x = v0 * Math.cos(rad);
+  const v0y = v0 * Math.sin(rad);
+  const tApex = v0y > 0 ? v0y / g : 0;
+  const hApex = h0 + (v0y > 0 ? (v0y * v0y) / (2 * g) : 0);
+  const disc = v0y * v0y + 2 * g * h0;
+  const tFlight = disc >= 0 ? (v0y + Math.sqrt(disc)) / g : 0;
+  const range = v0x * tFlight;
+
+  return `### Vectra AI Theoretical Analysis: Projectile Kinematics
+
+#### 1. Live Kinematic Context
+- **Launch Parameters**: $v_0 = ${v0.toFixed(1)}\\text{ m/s}$, $\\theta = ${angleDeg}^\\circ$, $h_0 = ${h0.toFixed(1)}\\text{ m}$, $g = ${g.toFixed(1)}\\text{ m/s}^2$ (${planet})
+
+#### 2. Vector Component Decomposition
+- **Horizontal Velocity Component** ($v_{0x}$):
+  $$v_{0x} = v_0 \\cos\\theta = ${v0.toFixed(1)} \\times \\cos(${angleDeg}^\\circ) = \\mathbf{${v0x.toFixed(2)}\\text{ m/s}} \\quad (\\text{Constant})$$
+- **Vertical Initial Velocity** ($v_{0y}$):
+  $$v_{0y} = v_0 \\sin\\theta = ${v0.toFixed(1)} \\times \\sin(${angleDeg}^\\circ) = \\mathbf{${v0y.toFixed(2)}\\text{ m/s}}$$
+
+#### 3. Exact Trajectory Metrics
+1. **Time to Apex ($t_{apex}$)**:
+   $$t_{apex} = \\frac{v_{0y}}{g} = \\frac{${v0y.toFixed(2)}}{${g.toFixed(1)}} = \\mathbf{${tApex.toFixed(2)}\\text{ s}}$$
+2. **Maximum Altitude ($H_{max}$)**:
+   $$H_{max} = h_0 + \\frac{v_{0y}^2}{2g} = ${h0.toFixed(1)} + \\frac{(${v0y.toFixed(2)})^2}{2(${g.toFixed(1)})} = \\mathbf{${hApex.toFixed(2)}\\text{ m}}$$
+3. **Total Flight Airtime ($T$)**:
+   $$T = \\frac{v_{0y} + \\sqrt{v_{0y}^2 + 2gh_0}}{g} = \\mathbf{${tFlight.toFixed(2)}\\text{ s}}$$
+4. **Horizontal Ground Range ($R$)**:
+   $$R = v_{0x} \\times T = ${v0x.toFixed(2)} \\times ${tFlight.toFixed(2)} = \\mathbf{${range.toFixed(2)}\\text{ m}}$$
+
+*Theoretical Note*: On ${planet}, gravitational acceleration ($g = ${g.toFixed(1)}\\text{ m/s}^2$) acts strictly downward. At apex, vertical speed is zero while horizontal velocity remains constant at $v_x = ${v0x.toFixed(2)}\\text{ m/s}$.`;
+}
+
+function generateClientFlightAnalysis(data = {}) {
+  const v0 = Number(data.v0) || 20;
+  const angleDeg = Number(data.angleDeg) || 45;
+  const h0 = Number(data.h0) || 0;
+  const g = Number(data.g) || 9.8;
+  const rad = (angleDeg * Math.PI) / 180;
+  const v0x = v0 * Math.cos(rad);
+  const v0y = v0 * Math.sin(rad);
+  const disc = v0y * v0y + 2 * g * h0;
+  const tFlight = disc >= 0 ? (v0y + Math.sqrt(disc)) / g : 0;
+  const range = v0x * tFlight;
+  const hApex = h0 + (v0y * v0y) / (2 * g);
+
+  return `### Flight Telemetry Debrief by **Vectra AI**
+
+#### 1. Experimental Flight Outcome
+- **Launch Settings**: $v_0 = ${v0.toFixed(1)}\\text{ m/s}$, $\\theta = ${angleDeg}^\\circ$, $h_0 = ${h0.toFixed(1)}\\text{ m}$, $g = ${g.toFixed(1)}\\text{ m/s}^2$
+- **Touchdown Range ($R$)**: **${range.toFixed(2)} meters**
+- **Maximum Apex ($H_{max}$)**: **${hApex.toFixed(2)} meters**
+- **Flight Duration ($T$)**: **${tFlight.toFixed(2)} seconds**
+
+#### 2. Efficiency & Kinematic Assessment
+- Velocity Breakdown: $v_{0x} = ${v0x.toFixed(2)}\\text{ m/s}$, $v_{0y} = ${v0y.toFixed(2)}\\text{ m/s}$
+- Optimal Launch Angle for Setup: **45.00 deg** (Maximum Range: **${((v0 * v0) / g).toFixed(2)} m**)`;
+}

@@ -1,10 +1,18 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DB_FILE = path.join(__dirname, "db.json");
+
+// In Vercel serverless environments, use /tmp for writable storage
+const isVercel = !!process.env.VERCEL;
+const DB_FILE = isVercel
+  ? path.join(os.tmpdir(), "physix_db.json")
+  : path.join(__dirname, "db.json");
+
+let memoryDb = null;
 
 // Default template for a new user record
 function getDefaultUserData(userId = "guest") {
@@ -34,27 +42,33 @@ function getDefaultUserData(userId = "guest") {
     observations: [],
     challenges: {},
     bonusXp: 0,
-    badges: ["badge-profile-saved"],
+    badges: [],
     quizHighScore: 0
   };
 }
 
 function readDb() {
+  if (memoryDb) return memoryDb;
   try {
     if (!fs.existsSync(DB_FILE)) {
       const initialDb = { users: { guest: getDefaultUserData("guest") } };
-      fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), "utf-8");
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), "utf-8");
+      } catch (e) {}
+      memoryDb = initialDb;
       return initialDb;
     }
     const data = fs.readFileSync(DB_FILE, "utf-8");
-    return JSON.parse(data);
+    memoryDb = JSON.parse(data);
+    return memoryDb;
   } catch (err) {
-    console.error("[Store] Error reading database file:", err);
-    return { users: { guest: getDefaultUserData("guest") } };
+    memoryDb = memoryDb || { users: { guest: getDefaultUserData("guest") } };
+    return memoryDb;
   }
 }
 
 function writeDb(data) {
+  memoryDb = data;
   try {
     const dir = path.dirname(DB_FILE);
     if (!fs.existsSync(dir)) {
@@ -62,7 +76,8 @@ function writeDb(data) {
     }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch (err) {
-    console.error("[Store] Error writing database file:", err);
+    // In serverless / read-only environment, in-memory storage continues seamlessly
+    console.warn("[Store] File write skipped in read-only environment (using memory cache):", err.message);
   }
 }
 

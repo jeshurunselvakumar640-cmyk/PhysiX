@@ -66,13 +66,15 @@ app.use((req, res) => {
   }
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`=============================================`);
-  console.log(`🚀 PhysiX Express.js Backend Server running`);
-  console.log(`📡 URL: http://localhost:${PORT}`);
-  console.log(`🩺 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`=============================================`);
-});
+// Start Server only in local Node.js daemon (non-Vercel environment)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`=============================================`);
+    console.log(`🚀 PhysiX Express.js Backend Server running`);
+    console.log(`📡 URL: http://localhost:${PORT}`);
+    console.log(`🩺 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`=============================================`);
+  });
+}
 
 export default app;
