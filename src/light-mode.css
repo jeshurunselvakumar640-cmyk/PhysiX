@@ -1998,3 +1998,294 @@ body.light-mode .lab-card-btn.btn-active-lab,
   color: #ffffff !important;
   border: none !important;
 }
+
+/* ==========================================
+   LIGHT MODE: HOMEPAGE, HERO, 3D BOOKS & LAB MANUAL
+========================================== */
+body.light-mode .hero-section,
+[data-theme="light"] .hero-section {
+  background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 50%, #e0f2fe 100%) !important;
+  border: 1.5px solid #bae6fd !important;
+  box-shadow: 0 20px 50px rgba(14, 165, 233, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+body.light-mode .hero-headline,
+[data-theme="light"] .hero-headline {
+  color: #0f172a !important;
+}
+
+body.light-mode .hero-description,
+[data-theme="light"] .hero-description {
+  color: #475569 !important;
+}
+
+body.light-mode .hero-badge,
+[data-theme="light"] .hero-badge {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1.5px solid #bae6fd !important;
+  color: #0369a1 !important;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08) !important;
+}
+
+body.light-mode .hero-stat-card,
+[data-theme="light"] .hero-stat-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1.5px solid #bae6fd !important;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.08) !important;
+}
+
+body.light-mode .hero-stat-number,
+[data-theme="light"] .hero-stat-number {
+  color: #0284c7 !important;
+}
+
+body.light-mode .hero-stat-label,
+[data-theme="light"] .hero-stat-label {
+  color: #64748b !important;
+}
+
+body.light-mode .section-title,
+[data-theme="light"] .section-title {
+  color: #0f172a !important;
+}
+
+body.light-mode .section-subtitle,
+[data-theme="light"] .section-subtitle {
+  color: #475569 !important;
+}
+
+body.light-mode .home-exp-card,
+[data-theme="light"] .home-exp-card {
+  background: linear-gradient(135deg, #ffffff, #f8fafc) !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-mode .home-exp-card:hover,
+[data-theme="light"] .home-exp-card:hover {
+  border-color: #0284c7 !important;
+  box-shadow: 0 16px 36px rgba(2, 132, 199, 0.16) !important;
+}
+
+body.light-mode .home-exp-card.is-active-sim,
+[data-theme="light"] .home-exp-card.is-active-sim {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.15) !important;
+}
+
+body.light-mode .home-exp-title,
+[data-theme="light"] .home-exp-title {
+  color: #0f172a !important;
+}
+
+body.light-mode .home-card-desc,
+[data-theme="light"] .home-card-desc {
+  color: #475569 !important;
+}
+
+body.light-mode .home-card-formulas,
+[data-theme="light"] .home-card-formulas {
+  background: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+}
+
+body.light-mode .home-card-formulas code,
+[data-theme="light"] .home-card-formulas code {
+  color: #0369a1 !important;
+}
+
+body.light-mode .btn-home-card-manual,
+[data-theme="light"] .btn-home-card-manual {
+  background: #f0f9ff !important;
+  border: 1.5px solid #bae6fd !important;
+  color: #0284c7 !important;
+}
+
+body.light-mode .btn-home-card-manual:hover,
+[data-theme="light"] .btn-home-card-manual:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+
+body.light-mode .btn-home-card-launch,
+[data-theme="light"] .btn-home-card-launch {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+body.light-mode .book-card,
+[data-theme="light"] .book-card {
+  background: linear-gradient(135deg, #ffffff, #f8fafc) !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-mode .book-card:hover,
+[data-theme="light"] .book-card:hover {
+  border-color: #0284c7 !important;
+  box-shadow: 0 20px 40px rgba(2, 132, 199, 0.15) !important;
+}
+
+body.light-mode .book-title,
+[data-theme="light"] .book-title {
+  color: #0f172a !important;
+}
+
+body.light-mode .book-authors,
+[data-theme="light"] .book-authors {
+  color: #475569 !important;
+}
+
+body.light-mode .ieee-citation-box,
+[data-theme="light"] .ieee-citation-box {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .ieee-citation-code,
+[data-theme="light"] .ieee-citation-code {
+  color: #1e293b !important;
+}
+
+body.light-mode .btn-copy-citation,
+[data-theme="light"] .btn-copy-citation {
+  background: #f0f9ff !important;
+  border: 1.5px solid #bae6fd !important;
+  color: #0284c7 !important;
+}
+
+body.light-mode .btn-copy-citation:hover,
+[data-theme="light"] .btn-copy-citation:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+/* Lab Manual Modal Light Mode */
+body.light-mode .modal-card-manual,
+[data-theme="light"] .modal-card-manual {
+  background: #ffffff !important;
+  border: 1.5px solid #bae6fd !important;
+}
+
+body.light-mode .manual-header,
+[data-theme="light"] .manual-header {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe) !important;
+  border-bottom: 1.5px solid #bae6fd !important;
+}
+
+body.light-mode .manual-header h2,
+[data-theme="light"] .manual-header h2 {
+  color: #0f172a !important;
+}
+
+body.light-mode .manual-tabs-bar,
+[data-theme="light"] .manual-tabs-bar {
+  background: #f8fafc !important;
+  border-bottom: 1.5px solid #e2e8f0 !important;
+}
+
+body.light-mode .manual-tab-btn,
+[data-theme="light"] .manual-tab-btn {
+  color: #475569 !important;
+}
+
+body.light-mode .manual-tab-btn.active,
+[data-theme="light"] .manual-tab-btn.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+body.light-mode .manual-card-box,
+[data-theme="light"] .manual-card-box {
+  background: linear-gradient(135deg, #ffffff, #f8fafc) !important;
+  border: 1.5px solid #e2e8f0 !important;
+}
+
+body.light-mode .manual-section-heading,
+[data-theme="light"] .manual-section-heading {
+  color: #0f172a !important;
+}
+
+body.light-mode .manual-aim-text,
+[data-theme="light"] .manual-aim-text {
+  color: #1e293b !important;
+}
+
+body.light-mode .manual-app-item,
+[data-theme="light"] .manual-app-item {
+  background: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+}
+
+body.light-mode .manual-app-item h4,
+[data-theme="light"] .manual-app-item h4 {
+  color: #0f172a !important;
+}
+
+body.light-mode .manual-app-item p,
+[data-theme="light"] .manual-app-item p {
+  color: #475569 !important;
+}
+
+body.light-mode .manual-theory-rendered,
+[data-theme="light"] .manual-theory-rendered {
+  color: #1e293b !important;
+}
+
+body.light-mode .manual-procedure-list,
+[data-theme="light"] .manual-procedure-list {
+  color: #1e293b !important;
+}
+
+body.light-mode .manual-precautions-list,
+[data-theme="light"] .manual-precautions-list {
+  color: #1e293b !important;
+}
+
+body.light-mode .manual-formula-card,
+[data-theme="light"] .manual-formula-card {
+  background: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+}
+
+body.light-mode .manual-latex-formula,
+[data-theme="light"] .manual-latex-formula {
+  background: #ffffff !important;
+  color: #0369a1 !important;
+  border: 1px solid #bae6fd !important;
+}
+
+body.light-mode .manual-ref-item,
+[data-theme="light"] .manual-ref-item {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .manual-ref-details h4,
+[data-theme="light"] .manual-ref-details h4 {
+  color: #0f172a !important;
+}
+
+body.light-mode .manual-ref-authors,
+[data-theme="light"] .manual-ref-authors {
+  color: #475569 !important;
+}
+
+body.light-mode .manual-ref-citation-box,
+[data-theme="light"] .manual-ref-citation-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .manual-ref-citation-box code,
+[data-theme="light"] .manual-ref-citation-box code {
+  color: #0f172a !important;
+}
+
+body.light-mode .manual-footer,
+[data-theme="light"] .manual-footer {
+  background: #f8fafc !important;
+  border-top: 1.5px solid #e2e8f0 !important;
+}

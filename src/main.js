@@ -14,6 +14,7 @@ import { QUIZ_DATA } from "./quiz-data.js";
 import { api } from "./api.js";
 import { ICONS, AVATAR_SVGS, BADGE_SVGS } from "./icons.js";
 import { createOpticalFibreExperiment } from "./optical-fibre.js";
+import { EXPERIMENTS_CATALOG, IEEE_REFERENCE_BOOKS } from "./lab-manual-data.js";
 
 const {
   Engine,
@@ -3224,15 +3225,459 @@ function toggleTheme() {
 btnToggleTheme?.addEventListener("click", toggleTheme);
 
 // ==========================================
+// HOMEPAGE & LAB MANUAL CONTROLLER
+// ==========================================
+const homeView = document.getElementById("home-view");
+const simulatorView = document.getElementById("simulator-view");
+const navBtnHome = document.getElementById("nav-btn-home");
+const navBtnSimulators = document.getElementById("nav-btn-simulators");
+const navBtnCatalog = document.getElementById("nav-btn-catalog");
+const navBtnTextbooks = document.getElementById("nav-btn-textbooks");
+const btnBackToHome = document.getElementById("btn-back-to-home");
+const btnSimViewManual = document.getElementById("btn-sim-view-manual");
+const homepageExperimentsGrid = document.getElementById("homepage-experiments-grid");
+
+// Lab Manual Elements
+const labManualModal = document.getElementById("lab-manual-modal");
+const manualBtnClose = document.getElementById("manual-btn-close");
+const manualBtnLaunchSim = document.getElementById("manual-btn-launch-sim");
+const manualFooterBtnLaunch = document.getElementById("manual-footer-btn-launch");
+const manualFooterBtnAi = document.getElementById("manual-footer-btn-ai");
+const manualExpBadge = document.getElementById("manual-exp-badge");
+const manualExpTitle = document.getElementById("manual-exp-title");
+const manualExpCategory = document.getElementById("manual-exp-category");
+const manualContentAim = document.getElementById("manual-content-aim");
+const manualApparatusGrid = document.getElementById("manual-apparatus-grid");
+const manualContentTheory = document.getElementById("manual-content-theory");
+const manualProcedureList = document.getElementById("manual-procedure-list");
+const manualPrecautionsList = document.getElementById("manual-precautions-list");
+const manualFormulaeGrid = document.getElementById("manual-formulae-grid");
+const manualReferencesList = document.getElementById("manual-references-list");
+const manualTabBtns = document.querySelectorAll(".manual-tab-btn");
+
+let currentActiveManualExp = null;
+
+// View Switching
+function switchToView(viewName) {
+  if (viewName === "simulators") {
+    homeView?.classList.add("hidden");
+    simulatorView?.classList.remove("hidden");
+    navBtnHome?.classList.remove("nav-btn-active");
+    navBtnSimulators?.classList.add("nav-btn-active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    simulatorView?.classList.add("hidden");
+    homeView?.classList.remove("hidden");
+    navBtnSimulators?.classList.remove("nav-btn-active");
+    navBtnHome?.classList.add("nav-btn-active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+navBtnHome?.addEventListener("click", () => switchToView("home"));
+navBtnSimulators?.addEventListener("click", () => switchToView("simulators"));
+btnBackToHome?.addEventListener("click", () => switchToView("home"));
+
+navBtnCatalog?.addEventListener("click", () => {
+  switchToView("home");
+  document.getElementById("homepage-experiments-section")?.scrollIntoView({ behavior: "smooth" });
+});
+
+navBtnTextbooks?.addEventListener("click", () => {
+  switchToView("home");
+  document.getElementById("homepage-textbooks-section")?.scrollIntoView({ behavior: "smooth" });
+});
+
+document.getElementById("btn-hero-launch-projectile")?.addEventListener("click", () => {
+  switchToView("simulators");
+  switchExperiment("projectile");
+});
+
+document.getElementById("btn-hero-open-manual-proj")?.addEventListener("click", () => {
+  openLabManual("exp-1-projectile");
+});
+
+document.getElementById("btn-hero-explore-books")?.addEventListener("click", () => {
+  document.getElementById("homepage-textbooks-section")?.scrollIntoView({ behavior: "smooth" });
+});
+
+btnSimViewManual?.addEventListener("click", () => {
+  const activeExpId = activeExperimentId === "optical" ? "exp-2-optical-na" : "exp-1-projectile";
+  openLabManual(activeExpId);
+});
+
+// Category Filter Chips on Homepage
+const catalogFilterPills = document.querySelectorAll(".catalog-filters-bar .cat-pill");
+catalogFilterPills.forEach(pill => {
+  pill.addEventListener("click", () => {
+    catalogFilterPills.forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    const filter = pill.getAttribute("data-filter") || "all";
+    renderHomepageExperiments(filter);
+  });
+});
+
+// Render Experiments Cards on Homepage
+function renderHomepageExperiments(filter = "all") {
+  if (!homepageExperimentsGrid) return;
+  homepageExperimentsGrid.innerHTML = "";
+
+  const filtered = filter === "all"
+    ? EXPERIMENTS_CATALOG
+    : EXPERIMENTS_CATALOG.filter(e => e.category === filter);
+
+  filtered.forEach(exp => {
+    const card = document.createElement("div");
+    card.className = `home-exp-card ${exp.simulatorActive ? "is-active-sim" : ""}`;
+
+    const simBadge = exp.simulatorActive
+      ? `<span class="home-card-sim-badge active"><span class="pulse-dot"></span> Interactive Simulator Ready</span>`
+      : `<span class="home-card-sim-badge manual-only">Lab Manual Ready</span>`;
+
+    const formulaPreviews = exp.formulae && exp.formulae.length > 0
+      ? `<div class="home-card-formulas">
+           <span class="formula-label">Key Formula:</span>
+           <code>${exp.formulae[0].latex}</code>
+         </div>`
+      : "";
+
+    card.innerHTML = `
+      <div class="home-card-top">
+        <span class="home-card-category">${exp.category}</span>
+        ${simBadge}
+      </div>
+      <div class="home-card-header">
+        <span class="home-exp-num">EXP ${exp.number}</span>
+        <h3 class="home-exp-title">${exp.title}</h3>
+      </div>
+      <p class="home-card-desc">${exp.shortDescription || exp.aim.substring(0, 110) + '...'}</p>
+      ${formulaPreviews}
+      <div class="home-card-actions">
+        <button type="button" class="btn-home-card-manual" data-id="${exp.id}">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Read Lab Manual</span>
+        </button>
+        ${
+          exp.simulatorActive
+            ? `<button type="button" class="btn-home-card-launch" data-sim="${exp.simulatorExpId}">
+                 <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                 <span>Launch Simulator</span>
+               </button>`
+            : `<button type="button" class="btn-home-card-ai" data-id="${exp.id}" title="Consult Vectra AI about this lab">
+                 <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                 <span>Ask Vectra AI</span>
+               </button>`
+        }
+      </div>
+    `;
+
+    // Card click events
+    card.querySelector(".btn-home-card-manual")?.addEventListener("click", () => {
+      openLabManual(exp.id);
+    });
+
+    card.querySelector(".btn-home-card-launch")?.addEventListener("click", () => {
+      switchToView("simulators");
+      switchExperiment(exp.simulatorExpId);
+    });
+
+    card.querySelector(".btn-home-card-ai")?.addEventListener("click", () => {
+      openAiCopilot();
+      setTimeout(() => {
+        handleSendAiChat(`Please explain the theory, governing equations, and experimental procedures for Experiment ${exp.number}: ${exp.title}.`);
+      }, 300);
+    });
+
+    homepageExperimentsGrid.appendChild(card);
+  });
+}
+
+// Open Lab Manual Modal
+function openLabManual(expId) {
+  const exp = EXPERIMENTS_CATALOG.find(e => e.id === expId) || EXPERIMENTS_CATALOG[0];
+  currentActiveManualExp = exp;
+
+  if (manualExpBadge) manualExpBadge.textContent = `EXPERIMENT ${exp.number}`;
+  if (manualExpTitle) manualExpTitle.textContent = exp.title;
+  if (manualExpCategory) manualExpCategory.textContent = exp.category;
+  if (manualContentAim) manualContentAim.textContent = exp.aim;
+
+  // Render Required Apparatus
+  if (manualApparatusGrid) {
+    manualApparatusGrid.innerHTML = "";
+    (exp.apparatus || []).forEach(item => {
+      const el = document.createElement("div");
+      el.className = "manual-app-item";
+      el.innerHTML = `
+        <div class="manual-app-icon">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        </div>
+        <div>
+          <h4>${item.name}</h4>
+          <p>${item.desc}</p>
+        </div>
+      `;
+      manualApparatusGrid.appendChild(el);
+    });
+  }
+
+  // Render Theory
+  if (manualContentTheory) {
+    manualContentTheory.innerHTML = formatMarkdownToHtml(exp.theory);
+  }
+
+  // Render Procedure
+  if (manualProcedureList) {
+    manualProcedureList.innerHTML = "";
+    (exp.procedure || []).forEach((step, idx) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>Step ${idx + 1}:</strong> ${step}`;
+      manualProcedureList.appendChild(li);
+    });
+  }
+
+  // Render Precautions
+  if (manualPrecautionsList) {
+    manualPrecautionsList.innerHTML = "";
+    (exp.precautions || []).forEach(pre => {
+      const li = document.createElement("li");
+      li.textContent = pre;
+      manualPrecautionsList.appendChild(li);
+    });
+  }
+
+  // Render Formulae
+  if (manualFormulaeGrid) {
+    manualFormulaeGrid.innerHTML = "";
+    (exp.formulae || []).forEach(f => {
+      const card = document.createElement("div");
+      card.className = "manual-formula-card";
+      card.innerHTML = `
+        <h4>${f.name}</h4>
+        <div class="manual-latex-formula">${f.latex}</div>
+      `;
+      manualFormulaeGrid.appendChild(card);
+    });
+  }
+
+  // Render IEEE Reference Books
+  if (manualReferencesList) {
+    manualReferencesList.innerHTML = "";
+    (exp.references || []).forEach((ref, i) => {
+      const bookData = IEEE_REFERENCE_BOOKS.find(b => b.id === ref.bookId) || IEEE_REFERENCE_BOOKS[0];
+      const card = document.createElement("div");
+      card.className = "manual-ref-item";
+      card.innerHTML = `
+        <div class="manual-ref-badge" style="background:rgba(56,189,248,0.15); color:${bookData.accentColor}; border:1px solid ${bookData.accentColor};">
+          ${bookData.citationKey}
+        </div>
+        <div class="manual-ref-details">
+          <h4>${bookData.title} (${bookData.edition})</h4>
+          <p class="manual-ref-authors">${bookData.authors} • ${bookData.publisher} (${bookData.year})</p>
+          <div class="manual-ref-chapter"><strong>Syllabus Scope:</strong> ${ref.chapter}</div>
+          <div class="manual-ref-citation-box">
+            <code>${ref.citation}</code>
+          </div>
+        </div>
+      `;
+      manualReferencesList.appendChild(card);
+    });
+  }
+
+  // Update Launch Simulator Button status
+  if (manualBtnLaunchSim && manualFooterBtnLaunch) {
+    if (exp.simulatorActive) {
+      manualBtnLaunchSim.classList.remove("hidden");
+      manualFooterBtnLaunch.classList.remove("hidden");
+      manualBtnLaunchSim.onclick = () => {
+        labManualModal.classList.add("hidden");
+        switchToView("simulators");
+        switchExperiment(exp.simulatorExpId);
+      };
+      manualFooterBtnLaunch.onclick = manualBtnLaunchSim.onclick;
+    } else {
+      manualBtnLaunchSim.classList.add("hidden");
+      manualFooterBtnLaunch.classList.add("hidden");
+    }
+  }
+
+  // Reset to Aim tab
+  manualTabBtns.forEach(btn => btn.classList.remove("active"));
+  document.querySelector('.manual-tab-btn[data-tab="aim"]')?.classList.add("active");
+  document.querySelectorAll(".manual-tab-pane").forEach(p => p.classList.remove("active"));
+  document.getElementById("manual-tab-aim")?.classList.add("active");
+
+  labManualModal?.classList.remove("hidden");
+}
+
+// Manual Tab Switching
+manualTabBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    manualTabBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const tabName = btn.getAttribute("data-tab");
+    document.querySelectorAll(".manual-tab-pane").forEach(p => p.classList.remove("active"));
+    document.getElementById(`manual-tab-${tabName}`)?.classList.add("active");
+  });
+});
+
+manualBtnClose?.addEventListener("click", () => {
+  labManualModal?.classList.add("hidden");
+});
+
+manualFooterBtnAi?.addEventListener("click", () => {
+  if (currentActiveManualExp) {
+    openAiCopilot();
+    setTimeout(() => {
+      handleSendAiChat(`Please provide a deep theoretical physics debrief and mathematical breakdown for Experiment ${currentActiveManualExp.number}: ${currentActiveManualExp.title}.`);
+    }, 300);
+  }
+});
+
+// Copy IEEE Citation Buttons
+document.querySelectorAll(".btn-copy-citation").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const targetId = btn.getAttribute("data-target");
+    const codeEl = document.getElementById(targetId);
+    if (codeEl) {
+      navigator.clipboard.writeText(codeEl.textContent.trim()).then(() => {
+        showToast("📋 IEEE Citation copied to clipboard!");
+        btn.classList.add("copied");
+        setTimeout(() => btn.classList.remove("copied"), 2000);
+      });
+    }
+  });
+});
+
+// ==========================================
+// HERO PARTICLE PHYSICS ANIMATION CANVAS
+// ==========================================
+function initHeroParticleCanvas() {
+  const canvas = document.getElementById("hero-particle-canvas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  let width, height;
+  let particles = [];
+  let mouse = { x: null, y: null, radius: 140 };
+
+  function resizeCanvas() {
+    width = canvas.width = canvas.parentElement.offsetWidth;
+    height = canvas.height = canvas.parentElement.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+
+  canvas.addEventListener("mouseleave", () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.vx = (Math.random() - 0.5) * 1.2;
+      this.vy = (Math.random() - 0.5) * 1.2;
+      this.radius = Math.random() * 2.5 + 1.2;
+      const colors = ["#38bdf8", "#818cf8", "#f59e0b", "#34d399", "#c084fc"];
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.alpha = Math.random() * 0.6 + 0.3;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.x < 0 || this.x > width) this.vx *= -1;
+      if (this.y < 0 || this.y > height) this.vy *= -1;
+
+      // Mouse attraction / quantum orbital force
+      if (mouse.x !== null && mouse.y !== null) {
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius;
+          this.x += (dx / dist) * force * 1.8;
+          this.y += (dy / dist) * force * 1.8;
+        }
+      }
+    }
+
+    draw() {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.alpha;
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.min(65, Math.floor((width * height) / 12000));
+    for (let i = 0; i < count; i++) {
+      particles.push(new Particle());
+    }
+  }
+  initParticles();
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw connecting quantum lines
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 110) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          const lineAlpha = (1 - dist / 110) * 0.25;
+          ctx.strokeStyle = `rgba(56, 189, 248, ${lineAlpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+// ==========================================
 // INITIAL SETUP & RUN
 // ==========================================
 initTheme();
 loadUserProfile();
 renderObservationsTable();
 renderChallenges();
+renderHomepageExperiments("all");
+initHeroParticleCanvas();
 updateLauncher(DEFAULT_ANGLE, DEFAULT_HEIGHT);
 calculateTheoreticalResults();
 
 const runner = Runner.create();
 Runner.run(runner, engine);
-Render.run(render);
+Render.run(render);

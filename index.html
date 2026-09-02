@@ -38,12 +38,41 @@
     </div>
 
     <div class="nav-links">
-      <button id="btn-open-theory" class="nav-btn">
+      <button id="nav-btn-home" class="nav-btn nav-btn-active">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Home
+      </button>
+      <button id="nav-btn-catalog" class="nav-btn">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        All Experiments <span class="badge-count">14</span>
+      </button>
+      <button id="nav-btn-simulators" class="nav-btn nav-btn-sim">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        Simulators <span class="badge-count" style="background:#10b981; color:#064e3b;">2 Active</span>
+      </button>
+      <button id="nav-btn-textbooks" class="nav-btn">
         <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        IEEE Reference Books
+      </button>
+      <button id="btn-open-theory" class="nav-btn">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <line x1="9" y1="7" x2="15" y2="7"></line>
           <line x1="9" y1="11" x2="13" y2="11"></line>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
         </svg>
         Theory & Formulas
       </button>
@@ -54,13 +83,6 @@
           <line x1="12" y1="17" x2="12.01" y2="17"></line>
         </svg>
         Physics Quiz <span class="badge-count">10Q</span>
-      </button>
-      <button id="btn-open-explorer" class="nav-btn">
-        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-        </svg>
-        Explore Labs Hub
       </button>
       <button id="btn-open-ai-nav" class="nav-btn nav-btn-ai" title="Open Vectra AI Laboratory Assistant">
         <svg class="svg-icon svg-ai-glow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -115,29 +137,291 @@
   </header>
 
   <!-- =====================================
-       EXPERIMENT SWITCHER BANNER
+       HOMEPAGE HERO & LAB SHOWCASE VIEW
   ===================================== -->
-  <div class="exp-switch-container">
-    <div class="exp-switch-bar">
-      <button type="button" id="btn-switch-exp-projectile" class="exp-switch-btn active" data-exp="projectile">
-        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
-          <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
-        </svg>
-        <span>Exp 1: 2D Projectile Motion</span>
-      </button>
+  <div id="home-view" class="home-view-container">
+    
+    <!-- 1. ANIMATED HERO SECTION -->
+    <section class="hero-section">
+      <!-- Interactive Physics Particle & Force Canvas -->
+      <canvas id="hero-particle-canvas" class="hero-particle-canvas"></canvas>
 
-      <button type="button" id="btn-switch-exp-optical" class="exp-switch-btn" data-exp="optical">
-        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <circle cx="12" cy="12" r="6"></circle>
-          <circle cx="12" cy="12" r="2"></circle>
-        </svg>
-        <span>Exp 2: Numerical Aperture of Optical Fibre</span>
-        <span class="exp-pill-badge">NEW LAB</span>
+      <div class="hero-content">
+        <!-- Floating Animated Badges -->
+        <div class="hero-badges-row">
+          <span class="hero-badge hero-badge-glow">
+            <span class="hero-badge-pulse"></span>
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+            Next-Gen Virtual Physics Laboratory
+          </span>
+          <span class="hero-badge hero-badge-cyan">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            Vectra AI Physics Copilot Integrated
+          </span>
+          <span class="hero-badge hero-badge-emerald">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            IEEE Standard Reference Books
+          </span>
+        </div>
+
+        <!-- Hero Headline -->
+        <h1 class="hero-headline">
+          Explore Physics in <span class="hero-gradient-text">Dynamic Motion</span>
+        </h1>
+        <p class="hero-description">
+          Experience interactive 2D projectile mechanics, vector dynamics, and exact analytical solutions. Explore complete lab manuals with Aim, Theory, Procedure, and standard IEEE textbook references.
+        </p>
+
+        <!-- CTA Action Buttons -->
+        <div class="hero-cta-group">
+          <button type="button" id="btn-hero-launch-projectile" class="hero-btn hero-btn-primary">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+            </svg>
+            <span>Launch 2D Projectile Lab</span>
+          </button>
+
+          <button type="button" id="btn-hero-open-manual-proj" class="hero-btn hero-btn-glass" data-exp-id="exp-1-projectile">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              <line x1="9" y1="7" x2="15" y2="7"></line>
+              <line x1="9" y1="11" x2="13" y2="11"></line>
+            </svg>
+            <span>Open Projectile Lab Manual</span>
+          </button>
+
+          <button type="button" id="btn-hero-explore-books" class="hero-btn hero-btn-amber">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>IEEE Reference Library</span>
+          </button>
+        </div>
+
+        <!-- Real-Time Metrics Counters -->
+        <div class="hero-stats-row">
+          <div class="hero-stat-card">
+            <div class="hero-stat-number" id="stat-experiments-count">14</div>
+            <div class="hero-stat-label">Syllabus Experiments</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="hero-stat-number">2</div>
+            <div class="hero-stat-label">Active Simulators</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="hero-stat-number">4</div>
+            <div class="hero-stat-label">IEEE Standard Textbooks</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="hero-stat-number">100%</div>
+            <div class="hero-stat-label">Analytical Precision</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. EXPERIMENTS SHOWCASE SECTION -->
+    <section id="homepage-experiments-section" class="home-section">
+      <div class="section-header-block">
+        <div class="section-badge">LABORATORY EXPERIMENT CATALOG</div>
+        <h2 class="section-title">Virtual Physics Experiments</h2>
+        <p class="section-subtitle">Click on any experiment to access the complete Laboratory Manual including Aim, Theoretical Physics, Experimental Procedure, and Standard IEEE Reference Books.</p>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="catalog-filters-bar">
+        <button type="button" class="cat-pill active" data-filter="all">All Experiments (14)</button>
+        <button type="button" class="cat-pill" data-filter="Mechanics & Kinematics">Mechanics & Kinematics (2)</button>
+        <button type="button" class="cat-pill" data-filter="Fiber Optics & Lasers">Fiber Optics & Lasers (3)</button>
+        <button type="button" class="cat-pill" data-filter="Wave Optics & Interference">Wave Optics & Interference (3)</button>
+        <button type="button" class="cat-pill" data-filter="Quantum & Solid State">Quantum & Solid State (3)</button>
+        <button type="button" class="cat-pill" data-filter="Sensors & Nanotechnology">Sensors & Nanotechnology (3)</button>
+      </div>
+
+      <!-- Dynamic Experiments Grid (Container) -->
+      <div id="homepage-experiments-grid" class="home-experiments-grid"></div>
+    </section>
+
+    <!-- 3. IEEE REFERENCE TEXTBOOK LIBRARY SECTION -->
+    <section id="homepage-textbooks-section" class="home-section textbooks-section">
+      <div class="section-header-block">
+        <div class="section-badge">STANDARD ACADEMIC BIBLIOGRAPHY</div>
+        <h2 class="section-title">IEEE Reference Books Library</h2>
+        <p class="section-subtitle">Official university standard physics references in IEEE citation format, matched with cover editions for academic attribution.</p>
+      </div>
+
+      <div class="textbooks-grid">
+        
+        <!-- Book 1: University Physics (Young & Freedman) -->
+        <div class="book-card book-card-green" id="ref-card-young-freedman">
+          <div class="book-cover-mockup cover-green">
+            <div class="book-spine"></div>
+            <div class="book-cover-front">
+              <div class="book-top-publisher">OpenStax / Pearson</div>
+              <div class="book-main-title">University<br><span class="book-title-bold">Physics</span></div>
+              <div class="book-volume-badge">Volume 1 & 2</div>
+              <div class="book-edition-tag">15th Edition</div>
+              <div class="book-authors-text">Hugh D. Young • Roger A. Freedman</div>
+            </div>
+          </div>
+          <div class="book-info">
+            <div class="book-citation-key">[1] University Physics (15th ed.)</div>
+            <h3 class="book-title">Sears and Zemansky's University Physics</h3>
+            <p class="book-authors">H. D. Young and R. A. Freedman</p>
+            <div class="ieee-citation-box">
+              <div class="ieee-label">IEEE Citation Format:</div>
+              <code class="ieee-citation-code" id="cite-text-1">H. D. Young and R. A. Freedman, Sears and Zemansky's University Physics, 15th ed. Boston, MA, USA: Pearson, 2019.</code>
+            </div>
+            <div class="book-actions">
+              <button type="button" class="btn-copy-citation" data-target="cite-text-1">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy IEEE Citation</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book 2: Fundamentals of Physics (Halliday, Resnick & Walker) -->
+        <div class="book-card book-card-amber" id="ref-card-halliday-resnick">
+          <div class="book-cover-mockup cover-dark-nebula">
+            <div class="book-spine"></div>
+            <div class="book-cover-front">
+              <div class="book-top-publisher">WILEY</div>
+              <div class="book-edition-tag" style="background:#f59e0b; color:#18181b;">Twelfth Edition</div>
+              <div class="book-authors-header">Halliday & Resnick</div>
+              <div class="book-main-title"><span class="book-title-sub">Fundamentals of</span><br><span class="book-title-bold font-glow">PHYSICS</span></div>
+              <div class="book-authors-text">Jearl Walker</div>
+            </div>
+          </div>
+          <div class="book-info">
+            <div class="book-citation-key">[2] Fundamentals of Physics (12th ed.)</div>
+            <h3 class="book-title">Fundamentals of Physics</h3>
+            <p class="book-authors">D. Halliday, R. Resnick, and J. Walker</p>
+            <div class="ieee-citation-box">
+              <div class="ieee-label">IEEE Citation Format:</div>
+              <code class="ieee-citation-code" id="cite-text-2">D. Halliday, R. Resnick, and J. Walker, Fundamentals of Physics, 12th ed. Hoboken, NJ, USA: Wiley, 2021.</code>
+            </div>
+            <div class="book-actions">
+              <button type="button" class="btn-copy-citation" data-target="cite-text-2">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy IEEE Citation</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book 3: Physics for Scientists and Engineers (Serway & Jewett) -->
+        <div class="book-card book-card-cyan" id="ref-card-serway-jewett">
+          <div class="book-cover-mockup cover-blue-helix">
+            <div class="book-spine"></div>
+            <div class="book-cover-front">
+              <div class="book-top-publisher">CENGAGE Learning</div>
+              <div class="book-main-title"><span class="book-title-bold" style="color:#38bdf8;">PHYSICS</span><br><span class="book-title-sub">For Scientists and Engineers</span></div>
+              <div class="book-edition-tag">10th Edition</div>
+              <div class="book-authors-text">Raymond A. Serway • John W. Jewett</div>
+            </div>
+          </div>
+          <div class="book-info">
+            <div class="book-citation-key">[3] Physics for Scientists and Engineers (10th ed.)</div>
+            <h3 class="book-title">Physics for Scientists and Engineers</h3>
+            <p class="book-authors">R. A. Serway and J. W. Jewett</p>
+            <div class="ieee-citation-box">
+              <div class="ieee-label">IEEE Citation Format:</div>
+              <code class="ieee-citation-code" id="cite-text-3">R. A. Serway and J. W. Jewett, Physics for Scientists and Engineers, 10th ed. Boston, MA, USA: Cengage Learning, 2018.</code>
+            </div>
+            <div class="book-actions">
+              <button type="button" class="btn-copy-citation" data-target="cite-text-3">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy IEEE Citation</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book 4: Conceptual Physics (Paul G. Hewitt) -->
+        <div class="book-card book-card-purple" id="ref-card-hewitt-conceptual">
+          <div class="book-cover-mockup cover-blue-wave">
+            <div class="book-spine"></div>
+            <div class="book-cover-front">
+              <div class="book-top-publisher">Pearson International</div>
+              <div class="book-main-title"><span class="book-title-sub">CONCEPTUAL</span><br><span class="book-title-bold" style="color:#ffffff;">Physics</span></div>
+              <div class="book-edition-tag">13th Edition</div>
+              <div class="book-authors-text">Paul G. Hewitt</div>
+            </div>
+          </div>
+          <div class="book-info">
+            <div class="book-citation-key">[4] Conceptual Physics (13th ed.)</div>
+            <h3 class="book-title">Conceptual Physics</h3>
+            <p class="book-authors">Paul G. Hewitt</p>
+            <div class="ieee-citation-box">
+              <div class="ieee-label">IEEE Citation Format:</div>
+              <code class="ieee-citation-code" id="cite-text-4">P. G. Hewitt, Conceptual Physics, 13th ed. San Francisco, CA, USA: Pearson, 2022.</code>
+            </div>
+            <div class="book-actions">
+              <button type="button" class="btn-copy-citation" data-target="cite-text-4">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy IEEE Citation</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /#home-view -->
+
+  <!-- =====================================
+       SIMULATORS VIEW CONTAINER
+  ===================================== -->
+  <div id="simulator-view" class="simulator-view-container hidden">
+
+    <!-- Back to Homepage Bar -->
+    <div class="sim-top-nav-bar">
+      <button type="button" id="btn-back-to-home" class="btn-sim-home-back">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>
+        <span>Back to Homepage & Lab Catalog</span>
+      </button>
+      <button type="button" id="btn-sim-view-manual" class="btn-sim-manual-action">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>View Lab Manual & References</span>
       </button>
     </div>
-  </div>
+
+    <!-- EXPERIMENT SWITCHER BANNER -->
+    <div class="exp-switch-container">
+      <div class="exp-switch-bar">
+        <button type="button" id="btn-switch-exp-projectile" class="exp-switch-btn active" data-exp="projectile">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+          </svg>
+          <span>Exp 1: 2D Projectile Motion</span>
+        </button>
+
+        <button type="button" id="btn-switch-exp-optical" class="exp-switch-btn" data-exp="optical">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+          </svg>
+          <span>Exp 2: Numerical Aperture of Optical Fibre</span>
+          <span class="exp-pill-badge">NEW LAB</span>
+        </button>
+      </div>
+    </div>
 
   <!-- =====================================
        EXPERIMENT 1: 2D PROJECTILE MOTION
@@ -925,6 +1209,132 @@
     </section>
 
   </div><!-- /#exp-optical-section -->
+
+  </div><!-- /#simulator-view -->
+
+  <!-- =====================================
+       EXPERIMENT LAB MANUAL VIEWER MODAL
+  ===================================== -->
+  <div id="lab-manual-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-manual">
+      
+      <!-- Manual Top Bar -->
+      <div class="manual-header">
+        <div class="manual-header-title-group">
+          <div class="manual-exp-tag" id="manual-exp-badge">EXPERIMENT 1</div>
+          <h2 id="manual-exp-title">2D Projectile Motion & Trajectory Kinematics</h2>
+          <span id="manual-exp-category" class="manual-category-pill">Mechanics & Kinematics</span>
+        </div>
+        <div class="manual-header-actions">
+          <button type="button" id="manual-btn-launch-sim" class="manual-launch-btn">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span>Launch Simulator</span>
+          </button>
+          <button type="button" id="manual-btn-close" class="modal-close-btn" title="Close Manual">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="manual-tabs-bar">
+        <button type="button" class="manual-tab-btn active" data-tab="aim">🎯 Aim & Apparatus</button>
+        <button type="button" class="manual-tab-btn" data-tab="theory">📚 Theory & Derivation</button>
+        <button type="button" class="manual-tab-btn" data-tab="procedure">🔬 Step-by-Step Procedure</button>
+        <button type="button" class="manual-tab-btn" data-tab="formulae">📐 Formulae & Equations</button>
+        <button type="button" class="manual-tab-btn" data-tab="references">📖 IEEE Reference Books</button>
+      </div>
+
+      <!-- Tab Contents Viewport -->
+      <div class="manual-body-scroll">
+        
+        <!-- Tab 1: Aim & Apparatus -->
+        <div id="manual-tab-aim" class="manual-tab-pane active">
+          <div class="manual-card-box">
+            <h3 class="manual-section-heading">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+              Statement of Aim
+            </h3>
+            <p id="manual-content-aim" class="manual-aim-text"></p>
+          </div>
+
+          <div class="manual-card-box" style="margin-top: 20px;">
+            <h3 class="manual-section-heading">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              Required Laboratory Apparatus
+            </h3>
+            <div id="manual-apparatus-grid" class="manual-apparatus-grid"></div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Theory & Derivation -->
+        <div id="manual-tab-theory" class="manual-tab-pane">
+          <div class="manual-card-box">
+            <h3 class="manual-section-heading">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Theoretical Principles & Mathematical Formulations
+            </h3>
+            <div id="manual-content-theory" class="manual-theory-rendered"></div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Step-by-Step Procedure -->
+        <div id="manual-tab-procedure" class="manual-tab-pane">
+          <div class="manual-card-box">
+            <h3 class="manual-section-heading">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              Experimental Procedure (Step-by-Step)
+            </h3>
+            <ol id="manual-procedure-list" class="manual-procedure-list"></ol>
+          </div>
+
+          <div class="manual-card-box" style="margin-top: 20px;">
+            <h3 class="manual-section-heading">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              Laboratory Safety & Precautions
+            </h3>
+            <ul id="manual-precautions-list" class="manual-precautions-list"></ul>
+          </div>
+        </div>
+
+        <!-- Tab 4: Formulae & Equations -->
+        <div id="manual-tab-formulae" class="manual-tab-pane">
+          <div class="manual-card-box">
+            <h3 class="manual-section-heading">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg>
+              Core Mathematical Formulae
+            </h3>
+            <div id="manual-formulae-grid" class="manual-formulae-grid"></div>
+          </div>
+        </div>
+
+        <!-- Tab 5: IEEE Reference Books -->
+        <div id="manual-tab-references" class="manual-tab-pane">
+          <div class="manual-card-box">
+            <h3 class="manual-section-heading">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Official IEEE Style Textbooks & Chapter References
+            </h3>
+            <div id="manual-references-list" class="manual-references-list"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Manual Footer -->
+      <div class="manual-footer">
+        <button type="button" id="manual-footer-btn-ai" class="manual-footer-btn manual-footer-ai">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Ask Vectra AI About This Experiment
+        </button>
+        <button type="button" id="manual-footer-btn-launch" class="manual-footer-btn manual-footer-launch">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Launch Interactive Simulator
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- =====================================
        EXPLORE LABS HUB MODAL
