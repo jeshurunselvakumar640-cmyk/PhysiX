@@ -72,6 +72,8 @@ let simState = {
   targetDistance: 35.0, // meters
   targetScore: 0,
   targetHitEffect: 0,
+  targetHitX: 0,
+  targetSpawnEffect: 0,
 
   currentTrail: [],
   ghostTrails: []
@@ -542,35 +544,67 @@ function resetSimulation() {
 }
 
 // ==========================================
-// TARGET MODE HIT DETECTION
+// TARGET MODE HIT DETECTION & RESPAWN
 // ==========================================
 function checkTargetHit(landX) {
   if (!simState.targetMode) return;
 
-  const targetPixelX = ORIGIN_X + simState.targetDistance * SCALE;
-  const diffMeters = Math.abs(landX - targetPixelX) / SCALE;
+  const currentTargetX = ORIGIN_X + simState.targetDistance * SCALE;
+  const diffMeters = Math.abs(landX - currentTargetX) / SCALE;
 
-  if (diffMeters <= 1.5) {
-    // Bullseye!
+  if (diffMeters <= 2.0) {
+    // Direct Bullseye Hit
     simState.targetScore += 100;
-    simState.targetHitEffect = 35;
-    showToast("DIRECT HIT! Bullseye (+100 pts)");
+    simState.targetHitEffect = 40;
+    simState.targetHitX = currentTargetX;
+    showToast(`🎯 DIRECT HIT! Bullseye (+100 pts) • Spawning new target...`);
     recordTargetHitTelemetry(true);
-    spawnNewTarget();
-  } else if (diffMeters <= 3.5) {
-    // Near hit
+    unlockBadge("badge-target-hit", "Bullseye Sniper");
+    setTimeout(() => {
+      spawnNewTarget(true);
+    }, 600);
+  } else if (diffMeters <= 4.0) {
+    // Near Hit
     simState.targetScore += 50;
-    simState.targetHitEffect = 25;
-    showToast("NEAR HIT! (+50 pts)");
+    simState.targetHitEffect = 30;
+    simState.targetHitX = currentTargetX;
+    showToast(`🎯 NEAR HIT! (+50 pts) • Spawning new target...`);
     recordTargetHitTelemetry(false);
-    spawnNewTarget();
+    setTimeout(() => {
+      spawnNewTarget(true);
+    }, 600);
   }
-  targetScoreText.textContent = simState.targetScore;
+  if (targetScoreText) {
+    targetScoreText.textContent = simState.targetScore;
+  }
 }
 
-function spawnNewTarget() {
-  simState.targetDistance = Math.floor(Math.random() * 40 + 20);
-  targetDistanceText.textContent = `${simState.targetDistance.toFixed(1)} m`;
+function spawnNewTarget(notify = false) {
+  const oldDistance = simState.targetDistance || 35.0;
+  let newDistance = oldDistance;
+  let attempts = 0;
+
+  // Choose a guaranteed new random distance between 18.0m and 65.0m in 0.5m intervals
+  while (attempts < 30) {
+    const candidate = Math.round((Math.random() * 47 + 18) * 2) / 2;
+    if (Math.abs(candidate - oldDistance) >= 8.0) {
+      newDistance = candidate;
+      break;
+    }
+    attempts++;
+  }
+  if (newDistance === oldDistance) {
+    newDistance = oldDistance > 40 ? oldDistance - 15 : oldDistance + 15;
+  }
+
+  simState.targetDistance = newDistance;
+  simState.targetSpawnEffect = 35; // Pulse glow effect on newly spawned target
+  if (targetDistanceText) {
+    targetDistanceText.textContent = `${simState.targetDistance.toFixed(1)} m`;
+  }
+  if (notify) {
+    showToast(`🎯 New Target Spawned at ${simState.targetDistance.toFixed(1)} m`);
+  }
 }
 
 // ==========================================
@@ -769,23 +803,56 @@ function drawTarget(ctx) {
   const targetX = ORIGIN_X + simState.targetDistance * SCALE;
   const targetY = GROUND_Y;
 
-  // Flash effect on hit
+  // 1. Draw Hit Shockwave / Blast Effect at the impact coordinate
   if (simState.targetHitEffect > 0) {
+    const blastX = simState.targetHitX || targetX;
+    const progress = simState.targetHitEffect / 40;
+    const radius = 55 * (1 - progress * 0.4);
+
+    ctx.save();
+    // Outer golden blast
     ctx.beginPath();
-    ctx.arc(targetX, targetY - 15, 45, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(245, 158, 11, ${simState.targetHitEffect / 35})`;
+    ctx.arc(blastX, targetY - 15, radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(245, 158, 11, ${progress * 0.7})`;
+    ctx.shadowColor = "#f59e0b";
+    ctx.shadowBlur = 20;
     ctx.fill();
+
+    // Inner fiery shockwave
+    ctx.beginPath();
+    ctx.arc(blastX, targetY - 15, radius * 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(239, 68, 68, ${progress * 0.9})`;
+    ctx.fill();
+    ctx.restore();
+
     simState.targetHitEffect--;
   }
 
-  // Target Pad
+  // 2. Draw Spawn Beacon Pulse on newly randomized target
+  if (simState.targetSpawnEffect > 0) {
+    const pulseAlpha = simState.targetSpawnEffect / 35;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(targetX, targetY - 18, 32, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(56, 189, 248, ${pulseAlpha})`;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([4, 4]);
+    ctx.shadowColor = "#38bdf8";
+    ctx.shadowBlur = 12;
+    ctx.stroke();
+    ctx.restore();
+
+    simState.targetSpawnEffect--;
+  }
+
+  // 3. Target Base Pad
   ctx.fillStyle = "#f59e0b";
   ctx.shadowColor = "#f59e0b";
   ctx.shadowBlur = 10;
   ctx.fillRect(targetX - 25, targetY - 4, 50, 6);
   ctx.shadowBlur = 0;
 
-  // Bullseye Concentric Rings
+  // 4. Bullseye Concentric Target Rings
   ctx.beginPath();
   ctx.arc(targetX, targetY - 18, 16, 0, Math.PI * 2);
   ctx.fillStyle = "#ef4444";
@@ -801,7 +868,7 @@ function drawTarget(ctx) {
   ctx.fillStyle = "#ef4444";
   ctx.fill();
 
-  // Flag pole
+  // 5. Target Flag Pole
   ctx.beginPath();
   ctx.strokeStyle = "#cbd5e1";
   ctx.lineWidth = 2;
@@ -809,7 +876,7 @@ function drawTarget(ctx) {
   ctx.lineTo(targetX, targetY - 4);
   ctx.stroke();
 
-  // Flag
+  // 6. Target Pennant Flag
   ctx.beginPath();
   ctx.fillStyle = "#f59e0b";
   ctx.moveTo(targetX, targetY - 34);
@@ -817,6 +884,14 @@ function drawTarget(ctx) {
   ctx.lineTo(targetX, targetY - 18);
   ctx.closePath();
   ctx.fill();
+
+  // 7. Metric Target Distance Text Floating Above Target
+  ctx.save();
+  ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
+  ctx.fillStyle = "#fbbf24";
+  ctx.textAlign = "center";
+  ctx.fillText(`${simState.targetDistance.toFixed(1)}m`, targetX, targetY - 40);
+  ctx.restore();
 }
 
 function drawGhostTrails(ctx) {
@@ -2517,10 +2592,15 @@ toggleTarget.addEventListener("change", (e) => {
   simState.targetMode = e.target.checked;
   if (simState.targetMode) {
     targetBanner.classList.remove("hidden");
-    spawnNewTarget();
+    spawnNewTarget(true);
   } else {
     targetBanner.classList.add("hidden");
   }
+});
+
+const btnRandomizeTarget = document.getElementById("btn-randomize-target");
+btnRandomizeTarget?.addEventListener("click", () => {
+  spawnNewTarget(true);
 });
 
 // Simulation Action Buttons
