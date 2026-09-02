@@ -4,6 +4,7 @@
  */
 
 const API_BASE = "/api";
+const DIRECT_API_BASE = "http://localhost:3001/api";
 
 async function fetchJson(url, options = {}) {
   try {
@@ -14,14 +15,29 @@ async function fetchJson(url, options = {}) {
       },
       ...options
     });
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    if (res.ok) {
+      return await res.json();
     }
-    return await res.json();
   } catch (err) {
+    // If proxied /api failed, attempt direct connection to Express server on port 3001
+    if (url.startsWith("/api")) {
+      try {
+        const directUrl = url.replace("/api", DIRECT_API_BASE);
+        const directRes = await fetch(directUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+          },
+          ...options
+        });
+        if (directRes.ok) {
+          return await directRes.json();
+        }
+      } catch (directErr) {}
+    }
     console.warn(`[API Client] Network request to ${url} failed:`, err.message);
-    return null;
   }
+  return null;
 }
 
 export const api = {

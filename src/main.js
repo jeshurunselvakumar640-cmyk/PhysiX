@@ -2693,8 +2693,26 @@ function updateAiContextStrip() {
   }
 }
 
+async function updateAiServerStatus() {
+  if (!aiLiveBadge) return;
+  try {
+    const status = await api.getAiStatus();
+    if (status && status.status === "ready") {
+      aiLiveBadge.textContent = "● Gemini 3.6 Online";
+      aiLiveBadge.style.color = "#34d399";
+    } else {
+      aiLiveBadge.textContent = "● Kinematics Core Online";
+      aiLiveBadge.style.color = "#38bdf8";
+    }
+  } catch (e) {
+    aiLiveBadge.textContent = "● Kinematics Core Online";
+    aiLiveBadge.style.color = "#38bdf8";
+  }
+}
+
 function openAiCopilot() {
   updateAiContextStrip();
+  updateAiServerStatus();
   aiCopilotModal?.classList.remove("hidden");
   setTimeout(() => aiChatInput?.focus(), 100);
 }
