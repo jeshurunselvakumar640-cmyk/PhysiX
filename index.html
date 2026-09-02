@@ -1441,20 +1441,20 @@
 
           <div class="profile-hero-details">
             <div class="profile-name-row">
-              <h3 id="hero-student-name">Alex Henderson</h3>
+              <h3 id="hero-student-name">Student Physicist</h3>
               <span class="profile-status-badge guest-badge" id="hero-status-badge">● Guest Mode</span>
             </div>
             
             <div class="profile-meta-row">
-              <span class="profile-handle" id="hero-student-handle">@student_physicist</span>
+              <span class="profile-handle" id="hero-student-handle">@student</span>
               <span class="profile-meta-dot">•</span>
               <span class="profile-email-meta" id="hero-student-email">guest@physix.lab</span>
             </div>
 
             <div class="profile-badges-row">
               <span class="profile-pill pill-rank" id="hero-rank-pill">Newtonian Novice</span>
-              <span class="profile-pill pill-edu" id="hero-edu-pill">Undergraduate Student</span>
-              <span class="profile-pill pill-inst" id="hero-inst-pill">PhysiX Virtual Lab</span>
+              <span class="profile-pill pill-edu" id="hero-edu-pill">Status Unset</span>
+              <span class="profile-pill pill-inst" id="hero-inst-pill">Institution Unset</span>
             </div>
 
             <!-- DYNAMIC LEVEL & PROGRESSIVE XP TRACKER -->
@@ -1522,29 +1522,27 @@
             <div class="info-fields-grid">
               <div class="info-field">
                 <span class="info-label">Full Name</span>
-                <strong id="p-overview-name" class="info-val">Alex Henderson</strong>
+                <strong id="p-overview-name" class="info-val">—</strong>
               </div>
               <div class="info-field">
                 <span class="info-label">Academic Status</span>
-                <strong id="p-overview-edu" class="info-val">Undergraduate / College Student</strong>
+                <strong id="p-overview-edu" class="info-val">—</strong>
               </div>
               <div class="info-field">
                 <span class="info-label">Affiliated Institution</span>
-                <strong id="p-overview-occ" class="info-val">Physics Department</strong>
+                <strong id="p-overview-occ" class="info-val">—</strong>
               </div>
               <div class="info-field">
                 <span class="info-label">Specialization Topics</span>
                 <div class="interest-tag-list" id="p-overview-interests">
-                  <span class="p-interest-tag">2D Kinematics</span>
-                  <span class="p-interest-tag">Projectile Trajectories</span>
-                  <span class="p-interest-tag">Planetary Gravity</span>
+                  <span class="p-interest-tag" style="opacity:0.6;">No specialization tags added</span>
                 </div>
               </div>
             </div>
 
             <div class="info-bio-box">
               <span class="info-label">Student Statement / Lab Focus</span>
-              <p id="p-overview-bio">Exploring 2D projectile kinematics, parabolic trajectories, vector breakdown components, and gravitational effects across the solar system.</p>
+              <p id="p-overview-bio">No student statement provided. Click 'Edit Profile' to customize your research identity.</p>
             </div>
           </div>
 
@@ -2037,13 +2035,13 @@
 
         <div class="form-row-2">
           <div class="form-group">
-            <label for="profile-name-input">Student Full Name</label>
-            <input type="text" id="profile-name-input" placeholder="e.g. Alex Henderson" required />
+            <label for="profile-name-input">Student Full Name <span style="color:#ef4444; font-weight:700;">* (Required)</span></label>
+            <input type="text" id="profile-name-input" placeholder="Enter your full name" required autocomplete="name" />
           </div>
 
           <div class="form-group">
             <label for="profile-handle-input">Call-sign / Handle</label>
-            <input type="text" id="profile-handle-input" placeholder="e.g. @alex_physicist" />
+            <input type="text" id="profile-handle-input" placeholder="e.g. @physicist" />
           </div>
         </div>
 
@@ -2051,8 +2049,8 @@
           <div class="form-group">
             <label for="profile-edu-status">Educational Level</label>
             <select id="profile-edu-status">
-              <option value="High School Student">High School (AP/IB Physics)</option>
               <option value="Undergraduate Student" selected>Undergraduate / College (B.Sc / B.Tech)</option>
+              <option value="High School Student">High School (AP/IB Physics)</option>
               <option value="Graduate Researcher">Graduate / Master's / PhD Researcher</option>
               <option value="Physics Educator">Physics Educator / Professor</option>
               <option value="Independent Enthusiast">Independent Physics Enthusiast</option>
@@ -2061,14 +2059,14 @@
 
           <div class="form-group">
             <label for="profile-occupation-input">Institution / Department</label>
-            <input type="text" id="profile-occupation-input" placeholder="e.g. MIT Physics Lab / Student" />
+            <input type="text" id="profile-occupation-input" placeholder="e.g. University / Department" />
           </div>
         </div>
 
         <div class="form-group">
           <label for="profile-interests-input">Specialization & Focus Areas (comma-separated)</label>
           <input type="text" id="profile-interests-input"
-            placeholder="e.g. 2D Kinematics, Planetary Gravity, Orbital Dynamics" />
+            placeholder="e.g. 2D Kinematics, Optical Fiber, Quantum Mechanics" />
         </div>
 
         <div class="form-group">

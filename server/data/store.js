@@ -11,13 +11,13 @@ function getDefaultUserData(userId = "guest") {
   return {
     userId,
     profile: {
-      name: "Alex Henderson",
+      name: "",
       avatar: "quantum",
-      handle: "@alex_physicist",
-      edu: "Undergraduate Student",
-      occ: "MIT Physics Lab / Student",
-      interests: "2D Kinematics, Planetary Gravity, Orbital Dynamics",
-      bio: "Exploring 2D projectile kinematics, parabolic trajectories, vector breakdown components, and gravitational effects across the solar system.",
+      handle: "",
+      edu: "",
+      occ: "",
+      interests: "",
+      bio: "",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },

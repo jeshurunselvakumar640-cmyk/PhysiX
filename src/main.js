@@ -1057,13 +1057,13 @@ function getStoredUserProfile() {
     console.warn("Error reading profile from localStorage", e);
   }
   return {
-    name: "Alex Henderson",
+    name: "",
     avatar: "quantum",
-    handle: "@alex_physicist",
-    edu: "Undergraduate Student",
-    occ: "MIT Physics Lab / Student",
-    interests: "2D Kinematics, Planetary Gravity, Orbital Dynamics",
-    bio: "Exploring 2D projectile kinematics, parabolic trajectories, vector breakdown components, and gravitational effects across the solar system."
+    handle: "",
+    edu: "",
+    occ: "",
+    interests: "",
+    bio: ""
   };
 }
 
@@ -1614,9 +1614,9 @@ function loadUserProfile() {
   const user = auth.currentUser;
   const isAuth = !!user;
 
-  const displayName = profile.name || (user ? user.email.split("@")[0] : "Alex Henderson");
-  const displayEmail = user ? user.email : "guest@physix.lab";
-  const displayHandle = profile.handle || `@${displayName.toLowerCase().replace(/[^a-z0-9_]/g, "") || "student_physicist"}`;
+  const displayName = profile.name || (user ? user.email.split("@")[0] : "");
+  const displayEmail = user ? user.email : "";
+  const displayHandle = profile.handle || (displayName ? `@${displayName.toLowerCase().replace(/[^a-z0-9_]/g, "")}` : (user ? `@${user.email.split("@")[0]}` : ""));
   const avatar = profile.avatar || "quantum";
   selectedAvatar = avatar;
 
@@ -1670,7 +1670,7 @@ function loadUserProfile() {
   } else {
     // AUTHENTICATED MODE: Show complete student profile hero card and detail tabs
     if (navAvatarChar) navAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
-    if (userNameEl) userNameEl.textContent = displayName;
+    if (userNameEl) userNameEl.textContent = displayName || user.email.split("@")[0];
     if (userStatusEl) {
       userStatusEl.textContent = "● Firebase Online";
       userStatusEl.style.color = "#34d399";
@@ -1694,8 +1694,8 @@ function loadUserProfile() {
     // 2. Update Profile Hero Card
     if (heroAvatarChar) heroAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
     if (heroLevelBadge) heroLevelBadge.textContent = `LVL ${rankInfo.level}`;
-    if (heroStudentName) heroStudentName.textContent = displayName;
-    if (heroStudentHandle) heroStudentHandle.textContent = displayHandle;
+    if (heroStudentName) heroStudentName.textContent = displayName || "Student Physicist";
+    if (heroStudentHandle) heroStudentHandle.textContent = displayHandle || "@student";
     if (heroStudentEmail) heroStudentEmail.textContent = displayEmail;
 
     if (heroStatusBadge) {
@@ -1727,15 +1727,19 @@ function loadUserProfile() {
     }
 
     // 3. Update Overview & Bio Tab
-    if (pOverviewName) pOverviewName.textContent = displayName;
-    if (pOverviewEdu) pOverviewEdu.textContent = profile.edu || "Undergraduate Student";
-    if (pOverviewOcc) pOverviewOcc.textContent = profile.occ || "MIT Physics Lab / Student";
-    if (pOverviewBio) pOverviewBio.textContent = profile.bio || "Exploring projectile kinematics and parabolic trajectories.";
+    if (pOverviewName) pOverviewName.textContent = displayName || "—";
+    if (pOverviewEdu) pOverviewEdu.textContent = profile.edu || "—";
+    if (pOverviewOcc) pOverviewOcc.textContent = profile.occ || "—";
+    if (pOverviewBio) pOverviewBio.textContent = profile.bio || "No student statement provided. Click 'Edit Profile' to customize your research identity.";
 
     if (pOverviewInterests) {
-      const rawInterests = profile.interests || "2D Kinematics, Planetary Gravity, Trajectories";
+      const rawInterests = profile.interests || "";
       const tags = rawInterests.split(",").map(t => t.trim()).filter(Boolean);
-      pOverviewInterests.innerHTML = tags.map(tag => `<span class="p-interest-tag">${tag}</span>`).join("");
+      if (tags.length > 0) {
+        pOverviewInterests.innerHTML = tags.map(tag => `<span class="p-interest-tag">${tag}</span>`).join("");
+      } else {
+        pOverviewInterests.innerHTML = `<span class="p-interest-tag" style="opacity:0.6;">No specialization tags added</span>`;
+      }
     }
 
     if (pMetaType) pMetaType.textContent = "Firebase Cloud Account";
@@ -1957,10 +1961,11 @@ formLogin?.addEventListener("submit", async (e) => {
   try {
     loginErrorMsg.classList.add("hidden");
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    showToast(`Welcome back, ${userCredential.user.email}!`);
+    showToast(`Welcome back, ${userCredential.user.email}! Please review your student details.`);
     loginEmail.value = "";
     loginPassword.value = "";
     loadUserProfile();
+    openEditProfileModal();
   } catch (error) {
     console.error("Login error:", error);
     loginErrorMsg.textContent = formatAuthError(error.message);
@@ -1995,11 +2000,12 @@ formSignup?.addEventListener("submit", async (e) => {
   try {
     signupErrorMsg.classList.add("hidden");
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    showToast(`Account created for ${userCredential.user.email}!`);
+    showToast(`Account created for ${userCredential.user.email}! Please enter your student details.`);
     signupEmail.value = "";
     signupPassword.value = "";
     signupConfirm.value = "";
     loadUserProfile();
+    openEditProfileModal();
   } catch (error) {
     console.error("Signup error:", error);
     signupErrorMsg.textContent = formatAuthError(error.message);
@@ -2138,6 +2144,46 @@ avatarButtons.forEach(btn => {
   });
 });
 
+function openEditProfileModal() {
+  const profile = getStoredUserProfile();
+  const user = auth.currentUser;
+  const defaultName = profile.name || "";
+  const defaultHandle = profile.handle || (defaultName ? `@${defaultName.toLowerCase().replace(/[^a-z0-9_]/g, "")}` : (user ? `@${user.email.split("@")[0]}` : ""));
+
+  const nameInput = document.getElementById("profile-name-input");
+  const handleInput = document.getElementById("profile-handle-input");
+  const eduInput = document.getElementById("profile-edu-status");
+  const occInput = document.getElementById("profile-occupation-input");
+  const interestsInput = document.getElementById("profile-interests-input");
+  const bioInput = document.getElementById("profile-interests-bio");
+
+  if (nameInput) {
+    nameInput.value = profile.name || "";
+    nameInput.required = true;
+  }
+  if (handleInput) handleInput.value = profile.handle || defaultHandle;
+  if (eduInput) eduInput.value = profile.edu || "Undergraduate Student";
+  if (occInput) occInput.value = profile.occ || "";
+  if (interestsInput) interestsInput.value = profile.interests || "";
+  if (bioInput) bioInput.value = profile.bio || "";
+
+  const activeAvatar = profile.avatar || selectedAvatar || "quantum";
+  avatarButtons.forEach(b => {
+    if (b.getAttribute("data-avatar") === activeAvatar) {
+      b.classList.add("selected");
+    } else {
+      b.classList.remove("selected");
+    }
+  });
+
+  profileModal?.classList.add("hidden");
+  editProfileModal?.classList.remove("hidden");
+
+  setTimeout(() => {
+    nameInput?.focus();
+  }, 100);
+}
+
 if (formEditProfile) {
   formEditProfile.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -2148,14 +2194,21 @@ if (formEditProfile) {
     const interestsInput = document.getElementById("profile-interests-input");
     const bioInput = document.getElementById("profile-interests-bio");
 
+    const nameVal = nameInput?.value.trim();
+    if (!nameVal) {
+      showToast("Student Full Name is compulsory. Please enter your name.");
+      nameInput?.focus();
+      return;
+    }
+
     const profileData = {
-      name: nameInput?.value.trim() || "Alex Henderson",
-      avatar: selectedAvatar,
-      handle: handleInput?.value.trim() || "@alex_physicist",
+      name: nameVal,
+      avatar: selectedAvatar || "quantum",
+      handle: handleInput?.value.trim() || `@${nameVal.toLowerCase().replace(/[^a-z0-9_]/g, "")}`,
       edu: eduInput?.value || "Undergraduate Student",
-      occ: occInput?.value.trim() || "MIT Physics Lab / Student",
-      interests: interestsInput?.value.trim() || "2D Kinematics, Planetary Gravity, Orbital Dynamics",
-      bio: bioInput?.value.trim() || "Exploring 2D projectile kinematics and trajectories."
+      occ: occInput?.value.trim() || "",
+      interests: interestsInput?.value.trim() || "",
+      bio: bioInput?.value.trim() || ""
     };
 
     saveStoredUserProfile(profileData);
@@ -2168,8 +2221,7 @@ if (formEditProfile) {
 }
 
 btnOpenEditProfile?.addEventListener("click", () => {
-  profileModal?.classList.add("hidden");
-  editProfileModal?.classList.remove("hidden");
+  openEditProfileModal();
 });
 
 btnCloseEditProfile?.addEventListener("click", () => {
