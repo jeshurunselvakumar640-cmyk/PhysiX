@@ -1,5 +1,6 @@
 import Matter from "matter-js";
 import "./style.css";
+import "./light-mode.css";
 import {
   auth,
   signInWithEmailAndPassword,
@@ -10,6 +11,9 @@ import {
   onAuthStateChanged
 } from "./firebase.js";
 import { QUIZ_DATA } from "./quiz-data.js";
+import { api } from "./api.js";
+import { ICONS, AVATAR_SVGS, BADGE_SVGS } from "./icons.js";
+import { createOpticalFibreExperiment } from "./optical-fibre.js";
 
 const {
   Engine,
@@ -218,21 +222,94 @@ const btnOpenQuiz = document.getElementById("btn-open-quiz");
 const btnCloseQuiz = document.getElementById("btn-close-quiz");
 
 const userProfileBtn = document.getElementById("user-profile-btn");
+const btnOpenProfileNav = document.getElementById("btn-open-profile-nav");
 const btnCloseProfile = document.getElementById("btn-close-profile");
+
+// Vectra AI DOM Elements
+const aiCopilotModal = document.getElementById("ai-copilot-modal");
+const btnOpenAiNav = document.getElementById("btn-open-ai-nav");
+const btnAiFab = document.getElementById("btn-ai-fab");
+const btnCloseAiCopilot = document.getElementById("btn-close-ai-copilot");
+const aiLiveBadge = document.getElementById("ai-live-badge");
+const aiCtxV0 = document.getElementById("ai-ctx-v0");
+const aiCtxAngle = document.getElementById("ai-ctx-angle");
+const aiCtxH0 = document.getElementById("ai-ctx-h0");
+const aiCtxG = document.getElementById("ai-ctx-g");
+const aiChatMessages = document.getElementById("ai-chat-messages");
+const formAiChat = document.getElementById("form-ai-chat");
+const aiChatInput = document.getElementById("ai-chat-input");
+const btnAiSend = document.getElementById("btn-ai-send");
+const btnAiClear = document.getElementById("btn-ai-clear");
+const aiSuggestionChips = document.querySelectorAll(".ai-suggestion-chip");
 
 const toastEl = document.getElementById("toast");
 
 // ==========================================
-// FIREBASE AUTH DOM ELEMENTS
+// STUDENT PROFILE & AUTH DOM ELEMENTS
 // ==========================================
-const authModalTitle = document.getElementById("auth-modal-title");
-const authModalSubtitle = document.getElementById("auth-modal-subtitle");
+const heroAvatarChar = document.getElementById("hero-avatar-char");
+const heroLevelBadge = document.getElementById("hero-level-badge");
+const heroStudentName = document.getElementById("hero-student-name");
+const heroStatusBadge = document.getElementById("hero-status-badge");
+const heroStudentHandle = document.getElementById("hero-student-handle");
+const heroStudentEmail = document.getElementById("hero-student-email");
+const heroRankPill = document.getElementById("hero-rank-pill");
+const heroEduPill = document.getElementById("hero-edu-pill");
+const heroInstPill = document.getElementById("hero-inst-pill");
+const btnHeroAuthToggle = document.getElementById("btn-hero-auth-toggle");
+const heroAuthIcon = document.getElementById("hero-auth-icon");
+const heroAuthLabel = document.getElementById("hero-auth-label");
+
+const profileTabBtns = document.querySelectorAll(".profile-tab-btn");
+const tabOverview = document.getElementById("tab-overview");
+const tabStats = document.getElementById("tab-stats");
+const tabBadges = document.getElementById("tab-badges");
+const tabLogs = document.getElementById("tab-logs");
+const tabSecurity = document.getElementById("tab-security");
+
+// Overview Tab Elements
+const pOverviewName = document.getElementById("p-overview-name");
+const pOverviewEdu = document.getElementById("p-overview-edu");
+const pOverviewOcc = document.getElementById("p-overview-occ");
+const pOverviewInterests = document.getElementById("p-overview-interests");
+const pOverviewBio = document.getElementById("p-overview-bio");
+const pMetaType = document.getElementById("p-meta-type");
+const pMetaUid = document.getElementById("p-meta-uid");
+const pMetaEmail = document.getElementById("p-meta-email");
+const pMetaBackend = document.getElementById("p-meta-backend");
+const pMetaSync = document.getElementById("p-meta-sync");
+const pMetaRank = document.getElementById("p-meta-rank");
+
+// Telemetry Stats Elements
+const statQuizScore = document.getElementById("stat-quiz-score");
+const statQuizGrade = document.getElementById("stat-quiz-grade");
+const statTargetScore = document.getElementById("stat-target-score");
+const statTargetHits = document.getElementById("stat-target-hits");
+const statTotalLaunches = document.getElementById("stat-total-launches");
+const statMaxRange = document.getElementById("stat-max-range");
+const statMaxHeight = document.getElementById("stat-max-height");
+const statMaxVelocity = document.getElementById("stat-max-velocity");
+const statFavPlanet = document.getElementById("stat-fav-planet");
+const statTotalAirtime = document.getElementById("stat-total-airtime");
+
+// Badges & Logs Elements
+const badgesUnlockedCount = document.getElementById("badges-unlocked-count");
+const badgesUnlockedPill = document.getElementById("badges-unlocked-pill");
+const logsCountBadge = document.getElementById("logs-count-badge");
+const flightLogsTbody = document.getElementById("flight-logs-tbody");
+const btnClearFlightLogs = document.getElementById("btn-clear-flight-logs");
+
+// Security / Auth Elements
+const secGuestPanel = document.getElementById("sec-guest-panel");
+const secUserPanel = document.getElementById("sec-user-panel");
+const btnSubtabLogin = document.getElementById("btn-subtab-login");
+const btnSubtabSignup = document.getElementById("btn-subtab-signup");
+const btnSubtabForgot = document.getElementById("btn-subtab-forgot");
+const authSubtabBtns = document.querySelectorAll(".auth-subtab-btn");
 
 const authViewLogin = document.getElementById("auth-view-login");
 const authViewSignup = document.getElementById("auth-view-signup");
 const authViewForgot = document.getElementById("auth-view-forgot");
-const authViewChangePassword = document.getElementById("auth-view-change-password");
-const authViewDashboard = document.getElementById("auth-view-dashboard");
 
 const formLogin = document.getElementById("form-login");
 const formSignup = document.getElementById("form-signup");
@@ -256,18 +333,30 @@ const changeNewPassword = document.getElementById("change-new-password");
 const changeConfirmPassword = document.getElementById("change-confirm-password");
 const changeErrorMsg = document.getElementById("change-error-msg");
 
-const btnGotoForgot = document.getElementById("btn-goto-forgot");
-const btnGotoSignup = document.getElementById("btn-goto-signup");
-const btnSignupGotoLogin = document.getElementById("btn-signup-goto-login");
-const btnForgotGotoLogin = document.getElementById("btn-forgot-goto-login");
-const btnDashboardChangePwd = document.getElementById("btn-dashboard-change-pwd");
-const btnChangeGotoDashboard = document.getElementById("btn-change-goto-dashboard");
+const secUserEmailDisplay = document.getElementById("sec-user-email-display");
+const secDetailEmail = document.getElementById("sec-detail-email");
+const secDetailUid = document.getElementById("sec-detail-uid");
 const btnDashboardLogout = document.getElementById("btn-dashboard-logout");
 
-const profileUserEmail = document.getElementById("profile-user-email");
-const profileAvatarChar = document.getElementById("profile-avatar-char");
-const profileStatQuiz = document.getElementById("profile-stat-quiz");
-const profileStatTarget = document.getElementById("profile-stat-target");
+// ==========================================
+// OBSERVATIONS & CHALLENGES DOM ELEMENTS
+// ==========================================
+const btnRecordObservation = document.getElementById("record-observation");
+const btnRecordObsTable = document.getElementById("btn-record-obs-table");
+const btnClearObservations = document.getElementById("btn-clear-observations");
+const obsCountBadge = document.getElementById("obs-count-badge");
+const obsEmptyState = document.getElementById("obs-empty-state");
+const observationsTable = document.getElementById("observations-table");
+const observationsTbody = document.getElementById("observations-tbody");
+
+const challengesCompletedCount = document.getElementById("challenges-completed-count");
+const userTotalChallengeXp = document.getElementById("user-total-challenge-xp");
+const challengeCardTarget = document.getElementById("challenge-card-target");
+const statusTagTarget = document.getElementById("status-tag-target");
+const challengeCardComplementary = document.getElementById("challenge-card-complementary");
+const statusTagComplementary = document.getElementById("status-tag-complementary");
+const challengeCardApex = document.getElementById("challenge-card-apex");
+const statusTagApex = document.getElementById("status-tag-apex");
 
 // ==========================================
 // QUIZ STATE
@@ -413,6 +502,9 @@ function launchProjectile() {
   simState.isRunning = true;
   simState.flightTime = 0;
   launchTimestamp = performance.now();
+
+  // Track telemetry and check launch achievements
+  recordLaunchTelemetry(v0, angleDeg, h0, g);
 }
 
 function getRandomGhostColor() {
@@ -462,17 +554,18 @@ function checkTargetHit(landX) {
     // Bullseye!
     simState.targetScore += 100;
     simState.targetHitEffect = 35;
-    showToast("🎯 DIRECT HIT! Bullseye (+100 pts)");
+    showToast("DIRECT HIT! Bullseye (+100 pts)");
+    recordTargetHitTelemetry(true);
     spawnNewTarget();
   } else if (diffMeters <= 3.5) {
     // Near hit
     simState.targetScore += 50;
     simState.targetHitEffect = 25;
-    showToast("✨ NEAR HIT! (+50 pts)");
+    showToast("NEAR HIT! (+50 pts)");
+    recordTargetHitTelemetry(false);
     spawnNewTarget();
   }
   targetScoreText.textContent = simState.targetScore;
-  if (profileStatTarget) profileStatTarget.textContent = `${simState.targetScore} pts`;
 }
 
 function spawnNewTarget() {
@@ -510,6 +603,18 @@ Events.on(engine, "beforeUpdate", () => {
     const finalVy = simState.v0y - simState.g * t;
     const finalSpeed = Math.sqrt(simState.v0x * simState.v0x + finalVy * finalVy);
     hudSpeed.textContent = `${finalSpeed.toFixed(2)} m/s`;
+
+    // Record flight completion to profile telemetry & flight logs
+    const peakHeight = simState.h0 + (simState.v0y * simState.v0y) / (2 * Math.max(0.1, simState.g));
+    recordFlightComplete({
+      angle: Number(angleSlider.value),
+      v0: Number(velocitySlider.value),
+      h0: simState.h0,
+      g: simState.g,
+      range: finalRangeMeters,
+      apex: peakHeight,
+      airtime: t
+    });
 
     checkTargetHit(finalPx);
     return;
@@ -594,9 +699,10 @@ Events.on(render, "afterRender", () => {
 });
 
 function drawCoordinateGrid(ctx) {
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
   ctx.lineWidth = 1;
-  ctx.strokeStyle = "rgba(35, 49, 78, 0.4)";
-  ctx.fillStyle = "#64748b";
+  ctx.strokeStyle = isLight ? "rgba(203, 213, 225, 0.75)" : "rgba(35, 49, 78, 0.4)";
+  ctx.fillStyle = isLight ? "#475569" : "#64748b";
   ctx.font = "11px 'JetBrains Mono', monospace";
   ctx.textAlign = "center";
 
@@ -609,7 +715,7 @@ function drawCoordinateGrid(ctx) {
     if (isMajor) {
       // Full subtle height grid line
       ctx.beginPath();
-      ctx.strokeStyle = "rgba(42, 58, 92, 0.35)";
+      ctx.strokeStyle = isLight ? "rgba(203, 213, 225, 0.65)" : "rgba(42, 58, 92, 0.35)";
       ctx.setLineDash([4, 4]);
       ctx.moveTo(x, 40);
       ctx.lineTo(x, GROUND_Y);
@@ -617,12 +723,12 @@ function drawCoordinateGrid(ctx) {
       ctx.setLineDash([]);
 
       // Label at ground
-      ctx.fillStyle = "#7987a5";
+      ctx.fillStyle = isLight ? "#334155" : "#7987a5";
       ctx.fillText(`${m}m`, x, GROUND_Y + 22);
     } else {
       // Sub-tick on ground line
       ctx.beginPath();
-      ctx.strokeStyle = "rgba(74, 96, 144, 0.6)";
+      ctx.strokeStyle = isLight ? "rgba(148, 163, 184, 0.8)" : "rgba(74, 96, 144, 0.6)";
       ctx.moveTo(x, GROUND_Y - 5);
       ctx.lineTo(x, GROUND_Y + 5);
       ctx.stroke();
@@ -635,23 +741,23 @@ function drawCoordinateGrid(ctx) {
     if (y < 40) continue;
 
     ctx.beginPath();
-    ctx.strokeStyle = "rgba(42, 58, 92, 0.25)";
+    ctx.strokeStyle = isLight ? "rgba(203, 213, 225, 0.5)" : "rgba(42, 58, 92, 0.25)";
     ctx.setLineDash([3, 5]);
     ctx.moveTo(ORIGIN_X - 20, y);
     ctx.lineTo(CANVAS_WIDTH - 20, y);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    ctx.fillStyle = "#506080";
+    ctx.fillStyle = isLight ? "#64748b" : "#506080";
     ctx.textAlign = "right";
     ctx.fillText(`${h}m`, ORIGIN_X - 10, y + 4);
   }
 
   // Ground Line Glowing Top Border
   ctx.beginPath();
-  ctx.strokeStyle = "#38bdf8";
-  ctx.shadowColor = "#0284c7";
-  ctx.shadowBlur = 8;
+  ctx.strokeStyle = isLight ? "#0284c7" : "#38bdf8";
+  ctx.shadowColor = isLight ? "rgba(2, 132, 199, 0.3)" : "#0284c7";
+  ctx.shadowBlur = isLight ? 4 : 8;
   ctx.lineWidth = 2;
   ctx.moveTo(0, GROUND_Y);
   ctx.lineTo(CANVAS_WIDTH, GROUND_Y);
@@ -896,15 +1002,852 @@ function drawCannonAccent(ctx) {
 }
 
 // ==========================================
-// FIREBASE AUTHENTICATION CONTROLLER
+// STUDENT PROFILE & TELEMETRY CONTROLLER
 // ==========================================
-function showAuthView(viewName) {
-  // Hide all auth views
-  [authViewLogin, authViewSignup, authViewForgot, authViewChangePassword, authViewDashboard].forEach(v => {
+let selectedAvatar = "quantum";
+let isExpressApiOnline = false;
+
+const ALL_BADGES = [
+  // Kinematics Mastery & Evaluation
+  { id: "badge-target-hit", name: "Bullseye Sniper", desc: "Score a direct hit on the target in Target Challenge Mode." },
+  { id: "badge-ch-compl", name: "Complementary Angle Ace", desc: "Verify complementary angle theorem with equivalent horizontal range." },
+  { id: "badge-ch-moon", name: "Stratospheric Apex", desc: "Fire high-altitude trajectories reaching apex H ≥ 40m." },
+  
+  // Optical Fibre NA Mastery (Exp 2)
+  { id: "badge-of-spot-match", name: "Spot Match Master", desc: "Match diverging laser spot precisely on 2.0 cm concentric target ring." },
+  { id: "badge-of-rapid-calib", name: "Laser Calibration Virtuoso", desc: "Complete the 40s rapid 3-point calibration run in Optical Lab." },
+  { id: "badge-of-multi-sweep", name: "NA Invariance Champion", desc: "Record readings across 3 distance zones proving Numerical Aperture invariance." },
+  
+  // Knowledge & Profile Honors
+  { id: "badge-quiz-pass", name: "Kinematics Scholar", desc: "Achieve at least 80% (8/10) on the 2D Kinematics Quiz." },
+  { id: "badge-quiz-perfect", name: "Grand Physics Virtuoso", desc: "Score a flawless 10/10 on the Kinematics Knowledge Check." },
+  { id: "badge-profile-saved", name: "PhysiX Pioneer", desc: "Personalize and customize your student profile dossier." }
+];
+
+function getActiveUserId() {
+  return auth.currentUser ? auth.currentUser.uid : "guest";
+}
+
+async function checkBackendStatus() {
+  try {
+    const isHealthy = await api.checkHealth();
+    isExpressApiOnline = isHealthy;
+    if (pMetaBackend) {
+      if (isHealthy) {
+        pMetaBackend.textContent = "● Express API Online (Port 3001)";
+        pMetaBackend.className = "meta-val highlight-cyan";
+      } else {
+        pMetaBackend.textContent = "● Local Mode (Express Standby)";
+        pMetaBackend.className = "meta-val status-local";
+      }
+    }
+  } catch (e) {
+    if (pMetaBackend) {
+      pMetaBackend.textContent = "● Local Mode (Express Standby)";
+      pMetaBackend.className = "meta-val status-local";
+    }
+  }
+}
+
+function getStoredUserProfile() {
+  try {
+    const saved = localStorage.getItem("physix_user_profile");
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.warn("Error reading profile from localStorage", e);
+  }
+  return {
+    name: "Alex Henderson",
+    avatar: "quantum",
+    handle: "@alex_physicist",
+    edu: "Undergraduate Student",
+    occ: "MIT Physics Lab / Student",
+    interests: "2D Kinematics, Planetary Gravity, Orbital Dynamics",
+    bio: "Exploring 2D projectile kinematics, parabolic trajectories, vector breakdown components, and gravitational effects across the solar system."
+  };
+}
+
+function saveStoredUserProfile(profileData) {
+  try {
+    localStorage.setItem("physix_user_profile", JSON.stringify(profileData));
+  } catch (e) {
+    console.warn("Error saving profile to localStorage", e);
+  }
+  // Asynchronously sync with Express backend
+  api.saveProfile(getActiveUserId(), profileData).catch(() => {});
+}
+
+function getStoredTelemetry() {
+  try {
+    const saved = localStorage.getItem("physix_telemetry_stats");
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.warn("Error reading telemetry stats", e);
+  }
+  return {
+    totalLaunches: 0,
+    maxRange: 0,
+    maxHeight: 0,
+    maxVelocity: 0,
+    totalAirtime: 0,
+    targetHits: 0,
+    planetsUsed: { "Earth": 0, "Moon": 0, "Mars": 0, "Jupiter": 0 }
+  };
+}
+
+function saveStoredTelemetry(stats) {
+  try {
+    localStorage.setItem("physix_telemetry_stats", JSON.stringify(stats));
+  } catch (e) {
+    console.warn("Error saving telemetry stats", e);
+  }
+}
+
+function getStoredFlightLogs() {
+  try {
+    const saved = localStorage.getItem("physix_flight_logs");
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.warn("Error reading flight logs", e);
+  }
+  return [];
+}
+
+function saveStoredFlightLogs(logs) {
+  try {
+    localStorage.setItem("physix_flight_logs", JSON.stringify(logs));
+  } catch (e) {
+    console.warn("Error saving flight logs", e);
+  }
+}
+
+function getStoredBadges() {
+  try {
+    const saved = localStorage.getItem("physix_unlocked_badges");
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.warn("Error reading badges", e);
+  }
+  return [];
+}
+
+function saveStoredBadges(badges) {
+  try {
+    localStorage.setItem("physix_unlocked_badges", JSON.stringify(badges));
+  } catch (e) {
+    console.warn("Error saving badges", e);
+  }
+}
+
+function unlockBadge(badgeId, badgeTitle) {
+  const badges = getStoredBadges();
+  if (!badges.includes(badgeId)) {
+    badges.push(badgeId);
+    saveStoredBadges(badges);
+    api.unlockBadge(getActiveUserId(), badgeId).catch(() => {});
+    showToast(`Milestone Unlocked: ${badgeTitle}`);
+    loadUserProfile();
+  }
+}
+
+// ==========================================
+// USER BONUS XP & CHALLENGES STATE
+// ==========================================
+function getStoredBonusXp() {
+  return Number(localStorage.getItem("physix_user_bonus_xp") || 0);
+}
+
+function saveStoredBonusXp(xp) {
+  localStorage.setItem("physix_user_bonus_xp", String(xp));
+}
+
+let flatGroundLaunches = [];
+
+function getStoredChallenges() {
+  try {
+    const saved = localStorage.getItem("physix_challenges_state");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (!parsed.complementary) {
+        parsed.complementary = { completed: false, xp: 75, title: "Complementary Angle Law" };
+      }
+      return parsed;
+    }
+  } catch (e) {
+    console.warn("Error reading challenges", e);
+  }
+  return {
+    target: { completed: false, xp: 50, title: "Precision Bullseye" },
+    complementary: { completed: false, xp: 75, title: "Complementary Angle Law" },
+    apex: { completed: false, xp: 100, title: "Stratospheric Apex" }
+  };
+}
+
+function saveStoredChallenges(challenges) {
+  try {
+    localStorage.setItem("physix_challenges_state", JSON.stringify(challenges));
+  } catch (e) {
+    console.warn("Error saving challenges", e);
+  }
+}
+
+function addStudentXp(amount, reason) {
+  const currentXp = getStoredBonusXp();
+  const newXp = currentXp + amount;
+  saveStoredBonusXp(newXp);
+
+  // Sync to Express backend
+  api.addXp(getActiveUserId(), amount, reason).catch(() => {});
+
+  showToast(`+${amount} XP Earned: ${reason}!`);
+  loadUserProfile();
+  renderChallenges();
+}
+
+function renderChallenges() {
+  const challenges = getStoredChallenges();
+  let doneCount = 0;
+  let totalEarnedXp = 0;
+
+  // Challenge 1: Target
+  if (challenges.target?.completed) {
+    doneCount++;
+    totalEarnedXp += challenges.target.xp || 50;
+    challengeCardTarget?.classList.add("completed");
+    if (statusTagTarget) {
+      statusTagTarget.className = "challenge-status-tag completed";
+      statusTagTarget.innerHTML = `<svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Complete (+50 XP)`;
+    }
+  } else {
+    challengeCardTarget?.classList.remove("completed");
+    if (statusTagTarget) {
+      statusTagTarget.className = "challenge-status-tag pending";
+      statusTagTarget.textContent = "Pending";
+    }
+  }
+
+  // Challenge 2: Complementary Angle Law
+  if (challenges.complementary?.completed) {
+    doneCount++;
+    totalEarnedXp += challenges.complementary.xp || 75;
+    challengeCardComplementary?.classList.add("completed");
+    if (statusTagComplementary) {
+      statusTagComplementary.className = "challenge-status-tag completed";
+      statusTagComplementary.innerHTML = `<svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Complete (+75 XP)`;
+    }
+  } else {
+    challengeCardComplementary?.classList.remove("completed");
+    if (statusTagComplementary) {
+      statusTagComplementary.className = "challenge-status-tag pending";
+      statusTagComplementary.textContent = "Pending";
+    }
+  }
+
+  // Challenge 3: Apex
+  if (challenges.apex?.completed) {
+    doneCount++;
+    totalEarnedXp += challenges.apex.xp || 100;
+    challengeCardApex?.classList.add("completed");
+    if (statusTagApex) {
+      statusTagApex.className = "challenge-status-tag completed";
+      statusTagApex.innerHTML = `<svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Complete (+100 XP)`;
+    }
+  } else {
+    challengeCardApex?.classList.remove("completed");
+    if (statusTagApex) {
+      statusTagApex.className = "challenge-status-tag pending";
+      statusTagApex.textContent = "Pending";
+    }
+  }
+
+  if (challengesCompletedCount) {
+    challengesCompletedCount.textContent = `${doneCount} / 3 Complete`;
+  }
+  if (userTotalChallengeXp) {
+    userTotalChallengeXp.textContent = `+${totalEarnedXp} XP`;
+  }
+}
+
+function checkFlightChallenges(flightData) {
+  const challenges = getStoredChallenges();
+  let updated = false;
+
+  const currentAngle = Number(flightData.angle);
+  const currentV0 = Number(flightData.v0);
+  const currentH0 = Number(flightData.h0);
+  const currentG = Number(flightData.g);
+  const currentRange = Number(flightData.range);
+
+  // Challenge 2: Complementary Angle Law (θ1 + θ2 = 90° on flat ground h0 = 0 -> equal range)
+  if (!challenges.complementary?.completed && currentH0 <= 0.2) {
+    const candidateLogs = [...flatGroundLaunches, ...getStoredFlightLogs().filter(l => Number(l.h0) <= 0.2)];
+    
+    const compMatch = candidateLogs.find(prev => {
+      const pAngle = Number(prev.angle);
+      const pV0 = Number(prev.v0);
+      const pG = Number(prev.g);
+      const pRange = Number(prev.range);
+
+      const isSameSpeed = Math.abs(pV0 - currentV0) <= 0.5;
+      const isSameGravity = Math.abs(pG - currentG) <= 0.2;
+      const isComplementaryAngle = Math.abs((pAngle + currentAngle) - 90) <= 1.5;
+      const isDistinctAngle = Math.abs(pAngle - currentAngle) >= 3.0;
+      const isRangeMatching = Math.abs(pRange - currentRange) <= 2.5;
+
+      return isSameSpeed && isSameGravity && isComplementaryAngle && isDistinctAngle && isRangeMatching;
+    });
+
+    if (compMatch) {
+      challenges.complementary.completed = true;
+      updated = true;
+      addStudentXp(75, `Complementary Law Verified (${Math.round(compMatch.angle)}° & ${Math.round(currentAngle)}°)`);
+      unlockBadge("badge-ch-compl", "Complementary Angle Ace (Verified θ & 90°-θ Law)");
+    }
+
+    flatGroundLaunches.unshift({ angle: currentAngle, v0: currentV0, g: currentG, range: currentRange, h0: currentH0 });
+    if (flatGroundLaunches.length > 20) flatGroundLaunches.pop();
+  }
+
+  // Challenge 3: Stratospheric Apex / Moon gravity
+  if (!challenges.apex?.completed && flightData.apex >= 40) {
+    challenges.apex.completed = true;
+    updated = true;
+    addStudentXp(100, "Stratospheric Apex Challenge");
+    unlockBadge("badge-ch-moon", "Lunar Gravity Explorer (Stratospheric High Apex)");
+  }
+
+  if (updated) {
+    saveStoredChallenges(challenges);
+    renderChallenges();
+  }
+}
+
+// ==========================================
+// OBSERVATIONS LOGBOOK STATE & METHODS
+// ==========================================
+function getStoredObservations() {
+  try {
+    const saved = localStorage.getItem("physix_observations");
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.warn("Error reading observations", e);
+  }
+  return [];
+}
+
+function saveStoredObservations(obsList) {
+  try {
+    localStorage.setItem("physix_observations", JSON.stringify(obsList));
+  } catch (e) {
+    console.warn("Error saving observations", e);
+  }
+}
+
+function renderObservationsTable() {
+  const obsList = getStoredObservations();
+  if (obsCountBadge) {
+    obsCountBadge.textContent = `${obsList.length} Observation${obsList.length === 1 ? "" : "s"}`;
+  }
+
+  if (obsList.length === 0) {
+    if (obsEmptyState) obsEmptyState.classList.remove("hidden");
+    if (observationsTable) observationsTable.classList.add("hidden");
+    if (observationsTbody) observationsTbody.innerHTML = "";
+    return;
+  }
+
+  if (obsEmptyState) obsEmptyState.classList.add("hidden");
+  if (observationsTable) observationsTable.classList.remove("hidden");
+
+  if (observationsTbody) {
+    observationsTbody.innerHTML = obsList.map((obs, idx) => `
+      <tr class="${idx === 0 ? 'obs-row-highlight' : ''}">
+        <td class="obs-run-num">#${obsList.length - idx}</td>
+        <td>${Number(obs.v0).toFixed(1)} m/s</td>
+        <td>${Number(obs.angle).toFixed(1)}°</td>
+        <td>${Number(obs.h0).toFixed(1)} m</td>
+        <td>${Number(obs.g).toFixed(1)} m/s² <span style="color:#64748b; font-size:11px;">(${obs.planet || 'Planet'})</span></td>
+        <td>${Number(obs.airtime).toFixed(2)} s</td>
+        <td style="color:#c4b5fd;">${Number(obs.apex).toFixed(2)} m</td>
+        <td style="color:#67e8f9; font-weight:700;">${Number(obs.range).toFixed(2)} m</td>
+        <td style="color:#6ee7b7;">${Number(obs.impactSpeed || obs.v0).toFixed(2)} m/s</td>
+        <td style="color:#94a3b8; font-size:11px;">${obs.time || 'Logged'}</td>
+      </tr>
+    `).join("");
+  }
+}
+
+function recordCurrentObservation() {
+  const v0 = Number(velocitySlider.value);
+  const angle = Number(angleSlider.value);
+  const h0 = Number(heightSlider.value);
+  const g = Number(gravitySlider.value);
+
+  let planet = "Earth";
+  if (Math.abs(g - 1.6) < 0.1) planet = "Moon";
+  else if (Math.abs(g - 3.7) < 0.1) planet = "Mars";
+  else if (Math.abs(g - 9.8) < 0.1) planet = "Earth";
+  else if (Math.abs(g - 24.8) < 0.1) planet = "Jupiter";
+
+  // Analytical computation for real-time consistency
+  const rad = (angle * Math.PI) / 180;
+  const v0y = v0 * Math.sin(rad);
+  const v0x = v0 * Math.cos(rad);
+  const disc = v0y * v0y + 2 * Math.max(0.1, g) * h0;
+  const theoT = (v0y + Math.sqrt(Math.max(0, disc))) / Math.max(0.1, g);
+  const theoR = v0x * theoT;
+  const theoH = h0 + (v0y * v0y) / (2 * Math.max(0.1, g));
+  const theoVf = Math.sqrt(v0 * v0 + 2 * Math.max(0.1, g) * h0);
+
+  const rangeVal = lastRecordedFlightForAi ? lastRecordedFlightForAi.range : theoR;
+  const apexVal = lastRecordedFlightForAi ? lastRecordedFlightForAi.apex : theoH;
+  const airtimeVal = lastRecordedFlightForAi ? lastRecordedFlightForAi.airtime : theoT;
+  const impactVal = theoVf;
+
+  const now = new Date();
+  const timeStr = now.toTimeString().split(" ")[0];
+
+  const obsEntry = {
+    id: Date.now(),
+    time: timeStr,
+    v0,
+    angle,
+    h0,
+    g,
+    planet,
+    range: rangeVal,
+    apex: apexVal,
+    airtime: airtimeVal,
+    impactSpeed: impactVal
+  };
+
+  const obsList = getStoredObservations();
+  obsList.unshift(obsEntry);
+  if (obsList.length > 50) obsList.pop();
+  saveStoredObservations(obsList);
+
+  // Sync with Express backend
+  api.addObservation(getActiveUserId(), obsEntry).catch(() => {});
+
+  renderObservationsTable();
+  showToast(`Observation #${obsList.length} Recorded: v₀=${v0}m/s, θ=${angle}°, R=${Number(rangeVal).toFixed(1)}m`);
+}
+
+function clearAllObservations() {
+  saveStoredObservations([]);
+  api.clearObservations(getActiveUserId()).catch(() => {});
+  renderObservationsTable();
+  showToast("All experimental observations cleared.");
+}
+
+function calculateStudentRankAndLevel(stats, quizHigh, targetScore, badgeCount) {
+  const bonusXp = getStoredBonusXp();
+  let ofXp = 0;
+  try {
+    const ofChallenges = JSON.parse(localStorage.getItem("physix_of_challenges") || "{}");
+    if (ofChallenges.spotMatch?.completed) ofXp += 100;
+    if (ofChallenges.rapidCalib?.completed) ofXp += 125;
+    if (ofChallenges.multiSweep?.completed) ofXp += 150;
+  } catch (e) {}
+
+  const totalScore = (quizHigh * 50) + targetScore + (stats.totalLaunches * 15) + (badgeCount * 40) + bonusXp + ofXp;
+  
+  // Progressive doubling level scale:
+  // Level 1: 0 -> 1000 XP
+  // Level 2: 1000 -> 3000 XP (delta: 2000)
+  // Level 3: 3000 -> 7000 XP (delta: 4000)
+  // Level 4: 7000 -> 15000 XP (delta: 8000)
+  // Level 5: 15000 -> 31000 XP (delta: 16000)
+  // Level 6: 31000 -> 63000 XP (delta: 32000)
+  let level = 1;
+  let currentThreshold = 0;
+  let currentDelta = 1000;
+  let nextThreshold = 1000;
+
+  while (totalScore >= nextThreshold) {
+    level++;
+    currentThreshold = nextThreshold;
+    currentDelta = currentDelta * 2;
+    nextThreshold = currentThreshold + currentDelta;
+  }
+
+  const xpInLevel = totalScore - currentThreshold;
+  const xpNeededForNext = nextThreshold - currentThreshold;
+  const progressPct = Math.min(100, Math.max(0, (xpInLevel / xpNeededForNext) * 100));
+
+  const rankTitles = [
+    "Newtonian Novice",
+    "Galilean Scholar",
+    "Kinetic Specialist",
+    "Orbital Dynamist",
+    "Waveguide Optician",
+    "Quantum Luminary",
+    "Grand Astrophysics Virtuoso"
+  ];
+  const rank = rankTitles[Math.min(level - 1, rankTitles.length - 1)];
+
+  return {
+    level,
+    rank,
+    title: `Level ${level} • ${rank}`,
+    totalXp: totalScore,
+    currentThreshold,
+    nextThreshold,
+    xpInLevel,
+    xpNeededForNext,
+    progressPct
+  };
+}
+
+function recordLaunchTelemetry(v0, angleDeg, h0, g) {
+  const stats = getStoredTelemetry();
+  stats.totalLaunches = (stats.totalLaunches || 0) + 1;
+  stats.maxVelocity = Math.max(stats.maxVelocity || 0, v0);
+
+  // Track planetary usage
+  if (!stats.planetsUsed) stats.planetsUsed = {};
+  if (Math.abs(g - 1.6) < 0.1) stats.planetsUsed["Moon"] = (stats.planetsUsed["Moon"] || 0) + 1;
+  else if (Math.abs(g - 3.7) < 0.1) stats.planetsUsed["Mars"] = (stats.planetsUsed["Mars"] || 0) + 1;
+  else if (Math.abs(g - 9.8) < 0.1) stats.planetsUsed["Earth"] = (stats.planetsUsed["Earth"] || 0) + 1;
+  else if (Math.abs(g - 24.8) < 0.1) stats.planetsUsed["Jupiter"] = (stats.planetsUsed["Jupiter"] || 0) + 1;
+
+  // Check achievements
+  if (v0 >= 40.0) {
+    unlockBadge("badge-high-velocity", "Hypersonic Trajectory (v₀ ≥ 40 m/s)");
+  }
+  if (Math.round(angleDeg) === 45) {
+    unlockBadge("badge-optimal-angle", "Optimal 45° Angle (Max Range)");
+  }
+  if (h0 >= 10.0) {
+    unlockBadge("badge-high-platform", "Sky Platform Artillery (h₀ ≥ 10m)");
+  }
+  const uniquePlanets = Object.keys(stats.planetsUsed).filter(p => stats.planetsUsed[p] > 0);
+  if (uniquePlanets.length >= 4) {
+    unlockBadge("badge-multi-planet", "Interplanetary Explorer (Moon, Mars, Earth, Jupiter)");
+  }
+
+  saveStoredTelemetry(stats);
+  // Express backend sync
+  api.recordLaunch(getActiveUserId(), { v0, angleDeg, h0, g }).catch(() => {});
+  loadUserProfile();
+}
+
+function recordFlightComplete(flightData) {
+  const stats = getStoredTelemetry();
+  stats.totalAirtime = (stats.totalAirtime || 0) + (flightData.airtime || 0);
+  stats.maxRange = Math.max(stats.maxRange || 0, flightData.range || 0);
+  stats.maxHeight = Math.max(stats.maxHeight || 0, flightData.apex || 0);
+
+  if (flightData.airtime >= 5.0) {
+    unlockBadge("badge-long-airtime", "Stratospheric Arc (Flight Time > 5s)");
+  }
+
+  saveStoredTelemetry(stats);
+
+  // Check interactive challenges
+  checkFlightChallenges(flightData);
+
+  // Add to Flight Logs
+  const logs = getStoredFlightLogs();
+  const now = new Date();
+  const timeStr = now.toTimeString().split(" ")[0];
+
+  logs.unshift({
+    id: logs.length + 1,
+    time: timeStr,
+    angle: flightData.angle,
+    v0: flightData.v0,
+    h0: flightData.h0,
+    g: flightData.g,
+    range: flightData.range,
+    apex: flightData.apex,
+    airtime: flightData.airtime
+  });
+
+  if (logs.length > 10) logs.pop();
+  saveStoredFlightLogs(logs);
+
+  // Express backend sync
+  api.recordFlightComplete(getActiveUserId(), flightData).catch(() => {});
+
+  loadUserProfile();
+}
+
+function recordTargetHitTelemetry(isBullseye) {
+  const stats = getStoredTelemetry();
+  stats.targetHits = (stats.targetHits || 0) + 1;
+  saveStoredTelemetry(stats);
+
+  // Check Challenge 1: Precision Bullseye (+50 XP)
+  const challenges = getStoredChallenges();
+  if (!challenges.target?.completed) {
+    challenges.target.completed = true;
+    saveStoredChallenges(challenges);
+    addStudentXp(50, "Precision Bullseye Challenge");
+  }
+
+  unlockBadge("badge-target-hit", isBullseye ? "Bullseye Sniper (Direct Hit)" : "Target Hit Accomplished");
+  loadUserProfile();
+}
+
+function recordQuizTelemetry(score, total) {
+  if (score >= 8) {
+    unlockBadge("badge-quiz-pass", `Kinematics Scholar (${score}/${total} score)`);
+  }
+  if (score === total) {
+    unlockBadge("badge-quiz-perfect", "Grand Kinematics Virtuoso (10/10 Perfect Score)");
+  }
+  loadUserProfile();
+}
+
+function loadUserProfile() {
+  const profile = getStoredUserProfile();
+  const stats = getStoredTelemetry();
+  const logs = getStoredFlightLogs();
+  const badges = getStoredBadges();
+  const quizHigh = Number(localStorage.getItem("physix_quiz_highscore") || 0);
+  const targetScore = simState.targetScore || 0;
+
+  const rankInfo = calculateStudentRankAndLevel(stats, quizHigh, targetScore, badges.length);
+
+  // Derive active user identity
+  const user = auth.currentUser;
+  const isAuth = !!user;
+
+  const displayName = profile.name || (user ? user.email.split("@")[0] : "Alex Henderson");
+  const displayEmail = user ? user.email : "guest@physix.lab";
+  const displayHandle = profile.handle || `@${displayName.toLowerCase().replace(/[^a-z0-9_]/g, "") || "student_physicist"}`;
+  const avatar = profile.avatar || "quantum";
+  selectedAvatar = avatar;
+
+  // Check Express Backend Status
+  checkBackendStatus();
+
+  // 1. Update Header Nav Chip
+  const userNameEl = userProfileBtn?.querySelector(".user-name");
+  const userStatusEl = userProfileBtn?.querySelector(".user-status");
+  const navAvatarChar = document.getElementById("nav-avatar-char");
+
+  if (navAvatarChar) navAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
+  if (userNameEl) userNameEl.textContent = displayName;
+  if (userStatusEl) {
+    if (isAuth) {
+      userStatusEl.textContent = "● Firebase Online";
+      userStatusEl.style.color = "#34d399";
+    } else {
+      userStatusEl.textContent = "● Guest Mode";
+      userStatusEl.style.color = "";
+    }
+  }
+
+  // 2. Update Profile Hero Card
+  if (heroAvatarChar) heroAvatarChar.innerHTML = AVATAR_SVGS[avatar] || AVATAR_SVGS.quantum;
+  if (heroLevelBadge) heroLevelBadge.textContent = `LVL ${rankInfo.level}`;
+  if (heroStudentName) heroStudentName.textContent = displayName;
+  if (heroStudentHandle) heroStudentHandle.textContent = displayHandle;
+  if (heroStudentEmail) heroStudentEmail.textContent = displayEmail;
+
+  if (heroStatusBadge) {
+    if (isAuth) {
+      heroStatusBadge.textContent = "● Firebase Online (Cloud Synced)";
+      heroStatusBadge.className = "profile-status-badge firebase-badge";
+    } else {
+      heroStatusBadge.textContent = "● Guest Mode (Local Session)";
+      heroStatusBadge.className = "profile-status-badge guest-badge";
+    }
+  }
+
+  if (heroRankPill) heroRankPill.textContent = rankInfo.rank;
+  if (heroEduPill) heroEduPill.textContent = profile.edu || "Undergraduate Student";
+  if (heroInstPill) heroInstPill.textContent = profile.occ || "PhysiX Virtual Lab";
+
+  // Render Progressive Doubling Level XP Tracker
+  const xpTitleEl = document.getElementById("hero-xp-level-title");
+  const xpReadoutEl = document.getElementById("hero-xp-progress-readout");
+  const xpBarFillEl = document.getElementById("hero-xp-bar-fill");
+  const xpNextNoteEl = document.getElementById("hero-xp-next-note");
+
+  if (xpTitleEl) xpTitleEl.textContent = rankInfo.title;
+  if (xpReadoutEl) xpReadoutEl.textContent = `${rankInfo.totalXp.toLocaleString()} / ${rankInfo.nextThreshold.toLocaleString()} XP (${Math.round(rankInfo.progressPct)}%)`;
+  if (xpBarFillEl) xpBarFillEl.style.width = `${rankInfo.progressPct}%`;
+  if (xpNextNoteEl) {
+    const needed = Math.max(0, rankInfo.nextThreshold - rankInfo.totalXp);
+    xpNextNoteEl.textContent = `Earn ${needed.toLocaleString()} XP to reach Level ${rankInfo.level + 1} • Target: ${rankInfo.nextThreshold.toLocaleString()} XP`;
+  }
+
+  if (heroAuthIcon && heroAuthLabel) {
+    if (isAuth) {
+      heroAuthIcon.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`;
+      heroAuthLabel.textContent = "Sign Out";
+    } else {
+      heroAuthIcon.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+      heroAuthLabel.textContent = "Sign In / Link Account";
+    }
+  }
+
+  // 3. Update Overview & Bio Tab
+  if (pOverviewName) pOverviewName.textContent = displayName;
+  if (pOverviewEdu) pOverviewEdu.textContent = profile.edu || "Undergraduate Student";
+  if (pOverviewOcc) pOverviewOcc.textContent = profile.occ || "MIT Physics Lab / Student";
+  if (pOverviewBio) pOverviewBio.textContent = profile.bio || "Exploring projectile kinematics and parabolic trajectories.";
+
+  if (pOverviewInterests) {
+    const rawInterests = profile.interests || "2D Kinematics, Planetary Gravity, Trajectories";
+    const tags = rawInterests.split(",").map(t => t.trim()).filter(Boolean);
+    pOverviewInterests.innerHTML = tags.map(tag => `<span class="p-interest-tag">${tag}</span>`).join("");
+  }
+
+  if (pMetaType) pMetaType.textContent = isAuth ? "Firebase Cloud Account" : "Guest Session (Local Storage)";
+  if (pMetaUid) pMetaUid.textContent = user ? user.uid : "SESSION-LOCAL-PHYSIX";
+  if (pMetaEmail) pMetaEmail.textContent = displayEmail;
+  if (pMetaSync) {
+    if (isAuth) {
+      pMetaSync.textContent = "● Cloud Synced (Firebase Auth)";
+      pMetaSync.className = "meta-val highlight-cyan";
+    } else {
+      pMetaSync.textContent = "● Local Storage (Sign In to Sync)";
+      pMetaSync.className = "meta-val status-local";
+    }
+  }
+  if (pMetaRank) pMetaRank.textContent = rankInfo.title;
+
+  // 4. Update Telemetry & Stats Tab
+  if (statQuizScore) statQuizScore.textContent = `${quizHigh} / 10`;
+  if (statQuizGrade) {
+    const pct = Math.round((quizHigh / 10) * 100);
+    if (quizHigh === 10) statQuizGrade.textContent = "Grade: A+ (100%)";
+    else if (quizHigh >= 8) statQuizGrade.textContent = `Grade: A (${pct}%)`;
+    else if (quizHigh >= 6) statQuizGrade.textContent = `Grade: B (${pct}%)`;
+    else if (quizHigh >= 4) statQuizGrade.textContent = `Grade: C (${pct}%)`;
+    else if (quizHigh > 0) statQuizGrade.textContent = `Grade: D (${pct}%)`;
+    else statQuizGrade.textContent = "Not Evaluated";
+  }
+
+  if (statTargetScore) statTargetScore.textContent = `${targetScore} pts`;
+  if (statTargetHits) statTargetHits.textContent = `${stats.targetHits || 0} Hits`;
+  if (statTotalLaunches) statTotalLaunches.textContent = `${stats.totalLaunches || 0}`;
+  if (statMaxRange) statMaxRange.textContent = (stats.maxRange || 0).toFixed(2);
+  if (statMaxHeight) statMaxHeight.textContent = (stats.maxHeight || 0).toFixed(2);
+  if (statMaxVelocity) statMaxVelocity.textContent = (stats.maxVelocity || 0).toFixed(1);
+  if (statTotalAirtime) statTotalAirtime.textContent = (stats.totalAirtime || 0).toFixed(2);
+
+  if (statFavPlanet) {
+    const gVal = Number(gravitySlider.value);
+    let pName = "Earth (9.8 m/s²)";
+    if (Math.abs(gVal - 1.6) < 0.1) pName = "Moon (1.6 m/s²)";
+    else if (Math.abs(gVal - 3.7) < 0.1) pName = "Mars (3.7 m/s²)";
+    else if (Math.abs(gVal - 24.8) < 0.1) pName = "Jupiter (24.8 m/s²)";
+    else if (Math.abs(gVal - 9.8) >= 0.1) pName = `Custom Planet (${gVal.toFixed(1)} m/s²)`;
+    statFavPlanet.textContent = pName;
+  }
+
+  // 5. Update Badges Tab with Dynamic Vector SVGs
+  const badgesGridContainer = document.getElementById("badges-grid-container");
+  if (badgesGridContainer) {
+    badgesGridContainer.innerHTML = ALL_BADGES.map(b => {
+      const isUnlocked = badges.includes(b.id);
+      return `
+        <div class="badge-item-card ${isUnlocked ? "unlocked" : "locked"}" id="${b.id}">
+          <div class="badge-card-icon">
+            ${BADGE_SVGS[b.id] || BADGE_SVGS["badge-profile-saved"]}
+          </div>
+          <div class="badge-card-content">
+            <h5>${b.name}</h5>
+            <p>${b.desc}</p>
+            <span class="badge-status-tag">${isUnlocked ? "Unlocked" : "Locked"}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  let unlockedCount = ALL_BADGES.filter(b => badges.includes(b.id)).length;
+  if (badgesUnlockedCount) badgesUnlockedCount.textContent = unlockedCount;
+  if (badgesUnlockedPill) badgesUnlockedPill.textContent = `${unlockedCount} of ${ALL_BADGES.length} Unlocked`;
+
+  // 6. Update Flight Logs Tab
+  if (logsCountBadge) logsCountBadge.textContent = logs.length;
+  if (flightLogsTbody) {
+    if (logs.length === 0) {
+      flightLogsTbody.innerHTML = `<tr><td colspan="9" class="empty-logs-msg">No simulation flight records yet. Fire the cannon to record telemetry!</td></tr>`;
+    } else {
+      flightLogsTbody.innerHTML = logs.map((l, index) => `
+        <tr>
+          <td><strong>#${index + 1}</strong></td>
+          <td style="color:var(--text-muted);">${l.time}</td>
+          <td style="color:#c4b5fd;">${l.angle}°</td>
+          <td style="color:#93c5fd;">${Number(l.v0).toFixed(1)} m/s</td>
+          <td>${Number(l.h0).toFixed(1)} m</td>
+          <td>${Number(l.g).toFixed(1)} m/s²</td>
+          <td style="color:#34d399; font-weight:700;">${Number(l.range).toFixed(2)} m</td>
+          <td style="color:#fbbf24;">${Number(l.apex).toFixed(2)} m</td>
+          <td>${Number(l.airtime).toFixed(2)} s</td>
+        </tr>
+      `).join("");
+    }
+  }
+
+  // 7. Update Security Tab
+  if (isAuth) {
+    if (secGuestPanel) secGuestPanel.classList.add("hidden");
+    if (secUserPanel) secUserPanel.classList.remove("hidden");
+    if (secUserEmailDisplay) secUserEmailDisplay.textContent = `Connected: ${user.email}`;
+    if (secDetailEmail) secDetailEmail.textContent = user.email;
+    if (secDetailUid) secDetailUid.textContent = user.uid;
+  } else {
+    if (secGuestPanel) secGuestPanel.classList.remove("hidden");
+    if (secUserPanel) secUserPanel.classList.add("hidden");
+  }
+
+  // 8. Sync Edit Profile Modal Inputs
+  const nameInput = document.getElementById("profile-name-input");
+  const handleInput = document.getElementById("profile-handle-input");
+  const eduInput = document.getElementById("profile-edu-status");
+  const occInput = document.getElementById("profile-occupation-input");
+  const interestsInput = document.getElementById("profile-interests-input");
+  const bioInput = document.getElementById("profile-interests-bio");
+
+  if (nameInput) nameInput.value = profile.name || displayName;
+  if (handleInput) handleInput.value = profile.handle || displayHandle;
+  if (eduInput) eduInput.value = profile.edu || "Undergraduate Student";
+  if (occInput) occInput.value = profile.occ || "MIT Physics Lab / Student";
+  if (interestsInput) interestsInput.value = profile.interests || "2D Kinematics, Planetary Gravity, Orbital Dynamics";
+  if (bioInput) bioInput.value = profile.bio || "Exploring 2D projectile kinematics, parabolic trajectories, vector breakdown components, and gravitational effects across the solar system.";
+
+  avatarButtons.forEach(b => {
+    if (b.getAttribute("data-avatar") === selectedAvatar) {
+      b.classList.add("selected");
+    } else {
+      b.classList.remove("selected");
+    }
+  });
+}
+
+// PROFILE TAB NAVIGATION
+profileTabBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const targetTab = btn.getAttribute("data-tab");
+    profileTabBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    [tabOverview, tabStats, tabBadges, tabLogs, tabSecurity].forEach(pane => {
+      if (pane) pane.classList.add("hidden");
+    });
+
+    if (targetTab === "overview" && tabOverview) tabOverview.classList.remove("hidden");
+    else if (targetTab === "stats" && tabStats) tabStats.classList.remove("hidden");
+    else if (targetTab === "badges" && tabBadges) tabBadges.classList.remove("hidden");
+    else if (targetTab === "logs" && tabLogs) tabLogs.classList.remove("hidden");
+    else if (targetTab === "security" && tabSecurity) tabSecurity.classList.remove("hidden");
+  });
+});
+
+function showAuthSubView(viewName) {
+  authSubtabBtns.forEach(b => b.classList.remove("active"));
+  [authViewLogin, authViewSignup, authViewForgot].forEach(v => {
     if (v) v.classList.add("hidden");
   });
 
-  // Clear messages
   [loginErrorMsg, signupErrorMsg, forgotErrorMsg, forgotSuccessMsg, changeErrorMsg].forEach(el => {
     if (el) {
       el.classList.add("hidden");
@@ -913,35 +1856,49 @@ function showAuthView(viewName) {
   });
 
   if (viewName === "login") {
-    authModalTitle.textContent = "🔐 Student Sign In";
-    authModalSubtitle.textContent = "Log in with your Firebase credentials to sync your lab progress.";
-    authViewLogin.classList.remove("hidden");
+    btnSubtabLogin?.classList.add("active");
+    authViewLogin?.classList.remove("hidden");
   } else if (viewName === "signup") {
-    authModalTitle.textContent = "✨ Create PhysiX Account";
-    authModalSubtitle.textContent = "Sign up with Firebase to save experiments and quiz mastery.";
-    authViewSignup.classList.remove("hidden");
+    btnSubtabSignup?.classList.add("active");
+    authViewSignup?.classList.remove("hidden");
   } else if (viewName === "forgot") {
-    authModalTitle.textContent = "🔑 Reset Your Password";
-    authModalSubtitle.textContent = "Enter your email to receive a password reset link.";
-    authViewForgot.classList.remove("hidden");
-  } else if (viewName === "change-password") {
-    authModalTitle.textContent = "🔒 Change Password";
-    authModalSubtitle.textContent = "Update your account password securely.";
-    authViewChangePassword.classList.remove("hidden");
-  } else if (viewName === "dashboard") {
-    authModalTitle.textContent = "👤 Student Session Profile";
-    authModalSubtitle.textContent = "Firebase Authenticated Account & Lab Notebook";
-    authViewDashboard.classList.remove("hidden");
-
-    // Update dashboard statistics
-    const highQuiz = localStorage.getItem("physix_quiz_highscore") || 0;
-    profileStatQuiz.textContent = `${highQuiz} / 10`;
-    profileStatTarget.textContent = `${simState.targetScore} pts`;
+    btnSubtabForgot?.classList.add("active");
+    authViewForgot?.classList.remove("hidden");
   }
 }
 
-// Login Handler
-formLogin.addEventListener("submit", async (e) => {
+btnSubtabLogin?.addEventListener("click", () => showAuthSubView("login"));
+btnSubtabSignup?.addEventListener("click", () => showAuthSubView("signup"));
+btnSubtabForgot?.addEventListener("click", () => showAuthSubView("forgot"));
+
+// Clear Flight Logs
+btnClearFlightLogs?.addEventListener("click", () => {
+  saveStoredFlightLogs([]);
+  api.clearFlightLogs(getActiveUserId()).catch(() => {});
+  loadUserProfile();
+  showToast("Telemetry flight records cleared.");
+});
+
+// Hero Auth Button Toggle
+btnHeroAuthToggle?.addEventListener("click", async () => {
+  if (auth.currentUser) {
+    try {
+      await signOut(auth);
+      showToast("Signed out of PhysiX account.");
+      loadUserProfile();
+    } catch (error) {
+      showToast(`Error: ${error.message}`);
+    }
+  } else {
+    // Switch to Security Tab to sign in
+    const secTabBtn = document.querySelector(`.profile-tab-btn[data-tab="security"]`);
+    secTabBtn?.click();
+    showAuthSubView("login");
+  }
+});
+
+// Firebase Auth Handlers
+formLogin?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = loginEmail.value.trim();
   const password = loginPassword.value.trim();
@@ -955,10 +1912,10 @@ formLogin.addEventListener("submit", async (e) => {
   try {
     loginErrorMsg.classList.add("hidden");
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    showToast(`🎉 Welcome back, ${userCredential.user.email}!`);
+    showToast(`Welcome back, ${userCredential.user.email}!`);
     loginEmail.value = "";
     loginPassword.value = "";
-    showAuthView("dashboard");
+    loadUserProfile();
   } catch (error) {
     console.error("Login error:", error);
     loginErrorMsg.textContent = formatAuthError(error.message);
@@ -966,8 +1923,7 @@ formLogin.addEventListener("submit", async (e) => {
   }
 });
 
-// Signup Handler
-formSignup.addEventListener("submit", async (e) => {
+formSignup?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = signupEmail.value.trim();
   const password = signupPassword.value.trim();
@@ -994,11 +1950,11 @@ formSignup.addEventListener("submit", async (e) => {
   try {
     signupErrorMsg.classList.add("hidden");
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    showToast(`✨ Account created for ${userCredential.user.email}!`);
+    showToast(`Account created for ${userCredential.user.email}!`);
     signupEmail.value = "";
     signupPassword.value = "";
     signupConfirm.value = "";
-    showAuthView("dashboard");
+    loadUserProfile();
   } catch (error) {
     console.error("Signup error:", error);
     signupErrorMsg.textContent = formatAuthError(error.message);
@@ -1006,8 +1962,7 @@ formSignup.addEventListener("submit", async (e) => {
   }
 });
 
-// Forgot Password Handler
-formForgot.addEventListener("submit", async (e) => {
+formForgot?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = forgotEmail.value.trim();
 
@@ -1022,7 +1977,7 @@ formForgot.addEventListener("submit", async (e) => {
     await sendPasswordResetEmail(auth, email);
     forgotSuccessMsg.textContent = `Password reset link sent to ${email}! Check your inbox.`;
     forgotSuccessMsg.classList.remove("hidden");
-    showToast("✉️ Password reset email sent!");
+    showToast("Password reset email sent.");
   } catch (error) {
     console.error("Forgot password error:", error);
     forgotErrorMsg.textContent = formatAuthError(error.message);
@@ -1030,8 +1985,7 @@ formForgot.addEventListener("submit", async (e) => {
   }
 });
 
-// Change Password Handler
-formChangePassword.addEventListener("submit", async (e) => {
+formChangePassword?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const newPwd = changeNewPassword.value.trim();
   const confirmPwd = changeConfirmPassword.value.trim();
@@ -1063,10 +2017,10 @@ formChangePassword.addEventListener("submit", async (e) => {
   try {
     changeErrorMsg.classList.add("hidden");
     await updatePassword(auth.currentUser, newPwd);
-    showToast("🔒 Password changed successfully!");
+    showToast("Password changed successfully.");
     changeNewPassword.value = "";
     changeConfirmPassword.value = "";
-    showAuthView("dashboard");
+    loadUserProfile();
   } catch (error) {
     console.error("Change password error:", error);
     changeErrorMsg.textContent = formatAuthError(error.message);
@@ -1074,26 +2028,20 @@ formChangePassword.addEventListener("submit", async (e) => {
   }
 });
 
-// Logout Handler
-btnDashboardLogout.addEventListener("click", async () => {
+btnDashboardLogout?.addEventListener("click", async () => {
   try {
     await signOut(auth);
-    showToast("👋 Logged out successfully!");
-    showAuthView("login");
+    showToast("Signed out of PhysiX account.");
+    loadUserProfile();
   } catch (error) {
     showToast(`Error: ${error.message}`);
   }
 });
 
-// Navigation between Auth views
-btnGotoForgot.addEventListener("click", () => showAuthView("forgot"));
-btnGotoSignup.addEventListener("click", () => showAuthView("signup"));
-btnSignupGotoLogin.addEventListener("click", () => showAuthView("login"));
-btnForgotGotoLogin.addEventListener("click", () => showAuthView("login"));
-btnDashboardChangePwd.addEventListener("click", () => showAuthView("change-password"));
-btnChangeGotoDashboard.addEventListener("click", () => showAuthView("dashboard"));
-
 // Password Visibility Toggle (Show / Hide Password)
+const SVG_EYE = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+const SVG_EYE_OFF = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
 document.querySelectorAll(".btn-toggle-password").forEach(btn => {
   btn.addEventListener("click", () => {
     const targetId = btn.getAttribute("data-target");
@@ -1101,11 +2049,11 @@ document.querySelectorAll(".btn-toggle-password").forEach(btn => {
     if (!input) return;
     if (input.type === "password") {
       input.type = "text";
-      btn.innerHTML = `<span class="eye-icon">🙈</span>`;
+      btn.innerHTML = `<span class="eye-icon">${SVG_EYE_OFF}</span>`;
       btn.title = "Hide Password";
     } else {
       input.type = "password";
-      btn.innerHTML = `<span class="eye-icon">👁️</span>`;
+      btn.innerHTML = `<span class="eye-icon">${SVG_EYE}</span>`;
       btn.title = "Show Password";
     }
   });
@@ -1136,61 +2084,6 @@ const btnOpenEditProfile = document.getElementById("btn-open-edit-profile");
 const btnCloseEditProfile = document.getElementById("btn-close-edit-profile");
 const formEditProfile = document.getElementById("form-edit-profile");
 const avatarButtons = document.querySelectorAll(".avatar-opt-btn");
-let selectedAvatar = "🧑‍🔬";
-
-function loadUserProfile() {
-  let profileData = {};
-  try {
-    profileData = JSON.parse(localStorage.getItem("physix_user_profile") || "{}");
-  } catch (e) {
-    profileData = {};
-  }
-
-  const name = profileData.name || (auth.currentUser ? auth.currentUser.email.split("@")[0] : "Guest Student");
-  const avatar = profileData.avatar || "🧑‍🔬";
-  selectedAvatar = avatar;
-
-  const userNameEl = userProfileBtn.querySelector(".user-name");
-  const userStatusEl = userProfileBtn.querySelector(".user-status");
-  const navAvatarChar = document.getElementById("nav-avatar-char");
-
-  if (navAvatarChar) navAvatarChar.textContent = avatar;
-  if (userNameEl) userNameEl.textContent = name;
-
-  if (auth.currentUser) {
-    if (userStatusEl) {
-      userStatusEl.textContent = "● Firebase Online";
-      userStatusEl.style.color = "#34d399";
-    }
-    if (profileUserEmail) profileUserEmail.textContent = auth.currentUser.email;
-    if (profileAvatarChar) profileAvatarChar.textContent = avatar;
-  } else {
-    if (userStatusEl) {
-      userStatusEl.textContent = "● Guest Mode";
-      userStatusEl.style.color = "";
-    }
-    if (profileUserEmail) profileUserEmail.textContent = "Guest Student";
-    if (profileAvatarChar) profileAvatarChar.textContent = "👤";
-  }
-
-  const nameInput = document.getElementById("profile-name-input");
-  const eduInput = document.getElementById("profile-edu-status");
-  const occInput = document.getElementById("profile-occupation-input");
-  const bioInput = document.getElementById("profile-interests-input");
-
-  if (nameInput) nameInput.value = profileData.name || "";
-  if (eduInput) eduInput.value = profileData.edu || "Undergraduate Student";
-  if (occInput) occInput.value = profileData.occ || "";
-  if (bioInput) bioInput.value = profileData.bio || "";
-
-  avatarButtons.forEach(b => {
-    if (b.getAttribute("data-avatar") === selectedAvatar) {
-      b.classList.add("selected");
-    } else {
-      b.classList.remove("selected");
-    }
-  });
-}
 
 avatarButtons.forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1204,22 +2097,28 @@ if (formEditProfile) {
   formEditProfile.addEventListener("submit", (e) => {
     e.preventDefault();
     const nameInput = document.getElementById("profile-name-input");
+    const handleInput = document.getElementById("profile-handle-input");
     const eduInput = document.getElementById("profile-edu-status");
     const occInput = document.getElementById("profile-occupation-input");
-    const bioInput = document.getElementById("profile-interests-input");
+    const interestsInput = document.getElementById("profile-interests-input");
+    const bioInput = document.getElementById("profile-interests-bio");
 
     const profileData = {
-      name: nameInput?.value.trim() || "Student Physicist",
+      name: nameInput?.value.trim() || "Alex Henderson",
       avatar: selectedAvatar,
+      handle: handleInput?.value.trim() || "@alex_physicist",
       edu: eduInput?.value || "Undergraduate Student",
-      occ: occInput?.value.trim() || "Physics Explorer",
-      bio: bioInput?.value.trim() || "Exploring simulations and kinematics."
+      occ: occInput?.value.trim() || "MIT Physics Lab / Student",
+      interests: interestsInput?.value.trim() || "2D Kinematics, Planetary Gravity, Orbital Dynamics",
+      bio: bioInput?.value.trim() || "Exploring 2D projectile kinematics and trajectories."
     };
 
-    localStorage.setItem("physix_user_profile", JSON.stringify(profileData));
+    saveStoredUserProfile(profileData);
+    unlockBadge("badge-profile-saved", "PhysiX Pioneer (Customized Profile Dossier)");
     loadUserProfile();
     editProfileModal?.classList.add("hidden");
-    showToast("✨ Profile updated successfully!");
+    profileModal?.classList.remove("hidden");
+    showToast("Profile dossier updated successfully.");
   });
 }
 
@@ -1230,6 +2129,7 @@ btnOpenEditProfile?.addEventListener("click", () => {
 
 btnCloseEditProfile?.addEventListener("click", () => {
   editProfileModal?.classList.add("hidden");
+  profileModal?.classList.remove("hidden");
 });
 
 // Track Auth State in Real-Time
@@ -1238,17 +2138,18 @@ onAuthStateChanged(auth, () => {
 });
 
 // Profile Button click opens modal
-userProfileBtn.addEventListener("click", () => {
-  if (auth.currentUser) {
-    showAuthView("dashboard");
-  } else {
-    showAuthView("login");
-  }
-  profileModal.classList.remove("hidden");
+userProfileBtn?.addEventListener("click", () => {
+  loadUserProfile();
+  profileModal?.classList.remove("hidden");
+});
+
+btnOpenProfileNav?.addEventListener("click", () => {
+  loadUserProfile();
+  profileModal?.classList.remove("hidden");
 });
 
 // ==========================================
-// QUIZ ENGINE & INTERACTIVITY (SECRET EVALUATION)
+// QUIZ ENGINE & INTERACTIVITY (ANTI-COPY SECURED)
 // ==========================================
 const quizCurrentNum = document.getElementById("quiz-current-num");
 const quizTotalNum = document.getElementById("quiz-total-num");
@@ -1313,15 +2214,59 @@ function renderQuizQuestion(index) {
     quizOptionsList.appendChild(card);
   });
 
+  // Previous Button
   btnQuizPrev.disabled = index === 0;
-  btnQuizNext.disabled = !chosenOption;
-  btnQuizNext.textContent = index === QUIZ_DATA.questions.length - 1 ? "Finish Quiz & View Evaluation 🏁" : "Next Question →";
+  btnQuizPrev.innerHTML = `
+    <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    <span>Previous Question</span>
+  `;
+
+  // Next / Submit Button
+  const isLastQuestion = index === QUIZ_DATA.questions.length - 1;
+  if (isLastQuestion) {
+    btnQuizNext.classList.add("finish-btn");
+    btnQuizNext.innerHTML = `
+      <span>Finish & View Evaluation</span>
+      <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    `;
+  } else {
+    btnQuizNext.classList.remove("finish-btn");
+    btnQuizNext.innerHTML = `
+      <span>Next Question</span>
+      <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    `;
+  }
 }
 
 function handleSelectOption(question, chosenOption) {
   // Save answer in secret
   quizState.userAnswers[question.id] = { chosenOption };
   renderQuizQuestion(quizState.currentQuestionIndex);
+}
+
+// ANTI-COPY SECURITY LAYER ON QUIZ MODAL
+if (quizModal) {
+  // Prevent context menu (right click)
+  quizModal.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    showToast("Right-click context menu is disabled during the quiz.");
+  });
+
+  // Prevent copy, cut, drag, and selection copying
+  ["copy", "cut", "dragstart"].forEach(eventName => {
+    quizModal.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      showToast("Copying quiz questions is restricted during evaluation.");
+    });
+  });
+
+  // Prevent keyboard shortcuts (Ctrl+C, Ctrl+X, Ctrl+A, Ctrl+U, Ctrl+P)
+  quizModal.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && ["c", "x", "a", "u", "p"].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+      showToast("Keyboard copy shortcuts are disabled during the quiz.");
+    }
+  });
 }
 
 function showQuizResults() {
@@ -1345,16 +2290,16 @@ function showQuizResults() {
   quizFinalPercent.textContent = `${pct}%`;
 
   if (pct >= 90) {
-    quizGradeBadge.textContent = "🏆 Kinematics Master (Outstanding!)";
+    quizGradeBadge.textContent = "Kinematics Master (Outstanding)";
     quizGradeBadge.style.color = "#fde68a";
   } else if (pct >= 70) {
-    quizGradeBadge.textContent = "🚀 Physics Ace (Proficient)";
+    quizGradeBadge.textContent = "Physics Ace (Proficient)";
     quizGradeBadge.style.color = "#a7f3d0";
   } else if (pct >= 50) {
-    quizGradeBadge.textContent = "📚 Apprentice Physicist (Good Effort)";
+    quizGradeBadge.textContent = "Apprentice Physicist (Good Effort)";
     quizGradeBadge.style.color = "#93c5fd";
   } else {
-    quizGradeBadge.textContent = "🔭 Keep Exploring Simulator!";
+    quizGradeBadge.textContent = "Keep Exploring Simulator!";
     quizGradeBadge.style.color = "#fca5a5";
   }
 
@@ -1371,22 +2316,24 @@ function showQuizResults() {
       <div class="review-q">${i + 1}. ${q.question}</div>
       <div class="review-ans-row">
         <span class="review-user-ans ${isCorrect ? "" : "wrong"}">
-          Your Answer: <strong>${userChoice} ${isCorrect ? "✓ (Correct)" : "✗ (Incorrect)"}</strong>
+          Your Answer: <strong>${userChoice} (${isCorrect ? "Correct" : "Incorrect"})</strong>
         </span>
         ${!isCorrect ? `<span class="review-correct-ans">Correct Answer: <strong>${q.answer}</strong></span>` : ""}
       </div>
-      <div class="review-exp">💡 <strong>Solution & Concept:</strong> ${q.explanation}</div>
+      <div class="review-exp"><strong>Solution & Concept:</strong> ${q.explanation}</div>
     `;
     quizReviewList.appendChild(item);
   });
 
-  // Save High Score
+  // Save High Score and update profile telemetry
   try {
     const currentHigh = Number(localStorage.getItem("physix_quiz_highscore") || 0);
     if (score > currentHigh) {
       localStorage.setItem("physix_quiz_highscore", score);
-      showToast(`🌟 New Quiz High Score: ${score}/${total}!`);
+      showToast(`New Quiz High Score: ${score}/${total}!`);
     }
+    recordQuizTelemetry(score, total);
+    api.submitQuiz(getActiveUserId(), quizState.userAnswers).catch(() => {});
   } catch (e) {
     console.warn("Storage error", e);
   }
@@ -1408,16 +2355,9 @@ angleSlider.addEventListener("input", () => {
 });
 
 heightSlider.addEventListener("input", () => {
-  const h = Number(heightSlider.value);
-  heightValue.textContent = `${h.toFixed(1)} m`;
-
-  heightBtns.forEach(btn => {
-    const btnH = Number(btn.getAttribute("data-height"));
-    if (Math.abs(btnH - h) < 0.1) btn.classList.add("active");
-    else btn.classList.remove("active");
-  });
-
-  updateLauncher(Number(angleSlider.value), h);
+  const height = Number(heightSlider.value);
+  heightValue.textContent = `${height.toFixed(1)} m`;
+  updateLauncher(Number(angleSlider.value), height);
   calculateTheoreticalResults();
 });
 
@@ -1522,19 +2462,43 @@ btnQuizToSim.addEventListener("click", () => {
   calculateTheoreticalResults();
   launchProjectile();
 
-  showToast("🚀 Loaded Quiz Q7 Setup: v₀=20m/s, θ=45°, g=10m/s² ➔ R=40.0m!");
+  showToast("Loaded Quiz Q7 Setup: v₀=20m/s, θ=45°, g=10m/s² -> R=40.0m");
 });
 
 // ==========================================
 // MODALS & NAVIGATION LOGIC
 // ==========================================
-// Quiz Modal
+// Quiz Modal & Optical Fibre Alert
+const ofQuizAlertModal = document.getElementById("optical-quiz-alert-modal");
+const btnCloseOfQuizAlert = document.getElementById("btn-close-of-quiz-alert");
+const btnOfQuizSwitchProj = document.getElementById("btn-of-quiz-switch-proj");
+const btnOfQuizDismiss = document.getElementById("btn-of-quiz-dismiss");
+
 btnOpenQuiz.addEventListener("click", () => {
+  if (activeExperimentId === "optical") {
+    ofQuizAlertModal?.classList.remove("hidden");
+    return;
+  }
   initQuiz();
   quizModal.classList.remove("hidden");
 });
 btnCloseQuiz.addEventListener("click", () => {
   quizModal.classList.add("hidden");
+});
+
+btnCloseOfQuizAlert?.addEventListener("click", () => {
+  ofQuizAlertModal?.classList.add("hidden");
+});
+
+btnOfQuizDismiss?.addEventListener("click", () => {
+  ofQuizAlertModal?.classList.add("hidden");
+});
+
+btnOfQuizSwitchProj?.addEventListener("click", () => {
+  ofQuizAlertModal?.classList.add("hidden");
+  switchExperiment("projectile");
+  initQuiz();
+  quizModal.classList.remove("hidden");
 });
 
 // Explorer Modal
@@ -1547,6 +2511,11 @@ btnCloseExplorer.addEventListener("click", () => {
 
 // Theory Modal
 btnOpenTheory.addEventListener("click", () => {
+  if (activeExperimentId === "optical") {
+    btnTheoryExp2?.click();
+  } else {
+    btnTheoryExp1?.click();
+  }
   theoryModal.classList.remove("hidden");
 });
 btnCloseTheory.addEventListener("click", () => {
@@ -1558,8 +2527,307 @@ btnCloseProfile.addEventListener("click", () => {
   profileModal.classList.add("hidden");
 });
 
+// ==========================================
+// VECTRA AI COPILOT CONTROLLER
+// ==========================================
+let aiConversationHistory = [];
+let lastRecordedFlightForAi = null;
+let activeExperimentId = "projectile";
+let opticalExperimentInstance = null;
+
+function getLiveSimulationContext() {
+  if (activeExperimentId === "optical" && opticalExperimentInstance) {
+    const ofState = opticalExperimentInstance.getState();
+    return {
+      experiment: "Optical Fibre Numerical Aperture",
+      activeLab: "Determination of Numerical Aperture of an Optical Fibre",
+      powerSupplyOn: ofState.powerSupplyOn,
+      lightSourceActive: ofState.lightSourceActive,
+      fibreConnected: ofState.fibreInputConnected && ofState.fibreOutputMounted,
+      distanceL: ofState.distanceL,
+      spotDiameterW: ofState.currentSpotDiameter,
+      numericalApertureNA: ofState.currentCalculatedNA,
+      acceptanceAngleDeg: ofState.currentAcceptanceAngleDeg,
+      matchedRing: ofState.matchedRing,
+      isPerfectMatch: ofState.isPerfectMatch,
+      observationsCount: ofState.observations.length
+    };
+  }
+
+  const gVal = Number(gravitySlider.value);
+  let planet = "Earth";
+  if (Math.abs(gVal - 1.6) < 0.1) planet = "Moon";
+  else if (Math.abs(gVal - 3.7) < 0.1) planet = "Mars";
+  else if (Math.abs(gVal - 24.8) < 0.1) planet = "Jupiter";
+  else if (Math.abs(gVal - 9.8) >= 0.1) planet = `Custom (${gVal.toFixed(1)} m/s²)`;
+
+  return {
+    experiment: "2D Projectile Motion",
+    activeLab: "2D Projectile Motion Kinematics",
+    v0: Number(velocitySlider.value),
+    angleDeg: Number(angleSlider.value),
+    h0: Number(heightSlider.value),
+    g: gVal,
+    planet,
+    targetDistance: simState.targetDistance,
+    targetMode: simState.targetMode,
+    lastFlight: lastRecordedFlightForAi
+  };
+}
+
+function updateAiContextStrip() {
+  const ctx = getLiveSimulationContext();
+  if (ctx.experiment === "Optical Fibre Numerical Aperture") {
+    if (aiCtxV0) aiCtxV0.textContent = `L: ${ctx.distanceL.toFixed(1)} cm`;
+    if (aiCtxAngle) aiCtxAngle.textContent = `W: ${ctx.spotDiameterW.toFixed(2)} cm`;
+    if (aiCtxH0) aiCtxH0.textContent = `NA: ${ctx.numericalApertureNA.toFixed(4)}`;
+    if (aiCtxG) aiCtxG.textContent = `θ_a: ${ctx.acceptanceAngleDeg.toFixed(1)}°`;
+  } else {
+    if (aiCtxV0) aiCtxV0.textContent = `v₀: ${ctx.v0.toFixed(1)} m/s`;
+    if (aiCtxAngle) aiCtxAngle.textContent = `θ: ${ctx.angleDeg}°`;
+    if (aiCtxH0) aiCtxH0.textContent = `h₀: ${ctx.h0.toFixed(1)} m`;
+    if (aiCtxG) aiCtxG.textContent = `g: ${ctx.g.toFixed(1)} m/s² (${ctx.planet})`;
+  }
+}
+
+function openAiCopilot() {
+  updateAiContextStrip();
+  aiCopilotModal?.classList.remove("hidden");
+  setTimeout(() => aiChatInput?.focus(), 100);
+}
+
+function closeAiCopilot() {
+  aiCopilotModal?.classList.add("hidden");
+}
+
+function formatMarkdownToHtml(markdownText) {
+  if (!markdownText) return "";
+  let text = markdownText
+    .replace(/^#### (.*$)/gim, '<h5>$1</h5>')
+    .replace(/^### (.*$)/gim, '<h4>$1</h4>')
+    .replace(/^## (.*$)/gim, '<h3>$1</h3>')
+    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+    .replace(/`([^`]+)`/gim, '<code class="font-mono">$1</code>')
+    .replace(/\\mathbf\{([^}]+)\}/gim, '<strong>$1</strong>')
+    .replace(/\\text\{([^}]+)\}/gim, '$1')
+    .replace(/\\approx/gim, '≈')
+    .replace(/\\times/gim, '×')
+    .replace(/\\cdot/gim, '·')
+    .replace(/\\theta/gim, 'θ')
+    .replace(/\\pi/gim, 'π')
+    .replace(/\\le/gim, '≤')
+    .replace(/\\ge/gim, '≥')
+    .replace(/\\pm/gim, '±')
+    .replace(/\\Delta/gim, 'Δ')
+    .replace(/\\circ/gim, '°')
+    .replace(/\\\((.*?)\\\)/gim, '<span class="font-mono">$1</span>')
+    .replace(/\\\[(.*?)\\\]/gim, '<div class="formula-latex">$1</div>')
+    .replace(/\$\$([\s\S]*?)\$\$/gim, '<div class="formula-latex">$1</div>')
+    .replace(/\$([^$]+)\$/gim, '<span class="font-mono">$1</span>');
+
+  const lines = text.split("\n");
+  const formattedLines = [];
+  let inList = false;
+  let inTable = false;
+
+  for (let line of lines) {
+    const trimmed = line.trim();
+
+    // Horizontal Rule
+    if (trimmed === "***" || trimmed === "---" || trimmed === "___") {
+      if (inList) { formattedLines.push("</ul>"); inList = false; }
+      if (inTable) { formattedLines.push("</tbody></table>"); inTable = false; }
+      formattedLines.push("<hr />");
+      continue;
+    }
+
+    // Blockquote
+    if (trimmed.startsWith("> ")) {
+      if (inList) { formattedLines.push("</ul>"); inList = false; }
+      if (inTable) { formattedLines.push("</tbody></table>"); inTable = false; }
+      formattedLines.push(`<blockquote>${trimmed.substring(2)}</blockquote>`);
+      continue;
+    }
+
+    // Markdown Table
+    if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+      if (inList) { formattedLines.push("</ul>"); inList = false; }
+      const cells = trimmed.split("|").slice(1, -1).map(c => c.trim());
+      // Check if separator row
+      if (cells.every(c => /^:?-+:?$/.test(c))) {
+        continue;
+      }
+      if (!inTable) {
+        formattedLines.push("<table><thead><tr>");
+        cells.forEach(c => formattedLines.push(`<th>${c}</th>`));
+        formattedLines.push("</tr></thead><tbody>");
+        inTable = true;
+      } else {
+        formattedLines.push("<tr>");
+        cells.forEach(c => formattedLines.push(`<td>${c}</td>`));
+        formattedLines.push("</tr>");
+      }
+      continue;
+    } else if (inTable) {
+      formattedLines.push("</tbody></table>");
+      inTable = false;
+    }
+
+    // List item
+    if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+      if (!inList) {
+        formattedLines.push("<ul>");
+        inList = true;
+      }
+      formattedLines.push(`<li>${trimmed.substring(2)}</li>`);
+    } else {
+      if (inList) {
+        formattedLines.push("</ul>");
+        inList = false;
+      }
+      if (trimmed.length > 0) {
+        if (!trimmed.startsWith("<h") && !trimmed.startsWith("<div") && !trimmed.startsWith("<blockquote") && !trimmed.startsWith("<table") && !trimmed.startsWith("<hr")) {
+          formattedLines.push(`<p>${trimmed}</p>`);
+        } else {
+          formattedLines.push(trimmed);
+        }
+      }
+    }
+  }
+  if (inList) formattedLines.push("</ul>");
+  if (inTable) formattedLines.push("</tbody></table>");
+
+  return formattedLines.join("");
+}
+
+function appendAiMessage(role, text) {
+  if (!aiChatMessages) return;
+  const msgEl = document.createElement("div");
+  msgEl.className = `ai-msg ${role === "user" ? "ai-msg-user" : "ai-msg-bot"}`;
+
+  const now = new Date();
+  const timeStr = now.toTimeString().split(" ")[0].substring(0, 5);
+
+  const userAvatarSvg = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+  const botAvatarSvg = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+
+  msgEl.innerHTML = `
+    <div class="ai-msg-avatar">${role === "user" ? userAvatarSvg : botAvatarSvg}</div>
+    <div class="ai-msg-content">
+      <div class="ai-msg-header">
+        <strong>${role === "user" ? "You" : "Vectra AI"}</strong>
+        <span class="ai-msg-time">${timeStr}</span>
+      </div>
+      ${formatMarkdownToHtml(text)}
+    </div>
+  `;
+
+  aiChatMessages.appendChild(msgEl);
+  aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+}
+
+let typingIndicatorEl = null;
+
+function showAiTypingIndicator() {
+  if (typingIndicatorEl || !aiChatMessages) return;
+  typingIndicatorEl = document.createElement("div");
+  typingIndicatorEl.className = "ai-msg ai-msg-bot";
+  typingIndicatorEl.innerHTML = `
+    <div class="ai-msg-avatar">
+      <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+    </div>
+    <div class="ai-msg-content">
+      <div class="ai-typing-indicator">
+        <span class="ai-typing-dot"></span>
+        <span class="ai-typing-dot"></span>
+        <span class="ai-typing-dot"></span>
+      </div>
+    </div>
+  `;
+  aiChatMessages.appendChild(typingIndicatorEl);
+  aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+}
+
+function hideAiTypingIndicator() {
+  if (typingIndicatorEl && typingIndicatorEl.parentNode) {
+    typingIndicatorEl.parentNode.removeChild(typingIndicatorEl);
+  }
+  typingIndicatorEl = null;
+}
+
+async function handleSendAiChat(userText) {
+  const message = (userText || aiChatInput?.value || "").trim();
+  if (!message) return;
+
+  if (aiChatInput) aiChatInput.value = "";
+  appendAiMessage("user", message);
+  aiConversationHistory.push({ role: "user", text: message });
+
+  if (btnAiSend) btnAiSend.disabled = true;
+  showAiTypingIndicator();
+
+  try {
+    const simContext = getLiveSimulationContext();
+    const result = await api.sendAiChat({
+      message,
+      history: aiConversationHistory,
+      simulationContext: simContext
+    });
+
+    hideAiTypingIndicator();
+    const replyText = result?.reply || "I analyzed your setup. Let me know if you need specific angle or trajectory calculations!";
+    appendAiMessage("bot", replyText);
+    aiConversationHistory.push({ role: "model", text: replyText });
+  } catch (err) {
+    hideAiTypingIndicator();
+    appendAiMessage("bot", "Vectra AI: Real-time telemetry analyzed. Let me know which formula you want me to solve!");
+  } finally {
+    if (btnAiSend) btnAiSend.disabled = false;
+  }
+}
+
+// Vectra AI Event Listeners
+btnOpenAiNav?.addEventListener("click", openAiCopilot);
+btnAiFab?.addEventListener("click", openAiCopilot);
+btnCloseAiCopilot?.addEventListener("click", closeAiCopilot);
+
+formAiChat?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  handleSendAiChat();
+});
+
+btnAiClear?.addEventListener("click", () => {
+  aiConversationHistory = [];
+  if (aiChatMessages) {
+    aiChatMessages.innerHTML = `
+      <div class="ai-msg ai-msg-bot">
+        <div class="ai-msg-avatar">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </div>
+        <div class="ai-msg-content">
+          <div class="ai-msg-header">
+            <strong>Vectra AI</strong> <span class="ai-msg-time">Just now</span>
+          </div>
+          <p>Chat cleared! Ready for new physics questions and trajectory calculations.</p>
+        </div>
+      </div>
+    `;
+  }
+  showToast("Vectra AI chat history cleared.");
+});
+
+aiSuggestionChips.forEach(chip => {
+  chip.addEventListener("click", () => {
+    const prompt = chip.getAttribute("data-prompt");
+    if (prompt) {
+      handleSendAiChat(prompt);
+    }
+  });
+});
+
 // Close modals on backdrop click
-[explorerModal, theoryModal, profileModal, quizModal, editProfileModal].forEach(modal => {
+[explorerModal, theoryModal, profileModal, quizModal, editProfileModal, aiCopilotModal].forEach(modal => {
   if (modal) {
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
@@ -1572,41 +2840,195 @@ btnCloseProfile.addEventListener("click", () => {
 // Close modals on Escape key
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    explorerModal.classList.add("hidden");
-    theoryModal.classList.add("hidden");
-    profileModal.classList.add("hidden");
-    quizModal.classList.add("hidden");
-    editProfileModal.classList.add("hidden");
+    explorerModal?.classList.add("hidden");
+    theoryModal?.classList.add("hidden");
+    profileModal?.classList.add("hidden");
+    quizModal?.classList.add("hidden");
+    editProfileModal?.classList.add("hidden");
+    aiCopilotModal?.classList.add("hidden");
   }
 });
 
-// Lab Cards Interaction
+// ==========================================
+// EXPERIMENT SWITCHER CONTROLLER
+// ==========================================
+const expProjSection = document.getElementById("exp-projectile-section");
+const expOptSection = document.getElementById("exp-optical-section");
+const btnSwitchProj = document.getElementById("btn-switch-exp-projectile");
+const btnSwitchOpt = document.getElementById("btn-switch-exp-optical");
+
+function switchExperiment(expId) {
+  activeExperimentId = expId;
+
+  if (expId === "optical") {
+    expProjSection?.classList.add("hidden");
+    expOptSection?.classList.remove("hidden");
+    btnSwitchProj?.classList.remove("active");
+    btnSwitchOpt?.classList.add("active");
+
+    if (!opticalExperimentInstance) {
+      opticalExperimentInstance = createOpticalFibreExperiment({
+        onXpAwarded: (amount, reason) => addStudentXp(amount, reason),
+        showToast,
+        getActiveUserId,
+        loadUserProfile,
+        unlockBadge: (badgeId, badgeName) => unlockBadge(badgeId, badgeName)
+      });
+      opticalExperimentInstance.init();
+    } else {
+      opticalExperimentInstance.renderAll();
+    }
+
+    showToast("Switched to Exp 2: Numerical Aperture of Optical Fibre");
+  } else {
+    expOptSection?.classList.add("hidden");
+    expProjSection?.classList.remove("hidden");
+    btnSwitchOpt?.classList.remove("active");
+    btnSwitchProj?.classList.add("active");
+
+    showToast("Switched to Exp 1: 2D Projectile Motion");
+  }
+
+  updateAiContextStrip();
+}
+
+btnSwitchProj?.addEventListener("click", () => switchExperiment("projectile"));
+btnSwitchOpt?.addEventListener("click", () => switchExperiment("optical"));
+
+// Lab Cards Interaction in Hub
 const labCards = document.querySelectorAll(".lab-card");
 labCards.forEach(card => {
   card.addEventListener("click", () => {
-    if (card.classList.contains("active-lab")) {
+    const target = card.getAttribute("data-exp-target");
+    if (target === "optical") {
       explorerModal.classList.add("hidden");
-      showToast("🚀 Viewing Projectile Motion Lab");
+      switchExperiment("optical");
+    } else if (card.classList.contains("active-lab")) {
+      explorerModal.classList.add("hidden");
+      switchExperiment("projectile");
     } else {
       const name = card.getAttribute("data-name") || "This experiment";
-      showToast(`⚡ ${name} is currently in development!`);
+      showToast(`${name} is currently in development.`);
     }
   });
 });
 
-// Category filter pills
+// Theory Modal Subtabs Controller
+const btnTheoryExp1 = document.getElementById("btn-theory-tab-exp1");
+const btnTheoryExp2 = document.getElementById("btn-theory-tab-exp2");
+const paneTheoryExp1 = document.getElementById("theory-pane-exp1");
+const paneTheoryExp2 = document.getElementById("theory-pane-exp2");
+
+btnTheoryExp1?.addEventListener("click", () => {
+  btnTheoryExp1.classList.add("active");
+  btnTheoryExp2?.classList.remove("active");
+  paneTheoryExp1?.classList.remove("hidden");
+  paneTheoryExp2?.classList.add("hidden");
+});
+
+btnTheoryExp2?.addEventListener("click", () => {
+  btnTheoryExp2.classList.add("active");
+  btnTheoryExp1?.classList.remove("active");
+  paneTheoryExp2?.classList.remove("hidden");
+  paneTheoryExp1?.classList.add("hidden");
+});
+
+// Observations Event Listeners (Exp 1)
+btnRecordObservation?.addEventListener("click", recordCurrentObservation);
+btnRecordObsTable?.addEventListener("click", recordCurrentObservation);
+btnClearObservations?.addEventListener("click", clearAllObservations);
+
+// Category filter pills in Explore Labs Hub
 const catPills = document.querySelectorAll(".cat-pill");
 catPills.forEach(pill => {
   pill.addEventListener("click", () => {
     catPills.forEach(p => p.classList.remove("active"));
     pill.classList.add("active");
-    showToast(`Showing ${pill.textContent}`);
+    const category = pill.getAttribute("data-category") || "all";
+    const cards = document.querySelectorAll(".labs-grid .lab-card");
+    cards.forEach(card => {
+      const cardCat = card.getAttribute("data-category") || "all";
+      if (category === "all" || cardCat === category || cardCat === "all") {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
+    showToast(`Filtered: ${pill.textContent}`);
   });
 });
 
 // ==========================================
+// THEME CONTROLLER (DARK / LIGHT MODE)
+// ==========================================
+const btnToggleTheme = document.getElementById("btn-toggle-theme");
+
+function applyTheme(theme) {
+  const isLight = theme === "light";
+  document.documentElement.setAttribute("data-theme", isLight ? "light" : "dark");
+  document.body.setAttribute("data-theme", isLight ? "light" : "dark");
+  document.body.classList.toggle("light-mode", isLight);
+
+  const lightModeStylesheet = document.getElementById("light-mode-stylesheet");
+  if (lightModeStylesheet) {
+    lightModeStylesheet.disabled = !isLight;
+  }
+
+  if (btnToggleTheme) {
+    btnToggleTheme.setAttribute("aria-checked", isLight ? "true" : "false");
+    btnToggleTheme.setAttribute("title", isLight ? "Click to switch to Dark Mode" : "Click to switch to Light Mode");
+    btnToggleTheme.setAttribute("aria-label", isLight ? "Switch to Dark Mode" : "Switch to Light Mode");
+  }
+
+  // Update Matter.js simulation canvas background and ground styling
+  if (render && render.options) {
+    render.options.background = isLight ? "#f0f9ff" : "#080d18";
+  }
+  if (groundBody && groundBody.render) {
+    groundBody.render.fillStyle = isLight ? "#e0f2fe" : "#121a2d";
+    groundBody.render.strokeStyle = isLight ? "#38bdf8" : "#23314e";
+  }
+  if (launcherBase && launcherBase.render) {
+    launcherBase.render.fillStyle = isLight ? "#0284c7" : "#1a243b";
+  }
+  if (launcherWheel && launcherWheel.render) {
+    launcherWheel.render.fillStyle = isLight ? "#0369a1" : "#2a3756";
+    launcherWheel.render.strokeStyle = isLight ? "#38bdf8" : "#8b5cf6";
+  }
+
+  // Update Optical Fibre (Exp 2) simulation canvases
+  if (opticalExperimentInstance) {
+    opticalExperimentInstance.renderAll();
+  }
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem("physix_theme");
+  if (savedTheme === "light") {
+    applyTheme("light");
+  } else {
+    // Default theme remains Dark Mode, preserving the exact original design
+    applyTheme("dark");
+  }
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  const newTheme = currentTheme === "light" ? "dark" : "light";
+  localStorage.setItem("physix_theme", newTheme);
+  applyTheme(newTheme);
+  showToast(`Switched to ${newTheme === "light" ? "Light" : "Dark"} Mode`);
+}
+
+btnToggleTheme?.addEventListener("click", toggleTheme);
+
+// ==========================================
 // INITIAL SETUP & RUN
 // ==========================================
+initTheme();
+loadUserProfile();
+renderObservationsTable();
+renderChallenges();
 updateLauncher(DEFAULT_ANGLE, DEFAULT_HEIGHT);
 calculateTheoreticalResults();
 

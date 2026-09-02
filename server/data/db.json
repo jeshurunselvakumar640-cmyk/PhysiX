@@ -1,0 +1,146 @@
+{
+  "users": {
+    "guest": {
+      "userId": "guest",
+      "profile": {
+        "name": "Dr. Eleanor Vance",
+        "avatar": "quantum",
+        "handle": "@eleanor_cern",
+        "edu": "Lead Researcher",
+        "occ": "CERN Particle Accelerator Lab",
+        "interests": "2D Kinematics, Planetary Gravity, Orbital Dynamics",
+        "bio": "Exploring 2D projectile kinematics, parabolic trajectories, vector breakdown components, and gravitational effects across the solar system.",
+        "createdAt": "2026-09-01T13:25:17.784Z",
+        "updatedAt": "2026-09-01T13:27:28.653Z"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [
+        {
+          "id": 1,
+          "createdAt": "2026-09-01T13:27:28.663Z",
+          "time": "18:57:00",
+          "angle": 45,
+          "v0": 25,
+          "h0": 10,
+          "g": 9.8,
+          "range": 73.45,
+          "apex": 25.94,
+          "airtime": 3.75
+        }
+      ],
+      "badges": [
+        "badge-profile-saved",
+        "badge-high-velocity",
+        "badge-optimal-angle"
+      ],
+      "quizHighScore": 10,
+      "observations": [
+        {
+          "id": 1,
+          "createdAt": "2026-09-01T16:44:06.564Z",
+          "v0": 25,
+          "angle": 45,
+          "h0": 0,
+          "g": 9.8,
+          "planet": "Earth",
+          "range": 63.78,
+          "apex": 15.94,
+          "airtime": 3.61,
+          "impactSpeed": 25
+        }
+      ],
+      "bonusXp": 50
+    },
+    "HP1qmVz6DsUNQHKEWSlBFlY9CuT2": {
+      "userId": "HP1qmVz6DsUNQHKEWSlBFlY9CuT2",
+      "profile": {
+        "name": "Jeshurun Selvakumar",
+        "avatar": "astronaut",
+        "handle": "@jeshurunselvakumar",
+        "edu": "Undergraduate Student",
+        "occ": "SIES GST",
+        "interests": "2D Kinematics, Planetary Gravity, Orbital Dynamics",
+        "bio": "Physics Lover",
+        "createdAt": "2026-09-01T13:42:29.142Z",
+        "updatedAt": "2026-09-01T13:42:29.142Z"
+      },
+      "telemetry": {
+        "totalLaunches": 16,
+        "maxRange": 51.83938499294442,
+        "maxHeight": 57.05405405405405,
+        "maxVelocity": 20,
+        "totalAirtime": 42.89845325410492,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 10,
+          "Moon": 3,
+          "Mars": 3,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "badges": [
+        "badge-profile-saved",
+        "badge-optimal-angle",
+        "badge-high-platform",
+        "badge-target-hit",
+        "badge-long-airtime",
+        "badge-of-multi-sweep",
+        "badge-of-rapid-calib",
+        "badge-of-spot-match"
+      ],
+      "quizHighScore": 0,
+      "observations": [
+        {
+          "id": 1788283061231,
+          "createdAt": "2026-09-01T17:17:41.236Z",
+          "experiment": "Optical Fibre NA",
+          "reading": 3,
+          "L": 3,
+          "W": 3.02,
+          "na": 0.4498,
+          "theta": 26.7,
+          "wavelength": 650,
+          "time": "22:47:41"
+        },
+        {
+          "id": 1788283058478,
+          "createdAt": "2026-09-01T17:17:38.483Z",
+          "experiment": "Optical Fibre NA",
+          "reading": 2,
+          "L": 1.5,
+          "W": 1.51,
+          "na": 0.4498,
+          "theta": 26.7,
+          "wavelength": 650,
+          "time": "22:47:38"
+        },
+        {
+          "id": 1788282178850,
+          "createdAt": "2026-09-01T17:02:58.864Z",
+          "experiment": "Optical Fibre NA",
+          "reading": 1,
+          "L": 2.5,
+          "W": 2.52,
+          "na": 0.4498,
+          "theta": 26.7,
+          "time": "22:32:58"
+        }
+      ],
+      "bonusXp": 2925
+    }
+  }
+}

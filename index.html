@@ -13,6 +13,7 @@
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="/src/style.css" />
+  <link id="light-mode-stylesheet" rel="stylesheet" href="/src/light-mode.css" disabled />
 </head>
 
 <body>
@@ -22,7 +23,14 @@
   ===================================== -->
   <header class="header">
     <div class="logo">
-      <span class="atom">⚛️</span>
+      <span class="atom">
+        <svg class="svg-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(30 12 12)"></ellipse>
+          <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(-30 12 12)"></ellipse>
+          <ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(90 12 12)"></ellipse>
+          <circle cx="12" cy="12" r="2.5" fill="currentColor"></circle>
+        </svg>
+      </span>
       <div>
         <h1>Physi<span>X</span></h1>
         <p>An Interactive Physics Laboratory</p>
@@ -31,19 +39,74 @@
 
     <div class="nav-links">
       <button id="btn-open-theory" class="nav-btn">
-        <span>📖</span> Theory & Formulas
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          <line x1="9" y1="7" x2="15" y2="7"></line>
+          <line x1="9" y1="11" x2="13" y2="11"></line>
+        </svg>
+        Theory & Formulas
       </button>
       <button id="btn-open-quiz" class="nav-btn nav-btn-quiz">
-        <span>🧠</span> Physics Quiz <span class="badge-count">10Q</span>
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        Physics Quiz <span class="badge-count">10Q</span>
       </button>
       <button id="btn-open-explorer" class="nav-btn">
-        <span>🔬</span> Explore Labs Hub
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+        Explore Labs Hub
+      </button>
+      <button id="btn-open-ai-nav" class="nav-btn nav-btn-ai" title="Open Vectra AI Laboratory Assistant">
+        <svg class="svg-icon svg-ai-glow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        Vectra AI
+      </button>
+      <button id="btn-open-profile-nav" class="nav-btn nav-btn-profile">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        Student Profile
+      </button>
+      <button id="btn-toggle-theme" class="theme-sliding-switch" role="switch" aria-checked="false" title="Switch to Light Mode" aria-label="Toggle Light/Dark Mode">
+        <span class="theme-switch-track">
+          <span class="theme-switch-thumb">
+            <!-- Sun Symbol (Active in Dark Mode -> click for Light Mode) -->
+            <svg class="theme-switch-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <!-- Moon Symbol (Active in Light Mode -> click for Dark Mode) -->
+            <svg class="theme-switch-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </span>
+        </span>
       </button>
     </div>
 
     <!-- User Profile Chip -->
     <div id="user-profile-btn" class="user-chip" title="Manage Profile & Authentication">
-      <div class="user-avatar" id="nav-avatar-char">👤</div>
+      <div class="user-avatar" id="nav-avatar-char">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
       <div class="user-info">
         <span class="user-name">Guest Student</span>
         <span class="user-status">● Guest Mode</span>
@@ -52,10 +115,36 @@
   </header>
 
   <!-- =====================================
-       MAIN EXPERIMENT DASHBOARD
+       EXPERIMENT SWITCHER BANNER
   ===================================== -->
-  <main class="dashboard">
-    <!-- LEFT: SIMULATION VIEWPORT -->
+  <div class="exp-switch-container">
+    <div class="exp-switch-bar">
+      <button type="button" id="btn-switch-exp-projectile" class="exp-switch-btn active" data-exp="projectile">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+          <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+        </svg>
+        <span>Exp 1: 2D Projectile Motion</span>
+      </button>
+
+      <button type="button" id="btn-switch-exp-optical" class="exp-switch-btn" data-exp="optical">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="6"></circle>
+          <circle cx="12" cy="12" r="2"></circle>
+        </svg>
+        <span>Exp 2: Numerical Aperture of Optical Fibre</span>
+        <span class="exp-pill-badge">NEW LAB</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- =====================================
+       EXPERIMENT 1: 2D PROJECTILE MOTION
+  ===================================== -->
+  <div id="exp-projectile-section" class="exp-section-wrapper">
+    <main class="dashboard">
+      <!-- LEFT: SIMULATION VIEWPORT -->
     <section class="simulation-card">
       <div class="simulation-top-bar">
         <div class="current-lab-badge">
@@ -64,8 +153,12 @@
         </div>
 
         <div id="target-banner" class="target-banner hidden">
-          <span>🎯 TARGET: <strong id="target-distance-text">35.0m</strong> | SCORE: <strong
-              id="target-score">0</strong> pts</span>
+          <span style="display:inline-flex; align-items:center; gap:6px;">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle>
+            </svg>
+            TARGET: <strong id="target-distance-text">35.0m</strong> | SCORE: <strong id="target-score">0</strong> pts
+          </span>
         </div>
       </div>
 
@@ -96,7 +189,14 @@
     <!-- RIGHT: CONTROLS PANEL -->
     <aside class="controls-card">
       <div class="controls-header">
-        <h2>⚡ Control Deck</h2>
+        <h2>
+          <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
+            <line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line>
+          </svg>
+          Control Deck
+        </h2>
         <span
           style="font-size:11px; font-weight:800; color:#8b5cf6; letter-spacing:1px; background:rgba(139,92,246,0.12); padding:3px 8px; border-radius:6px; border:1px solid rgba(139,92,246,0.3);">
           KINEMATICS v2.0
@@ -159,10 +259,22 @@
         </div>
         <input type="range" id="gravity" min="0" max="25" step="0.1" value="9.8" />
         <div class="planetary-presets">
-          <button class="planet-btn" data-gravity="1.6">🌙 Moon (1.6)</button>
-          <button class="planet-btn" data-gravity="3.7">🔴 Mars (3.7)</button>
-          <button class="planet-btn active" data-gravity="9.8">🌍 Earth (9.8)</button>
-          <button class="planet-btn" data-gravity="24.8">🪐 Jupiter (24.8)</button>
+          <button class="planet-btn" data-gravity="1.6">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            Moon (1.6)
+          </button>
+          <button class="planet-btn" data-gravity="3.7">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="14" r="6"></circle><line x1="14" y1="10" x2="20" y2="4"></line><polyline points="15 4 20 4 20 9"></polyline></svg>
+            Mars (3.7)
+          </button>
+          <button class="planet-btn active" data-gravity="9.8">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            Earth (9.8)
+          </button>
+          <button class="planet-btn" data-gravity="24.8">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><ellipse cx="12" cy="12" rx="11" ry="3" transform="rotate(-20 12 12)"></ellipse></svg>
+            Jupiter (24.8)
+          </button>
         </div>
       </div>
 
@@ -183,20 +295,30 @@
         <label class="toggle-control">
           <input type="checkbox" id="toggle-target" />
           <span class="toggle-slider"></span>
-          <span class="toggle-text">🎯 Target Landing Challenge Mode</span>
+          <span class="toggle-text" style="display:inline-flex; align-items:center; gap:6px;">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            Target Landing Challenge Mode
+          </span>
         </label>
       </div>
 
       <!-- 6. Action Buttons -->
       <div class="buttons">
         <button id="launch" class="launch-btn">
-          🚀 Fire Cannon
+          <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
+          Fire Cannon
+        </button>
+        <button id="record-observation" class="record-btn" title="Record Current Flight Observation into Scientific Logbook">
+          <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Record Observation
         </button>
         <button id="reset" class="reset-btn" title="Reset Simulation State">
-          ↺ Reset
+          <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+          Reset
         </button>
         <button id="clear-trails" class="clear-btn" title="Clear Comparison Ghost Trails">
-          🧹 Clear Trails
+          <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          Clear Trails
         </button>
       </div>
     </aside>
@@ -206,17 +328,11 @@
        KINEMATIC ANALYTICS & RESULTS CARDS
   ===================================== -->
   <section class="results-container">
-    <div class="analytics-section-header">
-      <div class="analytics-title-group">
-
-
-      </div>
-
-    </div>
-
     <div class="results-card">
       <div class="result-box card-height">
-        <div class="result-icon icon-height">📐</div>
+        <div class="result-icon icon-height">
+          <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"></line><polyline points="8 6 12 2 16 6"></polyline></svg>
+        </div>
         <div class="result-meta">
           <span class="result-label">Peak Maximum Height</span>
           <span id="max-height" class="result-val">0.00 m</span>
@@ -225,7 +341,9 @@
       </div>
 
       <div class="result-box card-range">
-        <div class="result-icon icon-range">🎯</div>
+        <div class="result-icon icon-range">
+          <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><line x1="2" y1="12" x2="22" y2="12"></line><polyline points="18 8 22 12 18 16"></polyline><polyline points="6 8 2 12 6 16"></polyline></svg>
+        </div>
         <div class="result-meta">
           <span class="result-label">Total Ground Range</span>
           <span id="range" class="result-val">0.00 m</span>
@@ -234,7 +352,9 @@
       </div>
 
       <div class="result-box card-time">
-        <div class="result-icon icon-time">⏱️</div>
+        <div class="result-icon icon-time">
+          <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M5 3L2 6"></path><path d="M22 6l-3-3"></path><path d="M12 2v2"></path></svg>
+        </div>
         <div class="result-meta">
           <span class="result-label">Total Time of Flight</span>
           <span id="flight-time" class="result-val">0.00 s</span>
@@ -243,7 +363,9 @@
       </div>
 
       <div class="result-box card-impact">
-        <div class="result-icon icon-impact">⚡</div>
+        <div class="result-icon icon-impact">
+          <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path><path d="M16 16l3 3"></path></svg>
+        </div>
         <div class="result-meta">
           <span class="result-label">Impact Landing Velocity</span>
           <span id="impact-velocity" class="result-val">0.00 m/s</span>
@@ -254,32 +376,589 @@
   </section>
 
   <!-- =====================================
+       CHALLENGES & OBSERVATIONS WORKSTATION
+  ===================================== -->
+  <section class="lab-workstation-container">
+    
+    <!-- 1. KINEMATICS MASTERY CHALLENGES BOX -->
+    <div class="workstation-card challenges-card">
+      <div class="workstation-header">
+        <div class="workstation-title-group">
+          <div class="workstation-icon-glow challenge-icon-glow">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div>
+            <h3>Kinematics Mastery Challenges</h3>
+            <p>Accomplish interactive flight challenges to earn XP and level up your Student Dossier</p>
+          </div>
+        </div>
+        <div class="challenge-xp-badge">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <span id="challenges-completed-count">0 / 3 Complete</span>
+          <span class="xp-separator">•</span>
+          <span id="user-total-challenge-xp" class="xp-highlight">+0 XP</span>
+        </div>
+      </div>
+
+      <!-- 3 Challenges Grid -->
+      <div class="challenges-grid" id="challenges-grid">
+        <!-- Challenge 1: Precision Bullseye -->
+        <div class="challenge-item" id="challenge-card-target" data-challenge-id="target">
+          <div class="challenge-badge-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle>
+            </svg>
+          </div>
+          <div class="challenge-info">
+            <div class="challenge-title-row">
+              <h4>Precision Bullseye</h4>
+              <span class="challenge-reward-pill">+50 XP</span>
+            </div>
+            <p>Activate Target Landing Challenge mode and score a direct hit on the target.</p>
+            <div class="challenge-footer">
+              <span class="challenge-status-tag pending" id="status-tag-target">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenge 2: Complementary Angle Law -->
+        <div class="challenge-item" id="challenge-card-complementary" data-challenge-id="complementary">
+          <div class="challenge-badge-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2">
+              <path d="M4 20h16"></path>
+              <path d="M4 20L19 7"></path>
+              <path d="M4 20L11 5"></path>
+              <path d="M9 20a5 5 0 0 0-5-5"></path>
+            </svg>
+          </div>
+          <div class="challenge-info">
+            <div class="challenge-title-row">
+              <h4>Complementary Angle Law</h4>
+              <span class="challenge-reward-pill">+75 XP</span>
+            </div>
+            <p>Launch two projectiles with same speed at complementary angles (e.g. 30° & 60°, summing to 90°) on flat ground to achieve identical range.</p>
+            <div class="challenge-footer">
+              <span class="challenge-status-tag pending" id="status-tag-complementary">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenge 3: Stratospheric Apex -->
+        <div class="challenge-item" id="challenge-card-apex" data-challenge-id="apex">
+          <div class="challenge-badge-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2">
+              <line x1="12" y1="2" x2="12" y2="22"></line><polyline points="8 6 12 2 16 6"></polyline>
+            </svg>
+          </div>
+          <div class="challenge-info">
+            <div class="challenge-title-row">
+              <h4>Stratospheric Apex</h4>
+              <span class="challenge-reward-pill">+100 XP</span>
+            </div>
+            <p>Reach a Maximum Apex Altitude (H_max) ≥ 40 meters on any planetary setup.</p>
+            <div class="challenge-footer">
+              <span class="challenge-status-tag pending" id="status-tag-apex">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. LABORATORY EXPERIMENTAL OBSERVATIONS TABLE -->
+    <div class="workstation-card observations-card">
+      <div class="workstation-header">
+        <div class="workstation-title-group">
+          <div class="workstation-icon-glow obs-icon-glow">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div>
+            <h3>Experimental Observations & Logbook</h3>
+            <p>Documented scientific observations table of flight parameters and telemetry data points</p>
+          </div>
+        </div>
+        <div class="obs-actions-group">
+          <button type="button" id="btn-record-obs-table" class="btn-obs-action btn-obs-record" title="Record Current Run">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            </svg>
+            Record Observation
+          </button>
+          <button type="button" id="btn-clear-observations" class="btn-obs-action btn-obs-clear" title="Clear All Recorded Observations">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Clear Observations
+          </button>
+          <span class="obs-count-pill" id="obs-count-badge">0 Observations</span>
+        </div>
+      </div>
+
+      <!-- Observations Data Table -->
+      <div class="obs-table-wrapper">
+        <div id="obs-empty-state" class="obs-empty-state">
+          <div class="obs-empty-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          <h4>No Observations Recorded Yet</h4>
+          <p>Launch the projectile in the simulator and click <strong>"Record Observation"</strong> to log experimental kinematics data points.</p>
+        </div>
+
+        <table id="observations-table" class="obs-table hidden">
+          <thead>
+            <tr>
+              <th>Run #</th>
+              <th>Speed (v₀)</th>
+              <th>Angle (θ)</th>
+              <th>Height (h₀)</th>
+              <th>Gravity (g)</th>
+              <th>Airtime (T)</th>
+              <th>Max Altitude (H)</th>
+              <th>Range (R)</th>
+              <th>Impact (v_f)</th>
+              <th>Logged At</th>
+            </tr>
+          </thead>
+          <tbody id="observations-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /#exp-projectile-section -->
+
+  <!-- =====================================
+       EXPERIMENT 2: DETERMINATION OF NUMERICAL APERTURE OF AN OPTICAL FIBRE
+  ===================================== -->
+  <div id="exp-optical-section" class="exp-section-wrapper hidden">
+    
+    <!-- LABORATORY PROCEDURE GUIDE RIBBON (NO TICKS) -->
+    <section class="of-setup-container">
+      <div class="of-procedure-ribbon">
+        <div class="of-proc-step" id="of-step-indicator-1">
+          <span class="step-num">1</span>
+          <div class="step-details">
+            <strong>Power Supply</strong>
+            <span>Switch ON Trainer</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="of-proc-step" id="of-step-indicator-2">
+          <span class="step-num">2</span>
+          <div class="step-details">
+            <strong>Light Source</strong>
+            <span>Activate Diode Emitter</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="of-proc-step" id="of-step-indicator-3">
+          <span class="step-num">3</span>
+          <div class="step-details">
+            <strong>Fibre Cable</strong>
+            <span>Couple to Output Port</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="of-proc-step" id="of-step-indicator-4">
+          <span class="step-num">4</span>
+          <div class="step-details">
+            <strong>NA Jig & Screen</strong>
+            <span>Clamp Tip & Adjust L</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN DUAL-CANVAS SIMULATOR WORKSTATION -->
+    <main class="dashboard of-dashboard">
+      
+      <!-- LEFT: OPTICAL BENCH PROFILE SIMULATION VIEWPORT -->
+      <section class="simulation-card of-bench-card">
+        <div class="simulation-top-bar">
+          <div class="current-lab-badge">
+            <span class="live-dot"></span>
+            <span>● OPTICAL BENCH PROFILE • LASER DIVERGENCE</span>
+          </div>
+
+          <div class="of-bench-hud-pill">
+            <span>Scale: 0.0 to 6.0 cm Precision Vernier Rail</span>
+          </div>
+        </div>
+
+        <div class="of-canvas-wrapper">
+          <canvas id="of-bench-canvas" width="800" height="380"></canvas>
+        </div>
+
+        <!-- OPTICAL TRAINER HARDWARE CONTROLS DECK -->
+        <div class="of-hardware-deck">
+          <div class="of-deck-section">
+            <span class="of-deck-label">Trainer Hardware Switches</span>
+            <div class="of-deck-buttons">
+              <button type="button" id="of-btn-power-switch" class="of-hw-switch of-power-switch" title="Toggle Main Trainer Power">
+                <span class="hw-switch-led" id="of-led-power"></span>
+                <span class="hw-switch-text">Main Power</span>
+                <span class="hw-switch-state" id="of-state-power">OFF</span>
+              </button>
+              <button type="button" id="of-btn-laser-switch" class="of-hw-switch of-laser-switch" title="Toggle Laser Diode Emitter">
+                <span class="hw-switch-led" id="of-led-laser"></span>
+                <span class="hw-switch-text">Laser Emitter</span>
+                <span class="hw-switch-state" id="of-state-laser">OFF</span>
+              </button>
+              <button type="button" id="of-btn-cable-toggle" class="of-hw-switch of-cable-switch" title="Connect/Disconnect Optical Fibre Patch Cord">
+                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h5a3 3 0 0 1 3 3v1a3 3 0 0 0 3 3h7"></path></svg>
+                <span class="hw-switch-text">Fibre Cable</span>
+                <span class="hw-switch-state" id="of-state-cable">Unplugged</span>
+              </button>
+              <button type="button" id="of-btn-jig-toggle" class="of-hw-switch of-jig-switch" title="Lock/Unlock Fibre Tip in NA Measurement Jig">
+                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <span class="hw-switch-text">Jig Clamp</span>
+                <span class="hw-switch-state" id="of-state-jig">Unlocked</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="of-deck-section">
+            <span class="of-deck-label">Laser Wavelength (λ) & Spectral Emission</span>
+            <div class="of-wavelength-row">
+              <div class="of-wavelength-chips">
+                <button type="button" class="of-wl-chip active" data-wl="650">650 nm (Red)</button>
+                <button type="button" class="of-wl-chip" data-wl="532">532 nm (Green)</button>
+                <button type="button" class="of-wl-chip" data-wl="450">450 nm (Blue)</button>
+                <button type="button" class="of-wl-chip" data-wl="850">850 nm (Near-IR)</button>
+              </div>
+              <div class="of-wl-slider-box">
+                <span class="of-wl-readout">λ = <strong id="of-wavelength-val">650 nm</strong></span>
+                <input type="range" id="of-slider-wavelength" min="400" max="950" step="5" value="650" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="of-bench-footer">
+          <span class="of-hint-text">
+            <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Interactive components: Click the switches on the trainer or drag the white screen along the graduated bench rail.
+          </span>
+        </div>
+      </section>
+
+      <!-- RIGHT: CONCENTRIC SCREEN TARGET & DISTANCE DECK -->
+      <aside class="controls-panel of-screen-panel">
+        
+        <div class="of-screen-header">
+          <div class="of-screen-title-group">
+            <h3>Concentric Circles Screen</h3>
+            <p>Observe emerging light spot diameter W</p>
+          </div>
+          <div id="of-match-badge" class="of-status-pill pill-warning">
+            Setup incomplete
+          </div>
+        </div>
+
+        <!-- Target Screen Canvas -->
+        <div class="of-target-canvas-wrapper">
+          <canvas id="of-screen-canvas" width="380" height="300"></canvas>
+        </div>
+
+        <!-- Precision Distance L Controls -->
+        <div class="control-group of-dist-control-group">
+          <div class="control-header">
+            <span class="control-name">Screen Distance L</span>
+            <strong id="of-distance-val" class="val-dist">1.5 cm</strong>
+          </div>
+
+          <div class="of-slider-row">
+            <button type="button" id="of-btn-dec-dist" class="of-btn-step" title="Decrease distance by 0.1 cm">-0.1</button>
+            <input type="range" id="of-slider-distance" min="0.5" max="5.0" step="0.05" value="1.5" />
+            <button type="button" id="of-btn-inc-dist" class="of-btn-step" title="Increase distance by 0.1 cm">+0.1</button>
+          </div>
+
+          <!-- Quick Distance Presets -->
+          <div class="of-presets-bar">
+            <button type="button" class="of-preset-btn" data-dist="1.0">1.0cm</button>
+            <button type="button" class="of-preset-btn" data-dist="1.5">1.5cm</button>
+            <button type="button" class="of-preset-btn" data-dist="2.0">2.0cm</button>
+            <button type="button" class="of-preset-btn" data-dist="2.5">2.5cm</button>
+            <button type="button" class="of-preset-btn" data-dist="3.0">3.0cm</button>
+            <button type="button" class="of-preset-btn" data-dist="3.5">3.5cm</button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="buttons of-action-buttons">
+          <button type="button" id="of-btn-record" class="launch-btn of-record-btn" title="Capture and Record Current Reading into Observation Table">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Record Observation
+          </button>
+          <button type="button" id="of-btn-auto-setup" class="reset-btn" title="Fast Auto-Configure Apparatus">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+            Auto Setup
+          </button>
+          <button type="button" id="of-btn-view-results" class="clear-btn" title="View Comprehensive Laboratory Report">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            Lab Report
+          </button>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- REAL-TIME OPTICAL TELEMETRY CARDS -->
+    <section class="results-container">
+      <div class="results-card">
+        
+        <div class="result-box card-distance">
+          <div class="result-icon icon-dist">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><line x1="2" y1="12" x2="22" y2="12"></line><polyline points="18 8 22 12 18 16"></polyline><polyline points="6 8 2 12 6 16"></polyline></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Screen Distance (L)</span>
+            <span id="of-hud-distance" class="result-val">1.50 cm</span>
+            <span class="result-sub">Distance from fibre tip to screen</span>
+          </div>
+        </div>
+
+        <div class="result-box card-spot">
+          <div class="result-icon icon-spot">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Spot Diameter (W)</span>
+            <span id="of-hud-spot" class="result-val">0.00 cm</span>
+            <span class="result-sub">W = 2L × tan(θ_a)</span>
+          </div>
+        </div>
+
+        <div class="result-box card-na">
+          <div class="result-icon icon-na">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Numerical Aperture (NA)</span>
+            <span id="of-hud-na" class="result-val">0.0000</span>
+            <span class="result-sub">NA = W / √(4L² + W²)</span>
+          </div>
+        </div>
+
+        <div class="result-box card-angle">
+          <div class="result-icon icon-angle">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M4 20h16"></path><path d="M4 20L19 7"></path><path d="M9 20a5 5 0 0 0-5-5"></path></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Acceptance Angle (θ_a)</span>
+            <span id="of-hud-angle" class="result-val">0.0°</span>
+            <span class="result-sub">θ_a = arcsin(NA)</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- OPTICAL WORKSTATION: CHALLENGES & OBSERVATIONS -->
+    <section class="lab-workstation-container">
+      
+      <!-- 1. OPTICAL FIBRE MASTERY CHALLENGES -->
+      <div class="workstation-card challenges-card">
+        <div class="workstation-header">
+          <div class="workstation-title-group">
+            <div class="workstation-icon-glow challenge-icon-glow">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div>
+              <h3>Optical Fibre Mastery Challenges</h3>
+              <p>Complete precision optics missions to earn XP and level up your Student Dossier</p>
+            </div>
+          </div>
+          <div class="challenge-xp-badge">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <span id="of-challenges-completed-count">0 / 3 Complete</span>
+            <span class="xp-separator">•</span>
+            <span id="of-user-total-challenge-xp" class="xp-highlight">+0 XP</span>
+          </div>
+        </div>
+
+        <!-- 3 Challenges Grid -->
+        <div class="challenges-grid">
+          <!-- Challenge 1: Spot Match -->
+          <div class="challenge-item" id="of-ch-card-1">
+            <div class="challenge-badge-icon">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            </div>
+            <div class="challenge-info">
+              <div class="challenge-title-row">
+                <h4>1. Spot Match</h4>
+                <span class="challenge-reward-pill">+100 XP</span>
+              </div>
+              <p>Adjust screen distance L until the red light spot precisely matches the <strong>2.0 cm</strong> target circle.</p>
+              <div class="challenge-footer">
+                <span class="challenge-status-tag pending" id="of-ch-tag-1">Target: 2.0 cm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Challenge 2: Rapid Calibration -->
+          <div class="challenge-item" id="of-ch-card-2">
+            <div class="challenge-badge-icon">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M5 3L2 6"></path><path d="M22 6l-3-3"></path><path d="M12 2v2"></path></svg>
+            </div>
+            <div class="challenge-info">
+              <div class="challenge-title-row">
+                <h4>2. Rapid Calibration Run</h4>
+                <span class="challenge-reward-pill">+125 XP</span>
+              </div>
+              <p>Sequentially match 1.5 cm, 2.5 cm, and 3.5 cm rings before the 40s countdown timer expires!</p>
+              <div class="challenge-footer" style="display:flex; align-items:center; gap:8px;">
+                <button type="button" id="of-btn-start-rapid" class="btn-obs-action btn-obs-record" style="height:28px; font-size:11px; padding:0 10px;">Start Run (40s)</button>
+                <span class="challenge-status-tag pending" id="of-ch-tag-2">Ready to start</span>
+                <span id="of-rapid-timer" style="font-family:var(--font-mono); color:#fbbf24; font-size:12px; font-weight:800;"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Challenge 3: Multi-Distance Data Sweep -->
+          <div class="challenge-item" id="of-ch-card-3">
+            <div class="challenge-badge-icon">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            </div>
+            <div class="challenge-info">
+              <div class="challenge-title-row">
+                <h4>3. Multi-Distance Data Sweep</h4>
+                <span class="challenge-reward-pill">+150 XP</span>
+              </div>
+              <p>Record 3 valid observations across 3 distinct distance zones to verify NA invariance:</p>
+              <div class="challenge-footer" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
+                <span class="of-sweep-zone" id="of-zone-1">Zone 1: L ≤ 1.5cm</span>
+                <span class="of-sweep-zone" id="of-zone-2">Zone 2: 2.0-2.5cm</span>
+                <span class="of-sweep-zone" id="of-zone-3">Zone 3: L ≥ 3.0cm</span>
+                <span class="challenge-status-tag pending" id="of-ch-tag-3" style="width:100%; margin-top:4px;">0 / 3 Zones Recorded</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. OBSERVATIONS LOGBOOK & MEAN NA CALCULATOR -->
+      <div class="workstation-card observations-card">
+        <div class="workstation-header">
+          <div class="workstation-title-group">
+            <div class="workstation-icon-glow obs-icon-glow">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div>
+              <h3>Numerical Aperture Experimental Observations</h3>
+              <p>Documented readings of screen distance L, spot diameter W, and computed NA</p>
+            </div>
+          </div>
+          <div class="obs-actions-group">
+            <button type="button" id="of-btn-clear-obs" class="btn-obs-action btn-obs-clear" title="Clear All Recorded Observations">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear Observations
+            </button>
+            <span class="obs-count-pill" id="of-obs-count-badge">0 Readings</span>
+          </div>
+        </div>
+
+        <!-- Summary Statistics Bar -->
+        <div class="of-stats-summary-bar">
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Mean Numerical Aperture (NA)</span>
+            <strong id="of-mean-na" class="of-stat-val text-cyan">--</strong>
+          </div>
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Mean Acceptance Angle (θ_a)</span>
+            <strong id="of-mean-theta" class="of-stat-val text-purple">--</strong>
+          </div>
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Experimental Accuracy</span>
+            <strong id="of-accuracy-pct" class="of-stat-val text-green">--</strong>
+          </div>
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Theoretical POF Benchmark</span>
+            <strong class="of-stat-val">0.4498</strong>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="obs-table-wrapper">
+          <div id="of-obs-empty" class="obs-empty-state">
+            <div class="obs-empty-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <h4>No Optical Fibre Readings Recorded</h4>
+            <p>Align the red laser light spot with a concentric circle and click <strong>"Record Observation"</strong> to log data.</p>
+          </div>
+
+          <table id="of-obs-table" class="obs-table hidden">
+            <thead>
+              <tr>
+                <th>Reading #</th>
+                <th>Distance L (cm)</th>
+                <th>Spot Diameter W (cm)</th>
+                <th>Numerical Aperture (NA)</th>
+                <th>Acceptance Angle (θ_a)</th>
+                <th>Logged At</th>
+              </tr>
+            </thead>
+            <tbody id="of-obs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /#exp-optical-section -->
+
+  <!-- =====================================
        EXPLORE LABS HUB MODAL
   ===================================== -->
   <div id="explorer-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
         <div>
-          <h2>🔬 PhysiX Virtual Physics Laboratories Hub</h2>
+          <h2>
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
+              <circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+            PhysiX Virtual Physics Laboratories Hub
+          </h2>
           <p>Explore high-precision interactive simulations across Classical Mechanics</p>
         </div>
-        <button id="btn-close-explorer" class="modal-close-btn">&times;</button>
+        <button id="btn-close-explorer" class="modal-close-btn" title="Close Laboratories Hub">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
       <!-- Categories Filter -->
       <div class="hub-filter-bar">
-        <button class="cat-pill active">All Labs (7)</button>
-        <button class="cat-pill">Kinematics</button>
-        <button class="cat-pill">Forces & Energy</button>
-        <button class="cat-pill">Rotational & Gravitation</button>
+        <button class="cat-pill active" data-category="all">All Labs (14)</button>
+        <button class="cat-pill" data-category="optics">Fiber Optics & Lasers</button>
+        <button class="cat-pill" data-category="wave">Wave Optics & Interference</button>
+        <button class="cat-pill" data-category="quantum">Quantum & Solid State</button>
+        <button class="cat-pill" data-category="sensors">Sensors, Devices & Nano</button>
       </div>
 
       <!-- Laboratory Cards Grid -->
       <div class="labs-grid">
         <!-- 1. PROJECTILE (ACTIVE) -->
-        <div class="lab-card active-lab" data-name="2D Projectile Motion">
+        <div class="lab-card active-lab" data-category="all" data-name="2D Projectile Motion">
           <div class="lab-status-badge status-active">● ACTIVE SIMULATION</div>
-          <div class="lab-icon">🚀</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
+          </div>
           <h3>2D Projectile Motion Lab</h3>
           <p>Explore launch angle, initial velocity, platform height $h_0$, and planetary gravity with Matter.js.</p>
           <div class="lab-tags">
@@ -287,93 +966,217 @@
             <span>Vectors</span>
             <span>Target Challenge</span>
           </div>
-          <button class="lab-card-btn btn-active-lab">Current Lab</button>
+          <button class="lab-card-btn btn-active-lab">Launch Exp 1</button>
         </div>
 
-        <!-- 2. PENDULUM (IN DEV) -->
-        <div class="lab-card dev-lab" data-name="Simple Pendulum & Harmonic Oscillator">
-          <div class="lab-status-badge status-dev">⚡ IN DEVELOPMENT</div>
-          <div class="lab-icon">⏱️</div>
-          <h3>Simple Pendulum & SHM</h3>
-          <p>Investigate small-angle approximations, string length $L$, damping coefficients, and phase portraits.</p>
+        <!-- 2. OPTICAL FIBRE NA (ACTIVE LAB - EXP 1 IN LIST) -->
+        <div class="lab-card active-lab" data-category="optics" data-exp-target="optical" data-name="Determination of Numerical Aperture of an Optical Fibre">
+          <div class="lab-status-badge status-active">● ACTIVE SIMULATION</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+          </div>
+          <h3>1. Determination of Numerical Aperture of an Optical Fibre</h3>
+          <p>Measure laser light spot divergence W at screen distance L, verify acceptance angle, and compute Mean NA.</p>
           <div class="lab-tags">
-            <span>Harmonic Motion</span>
-            <span>T = 2π√(L/g)</span>
-            <span>Energy</span>
+            <span>Optics</span>
+            <span>Laser Divergence</span>
+            <span>NA = W/√(4L²+W²)</span>
+          </div>
+          <button class="lab-card-btn btn-active-lab">Launch Exp 2</button>
+        </div>
+
+        <!-- 3. DIVERGENCE OF LASER BEAM (EXP 2) -->
+        <div class="lab-card coming-lab" data-category="optics" data-name="Determine the Divergence of Laser Beam">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2"><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="22" y2="12"></line><line x1="12" y1="22" x2="22" y2="12"></line></svg>
+          </div>
+          <h3>2. Determine the Divergence of Laser Beam</h3>
+          <p>Determine the divergence angle $\theta$ and propagation characteristics of a Gaussian laser beam.</p>
+          <div class="lab-tags">
+            <span>Laser Optics</span>
+            <span>Gaussian Beam</span>
+            <span>θ = λ/(π w₀)</span>
           </div>
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
         </div>
 
-        <!-- 3. 2D COLLISIONS (COMING SOON) -->
-        <div class="lab-card coming-lab" data-name="2D Elastic & Inelastic Collisions">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">💥</div>
-          <h3>2D Collisions & Momentum</h3>
-          <p>Conservation of linear momentum, coefficient of restitution $e$, kinetic energy loss, and center of mass.
-          </p>
+        <!-- 4. NEWTON'S RINGS (EXP 3) -->
+        <div class="lab-card coming-lab" data-category="wave" data-name="Determination of Radius of Curvature of a Lens using Newton’s Ring Setup">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>
+          </div>
+          <h3>3. Radius of Curvature of Lens (Newton's Rings)</h3>
+          <p>Interference pattern produced by thin air film between plano-convex lens and optical flat.</p>
           <div class="lab-tags">
-            <span>p = mv</span>
-            <span>Elastic/Inelastic</span>
-            <span>Vectors</span>
+            <span>Interference</span>
+            <span>Plano-Convex Lens</span>
+            <span>R = (Dₘ²-Dₙ²)/(4(m-n)λ)</span>
           </div>
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
         </div>
 
-        <!-- 4. INCLINED PLANE (COMING SOON) -->
-        <div class="lab-card coming-lab" data-name="Friction & Inclined Plane Lab">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">📐</div>
-          <h3>Friction & Inclined Plane</h3>
-          <p>Static vs kinetic friction ($\mu_s, \mu_k$), normal force resolution, critical incline angle, and block
-            sliding.</p>
+        <!-- 5. WEDGE SHAPED FILM (EXP 4) -->
+        <div class="lab-card coming-lab" data-category="wave" data-name="Determination of Diameter of Wire/Hair or Thickness of Paper using Wedge Shape Film Method">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><polygon points="3 20 21 20 21 8 3 20"></polygon></svg>
+          </div>
+          <h3>4. Diameter of Wire / Thickness (Wedge Film)</h3>
+          <p>Determine microscopic wire thickness and paper gauge by observing straight, equispaced interference fringes.</p>
           <div class="lab-tags">
-            <span>Forces</span>
-            <span>F = μN</span>
-            <span>Free Body Diagram</span>
+            <span>Air Wedge</span>
+            <span>Fringe Width β</span>
+            <span>t = λ L / (2 β)</span>
           </div>
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
         </div>
 
-        <!-- 5. ORBITAL MECHANICS (COMING SOON) -->
-        <div class="lab-card coming-lab" data-name="Orbital Mechanics & Kepler's Laws">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">🪐</div>
-          <h3>Orbital Mechanics & Kepler</h3>
-          <p>N-body celestial gravitational attraction, elliptical orbits, escape velocity, and satellite transfer
-            orbits.</p>
+        <!-- 6. HALL EFFECT (EXP 5) -->
+        <div class="lab-card coming-lab" data-category="quantum" data-name="Determination of Hall Coefficient using Hall Effect Phenomenon">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><rect x="4" y="6" width="16" height="12" rx="2"></rect><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="1" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="23" y2="12"></line></svg>
+          </div>
+          <h3>5. Determination of Hall Coefficient (Hall Effect)</h3>
+          <p>Measure transverse Hall voltage under magnetic field to calculate charge carrier density and mobility.</p>
           <div class="lab-tags">
-            <span>Gravity</span>
-            <span>Kepler's 3rd Law</span>
-            <span>v_esc</span>
+            <span>Solid State</span>
+            <span>Lorentz Force</span>
+            <span>R_H = V_H t / (I B)</span>
           </div>
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
         </div>
 
-        <!-- 6. CENTRIPETAL FORCE (COMING SOON) -->
-        <div class="lab-card coming-lab" data-name="Centripetal Force & Circular Motion">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">🌀</div>
-          <h3>Centripetal Circular Motion</h3>
-          <p>Angular speed $\omega$, centripetal acceleration $a_c = v^2/r$, banked turns, and string tension dynamics.
-          </p>
+        <!-- 7. DIFFRACTION GRATING (EXP 6) -->
+        <div class="lab-card coming-lab" data-category="wave" data-name="Determination of Wavelength using Diffraction Grating (Laser Source)">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><line x1="4" y1="4" x2="4" y2="20"></line><line x1="8" y1="4" x2="8" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line><line x1="16" y1="4" x2="16" y2="20"></line><line x1="20" y1="4" x2="20" y2="20"></line></svg>
+          </div>
+          <h3>6. Wavelength using Diffraction Grating (Laser)</h3>
+          <p>Determine monochromatic laser wavelength using transmission grating and angular spectral maxima.</p>
           <div class="lab-tags">
-            <span>Rotation</span>
-            <span>F_c = mv²/r</span>
-            <span>Tension</span>
+            <span>Diffraction</span>
+            <span>Laser Spectrometry</span>
+            <span>(a+b) sinθ = m λ</span>
           </div>
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
         </div>
 
-        <!-- 7. ATWOOD MACHINE (COMING SOON) -->
-        <div class="lab-card coming-lab" data-name="Atwood Machine & Coupled Pulleys">
-          <div class="lab-status-badge status-coming">🔒 COMING SOON</div>
-          <div class="lab-icon">⚖️</div>
-          <h3>Atwood Pulley Machine</h3>
-          <p>Coupled mass systems, rotational pulley inertia, rope tension, and acceleration of two counterweights.</p>
+        <!-- 8. PLANCK'S CONSTANT (EXP 7) -->
+        <div class="lab-card coming-lab" data-category="quantum" data-name="Determination of Planck’s Constant using Photocell">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path><circle cx="12" cy="12" r="3" fill="#fbbf24"></circle></svg>
+          </div>
+          <h3>7. Determination of Planck's Constant (Photocell)</h3>
+          <p>Investigate photoelectric effect and determine Planck's constant $h$ via frequency-stopping potential curves.</p>
           <div class="lab-tags">
-            <span>Newton's 2nd Law</span>
-            <span>Pulley Inertia</span>
-            <span>Tension</span>
+            <span>Quantum Physics</span>
+            <span>Stopping Potential</span>
+            <span>h = e (ΔV / Δν)</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 9. UDM PARAMETERS (EXP 8) -->
+        <div class="lab-card coming-lab" data-category="sensors" data-name="Determine UDM Parameters">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><path d="M2 12h2a8 8 0 0 1 8 8v2"></path><path d="M2 6h2a14 14 0 0 1 14 14v2"></path><circle cx="4" cy="20" r="2"></circle></svg>
+          </div>
+          <h3>8. Determine UDM Parameters</h3>
+          <p>Ultrasonic Distance Measurement (UDM) transducer time-of-flight acoustic wave propagation analysis.</p>
+          <div class="lab-tags">
+            <span>Ultrasonics</span>
+            <span>Acoustic Sensor</span>
+            <span>d = v × t / 2</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 10. COLOUR SENSOR (EXP 9) -->
+        <div class="lab-card coming-lab" data-category="sensors" data-name="Study of Colour Sensor">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f43f5e" stroke-width="3"></path><path d="M22 12a10 10 0 0 1-10 10" stroke="#10b981" stroke-width="3"></path><path d="M12 22a10 10 0 0 1-10-10" stroke="#3b82f6" stroke-width="3"></path></svg>
+          </div>
+          <h3>9. Study of Colour Sensor</h3>
+          <p>Examine RGB spectral photodiode responses, colorimetry filters, and chromatic frequency output.</p>
+          <div class="lab-tags">
+            <span>Optoelectronics</span>
+            <span>RGB Sensor</span>
+            <span>Colorimetry</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 11. NANOTECHNOLOGY SIMULATION (EXP 10) -->
+        <div class="lab-card coming-lab" data-category="sensors" data-name="Simulation Experiments based on Nanotechnology using Open-Source Simulation">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="6" r="2"></circle><circle cx="6" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+          </div>
+          <h3>10. Nanotechnology Simulation Experiments</h3>
+          <p>Quantum dots, density of states, electron confinement, and nanoscale molecular surface interactions.</p>
+          <div class="lab-tags">
+            <span>Nanotechnology</span>
+            <span>Quantum Dots</span>
+            <span>Confinement</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 12. OPTICAL ATTENUATION (EXP 11) -->
+        <div class="lab-card coming-lab" data-category="optics" data-name="Measuring Optical Power Attenuation in Plastic Optical Fiber">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </div>
+          <h3>11. Optical Power Attenuation in Plastic Optical Fiber</h3>
+          <p>Measure dB/km power attenuation, cut-back losses, Rayleigh scattering, and absorption in POF.</p>
+          <div class="lab-tags">
+            <span>Fiber Attenuation</span>
+            <span>Loss in dB/km</span>
+            <span>α = (10/L) log(P₁/P₂)</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 13. I-V CHARACTERISTICS (EXP 12) -->
+        <div class="lab-card coming-lab" data-category="quantum" data-name="I-V Characteristics of PN Junction Diode / Zener Diode / Photo Diode">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><polygon points="6 4 18 12 6 20 6 4"></polygon><line x1="18" y1="4" x2="18" y2="20"></line></svg>
+          </div>
+          <h3>12. I-V Characteristics of PN / Zener / Photo Diode</h3>
+          <p>Forward barrier knee potential, reverse breakdown threshold, dark current, and photovoltaic response.</p>
+          <div class="lab-tags">
+            <span>Semiconductors</span>
+            <span>Zener Breakdown</span>
+            <span>Photodiode</span>
+          </div>
+          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+        </div>
+
+        <!-- 14. RTD / OPTICAL SENSORS (EXP 13) -->
+        <div class="lab-card coming-lab" data-category="sensors" data-name="Study of the Characteristics of Resistance Temperature Detector (RTD) / Optical Sensors">
+          <div class="lab-status-badge status-coming">● COMING SOON</div>
+          <div class="lab-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+          </div>
+          <h3>13. Characteristics of RTD / Optical Sensors</h3>
+          <p>Study temperature coefficient of resistance ($\alpha$) of Pt100 RTD sensor and optoelectronic detectors.</p>
+          <div class="lab-tags">
+            <span>Sensors & RTD</span>
+            <span>Pt100 Thermoresistor</span>
+            <span>R_T = R_0(1 + αT)</span>
           </div>
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
         </div>
@@ -389,60 +1192,103 @@
     <div class="modal-card modal-card-sm">
       <div class="modal-header">
         <div>
-          <h2>📖 Classical Mechanics Formulas</h2>
+          <h2>
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            Classical Mechanics Formulas
+          </h2>
           <p>Mathematical foundations used by the PhysiX simulation engine</p>
         </div>
-        <button id="btn-close-theory" class="modal-close-btn">&times;</button>
+        <button id="btn-close-theory" class="modal-close-btn" title="Close Formulas">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- HIGH-TECH THEORY EXPERIMENT SWITCHER TABS -->
+      <div class="theory-nav-tabs">
+        <button type="button" class="theory-tab-btn active" id="btn-theory-tab-exp1">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+          </svg>
+          <span>Exp 1: 2D Projectile Motion</span>
+        </button>
+        <button type="button" class="theory-tab-btn" id="btn-theory-tab-exp2">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+          </svg>
+          <span>Exp 2: Optical Fibre NA</span>
+        </button>
       </div>
 
       <div class="theory-content">
-        <div class="formula-block">
-          <h4>🚀 Projectile Motion (Active Lab)</h4>
-          <div class="formula-grid">
-            <div class="formula-item">
-              <span class="f-name">Time of Flight (with elevation $h_0$):</span>
-              <code>T = (v₀ sinθ + √(v₀² sin²θ + 2gh₀)) / g</code>
-            </div>
-            <div class="formula-item">
-              <span class="f-name">Maximum Height (Peak):</span>
-              <code>H = h₀ + (v₀² sin²θ) / (2g)</code>
-            </div>
-            <div class="formula-item">
-              <span class="f-name">Total Horizontal Range:</span>
-              <code>R = d₀ + (v₀ cosθ) × T</code>
-            </div>
-            <div class="formula-item">
-              <span class="f-name">Impact Speed at Touchdown:</span>
-              <code>v_f = √(v₀² + 2gh₀)</code>
-            </div>
-          </div>
-        </div>
-
-        <div class="formula-block">
-          <h4>⏱️ Simple Pendulum (Upcoming)</h4>
-          <div class="formula-grid">
-            <div class="formula-item">
-              <span class="f-name">Oscillation Period (Small Angles):</span>
-              <code>T = 2π √(L / g)</code>
-            </div>
-            <div class="formula-item">
-              <span class="f-name">Angular Frequency:</span>
-              <code>ω = √(g / L)</code>
+        <!-- TAB 1: PROJECTILE MOTION -->
+        <div id="theory-pane-exp1" class="theory-pane active">
+          <div class="formula-block">
+            <h4>Projectile Motion Kinematics</h4>
+            <div class="formula-grid">
+              <div class="formula-item">
+                <span class="f-name">Time of Flight (with elevation h₀):</span>
+                <code>T = (v₀ sinθ + √(v₀² sin²θ + 2gh₀)) / g</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Maximum Height (Peak Apex):</span>
+                <code>H = h₀ + (v₀² sin²θ) / (2g)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Total Horizontal Range:</span>
+                <code>R = d₀ + (v₀ cosθ) × T</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Impact Speed at Touchdown:</span>
+                <code>v_f = √(v₀² + 2gh₀)</code>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="formula-block">
-          <h4>💥 Collisions & Momentum (Upcoming)</h4>
-          <div class="formula-grid">
-            <div class="formula-item">
-              <span class="f-name">Conservation of Momentum:</span>
-              <code>m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂</code>
+        <!-- TAB 2: OPTICAL FIBRE NA -->
+        <div id="theory-pane-exp2" class="theory-pane hidden">
+          <div class="formula-block">
+            <h4>Aim & Scientific Principle</h4>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Aim:</strong> To determine the Numerical Aperture (NA) and Acceptance Angle (θ_a) of an optical fibre using the output light spot divergence method on a graduated optical bench.
+            </p>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Apparatus:</strong> Optical fibre trainer kit, power supply, 650nm red laser diode, step-index optical fibre cable, precision NA measurement jig, white screen with concentric circles (1.0cm to 3.5cm), graduated bench scale.
+            </p>
+            
+            <div class="formula-grid">
+              <div class="formula-item">
+                <span class="f-name">Experimental NA Formula:</span>
+                <code>NA = W / √(4L² + W²)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Waveguide Refractive Index Law:</span>
+                <code>NA = √(n₁² - n₂²) = sin(θ_a)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Acceptance Cone Half-Angle:</span>
+                <code>θ_a = arcsin(NA)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Mean Numerical Aperture:</span>
+                <code>Mean NA = (1/N) ∑ NAᵢ</code>
+              </div>
             </div>
-            <div class="formula-item">
-              <span class="f-name">Coefficient of Restitution (e):</span>
-              <code>e = (v₂ - v₁) / (u₁ - u₂)</code>
-            </div>
+          </div>
+
+          <div class="formula-block" style="margin-top:14px;">
+            <h4>Theoretical Foundations</h4>
+            <ul style="color:#94a3b8; font-size:12.5px; line-height:1.6; padding-left:18px;">
+              <li><strong>Optical Fibre:</strong> A cylindrical dielectric waveguide composed of a high-index <strong>Core (n₁)</strong> surrounded by a lower-index <strong>Cladding (n₂)</strong>, where n₁ > n₂.</li>
+              <li><strong>Total Internal Reflection (TIR):</strong> Light rays incident at angles greater than the critical angle θ_c = arcsin(n₂/n₁) undergo total reflection at the core-cladding boundary.</li>
+              <li><strong>Acceptance Cone:</strong> The maximum cone of light rays incident on the fiber core face that will be guided through the fiber by TIR.</li>
+              <li><strong>Diverging Output Spot:</strong> Upon exiting the fiber tip, the light beam diverges conically with half-angle θ_a, forming a circular spot of diameter W on a screen at distance L.</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -456,11 +1302,18 @@
     <div class="modal-card modal-card-quiz">
       <div class="modal-header">
         <div>
-          <span class="quiz-badge-header">⚡ MASTERY EVALUATION</span>
-          <h2>🧠 2D Kinematics Knowledge Check</h2>
+          <span class="quiz-badge-header">MASTERY EVALUATION</span>
+          <h2>
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#a855f7;">
+              <circle cx="12" cy="12" r="9"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            2D Kinematics Knowledge Check
+          </h2>
           <p>Test your conceptual and mathematical understanding of projectile physics</p>
         </div>
-        <button id="btn-close-quiz" class="modal-close-btn">&times;</button>
+        <button id="btn-close-quiz" class="modal-close-btn" title="Close Quiz">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
       <!-- ACTIVE QUIZ VIEW -->
@@ -468,7 +1321,10 @@
         <div class="quiz-top-info">
           <span class="quiz-progress-text">Question <span id="quiz-current-num">1</span> of <span
               id="quiz-total-num">10</span></span>
-          <span class="quiz-score-pill">🎯 PhysiX Lab Evaluation</span>
+          <span class="quiz-score-pill">
+            <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            PhysiX Knowledge Check
+          </span>
         </div>
 
         <div class="quiz-progress-track">
@@ -481,8 +1337,14 @@
         </div>
 
         <div class="quiz-actions-bar">
-          <button id="btn-quiz-prev" class="quiz-btn quiz-btn-secondary" disabled>← Previous</button>
-          <button id="btn-quiz-next" class="quiz-btn quiz-btn-primary" disabled>Next Question →</button>
+          <button id="btn-quiz-prev" class="quiz-nav-action-btn quiz-btn-prev" disabled>
+            <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Previous Question</span>
+          </button>
+          <button id="btn-quiz-next" class="quiz-nav-action-btn quiz-btn-next">
+            <span>Next Question</span>
+            <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </div>
 
@@ -494,7 +1356,7 @@
             <span class="score-denom">/ 10</span>
           </div>
           <div class="quiz-results-meta">
-            <h3 id="quiz-grade-badge">🏆 Kinematics Master!</h3>
+            <h3 id="quiz-grade-badge">Kinematics Master!</h3>
             <p>Score: <strong id="quiz-final-percent">0%</strong> accuracy on 2D Projectile Kinematics.</p>
           </div>
         </div>
@@ -505,180 +1367,584 @@
         </div>
 
         <div class="quiz-actions-bar">
-          <button id="btn-retake-quiz" class="quiz-btn quiz-btn-retake">↺ Retake Quiz</button>
-          <button id="btn-quiz-to-sim" class="quiz-btn quiz-btn-sim">🚀 Practice Solution in Simulator</button>
+          <button id="btn-retake-quiz" class="quiz-btn quiz-btn-retake">Retake Quiz</button>
+          <button id="btn-quiz-to-sim" class="quiz-btn quiz-btn-sim">Practice Solution in Simulator</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- =====================================
-       FIREBASE AUTHENTICATION & PROFILE MODAL
+       OPTICAL FIBRE QUIZ UPCOMING ALERT MODAL
+  ===================================== -->
+  <div id="optical-quiz-alert-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-sm" style="max-width: 480px; text-align: center;">
+      <div class="modal-header" style="justify-content: flex-end; border-bottom: none; padding: 12px 16px 0 0;">
+        <button id="btn-close-of-quiz-alert" class="modal-close-btn" title="Close Notification">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div style="padding: 10px 24px 28px 24px;">
+        <div style="width: 58px; height: 58px; border-radius: 50%; background: rgba(168, 85, 247, 0.15); border: 1.5px solid #a855f7; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: #c084fc; box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);">
+          <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <h3 style="color: #fff; font-size: 19px; font-weight: 700; margin-bottom: 8px;">Optical Fibre Quiz • Coming Soon</h3>
+        <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.6; margin-bottom: 22px;">
+          The knowledge check for <strong>Experiment 2: Determination of Numerical Aperture</strong> will arrive in the upcoming version. You can take the 2D Kinematics Quiz in Experiment 1 anytime!
+        </p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button type="button" id="btn-of-quiz-switch-proj" class="btn-obs-action btn-obs-record" style="height: 38px; font-size: 12.5px; padding: 0 18px; border-radius: 8px;">
+            Take Kinematics Quiz
+          </button>
+          <button type="button" id="btn-of-quiz-dismiss" class="of-btn-step" style="height: 38px; font-size: 12.5px; padding: 0 18px; border-radius: 8px;">
+            Dismiss
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================
+       COMPREHENSIVE STUDENT PROFILE SECTION & MODAL
   ===================================== -->
   <div id="profile-modal" class="modal-overlay hidden">
-    <div class="modal-card auth-modal-card">
-      <div class="modal-header">
-        <div>
-          <h2 id="auth-modal-title">🔐 Student Sign In</h2>
-          <p id="auth-modal-subtitle">Log in with your Firebase credentials to sync your lab progress.</p>
+    <div class="modal-card modal-card-profile-section">
+      <div class="modal-header profile-section-header">
+        <div class="profile-header-titles">
+          <span class="profile-kicker">STUDENT LABORATORY DOSSIER</span>
+          <h2>Student Profile & Lab Dossier</h2>
+          <p>Personalized physics credentials, telemetry analytics, and experimental kinematics records</p>
         </div>
-        <button id="btn-close-profile" class="modal-close-btn">&times;</button>
+        <button id="btn-close-profile" class="modal-close-btn" title="Close Profile">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
-      <!-- 1. LOGIN VIEW -->
-      <div id="auth-view-login" class="auth-view">
-        <form id="form-login" class="auth-form">
-          <div class="form-group">
-            <label for="login-email">Email Address</label>
-            <input type="email" id="login-email" placeholder="name@example.com" required autocomplete="email" />
+      <!-- PROFILE HERO CARD -->
+      <div class="profile-hero-card">
+        <div class="profile-hero-main">
+          <div class="profile-avatar-wrapper">
+            <div class="profile-avatar-large" id="hero-avatar-char">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="2"/>
+                <ellipse cx="24" cy="24" rx="16" ry="6" stroke="#06b6d4" stroke-width="1.8" transform="rotate(30 24 24)"/>
+                <ellipse cx="24" cy="24" rx="16" ry="6" stroke="#a855f7" stroke-width="1.8" transform="rotate(-30 24 24)"/>
+                <circle cx="24" cy="24" r="4" fill="#38bdf8"/>
+              </svg>
+            </div>
+            <span class="profile-level-badge" id="hero-level-badge">LVL 1</span>
           </div>
 
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="login-password" placeholder="Enter your password" required
-                autocomplete="current-password" />
-              <button type="button" class="btn-toggle-password" data-target="login-password" title="Show Password">
-                <span class="eye-icon">👁️</span>
-              </button>
+          <div class="profile-hero-details">
+            <div class="profile-name-row">
+              <h3 id="hero-student-name">Alex Henderson</h3>
+              <span class="profile-status-badge guest-badge" id="hero-status-badge">● Guest Mode</span>
+            </div>
+            
+            <div class="profile-meta-row">
+              <span class="profile-handle" id="hero-student-handle">@student_physicist</span>
+              <span class="profile-meta-dot">•</span>
+              <span class="profile-email-meta" id="hero-student-email">guest@physix.lab</span>
+            </div>
+
+            <div class="profile-badges-row">
+              <span class="profile-pill pill-rank" id="hero-rank-pill">Newtonian Novice</span>
+              <span class="profile-pill pill-edu" id="hero-edu-pill">Undergraduate Student</span>
+              <span class="profile-pill pill-inst" id="hero-inst-pill">PhysiX Virtual Lab</span>
+            </div>
+
+            <!-- DYNAMIC LEVEL & PROGRESSIVE XP TRACKER -->
+            <div class="profile-xp-track-box">
+              <div class="profile-xp-labels">
+                <span class="xp-level-text" id="hero-xp-level-title">Level 1 • Newtonian Novice</span>
+                <span class="xp-progress-readout" id="hero-xp-progress-readout">0 / 1,000 XP</span>
+              </div>
+              <div class="profile-xp-bar-bg">
+                <div class="profile-xp-bar-fill" id="hero-xp-bar-fill" style="width: 0%;"></div>
+              </div>
+              <span class="xp-next-note" id="hero-xp-next-note">Level 1: 1,000 XP • Level 2: 3,000 XP • Level 3: 7,000 XP</span>
             </div>
           </div>
+        </div>
 
-          <div id="login-error-msg" class="auth-error-msg hidden"></div>
-
-          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-login">
-            <span>🚀</span> Sign In to PhysiX
+        <div class="profile-hero-actions">
+          <button type="button" class="btn-hero-action btn-hero-edit" id="btn-open-edit-profile">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Edit Profile
           </button>
-
-          <div class="auth-secondary-actions">
-            <button type="button" class="auth-link-btn" id="btn-goto-forgot">Forgot password?</button>
-            <button type="button" class="auth-link-btn" id="btn-goto-signup">Don't have an account? Sign Up</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- 2. SIGNUP VIEW -->
-      <div id="auth-view-signup" class="auth-view hidden">
-        <form id="form-signup" class="auth-form">
-          <div class="form-group">
-            <label for="signup-email">Email Address</label>
-            <input type="email" id="signup-email" placeholder="name@example.com" required autocomplete="email" />
-          </div>
-
-          <div class="form-group">
-            <label for="signup-password">Create Password (min 6 characters)</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="signup-password" placeholder="Create a strong password" required minlength="6"
-                autocomplete="new-password" />
-              <button type="button" class="btn-toggle-password" data-target="signup-password" title="Show Password">
-                <span class="eye-icon">👁️</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="signup-confirm">Confirm Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="signup-confirm" placeholder="Re-enter password" required minlength="6"
-                autocomplete="new-password" />
-              <button type="button" class="btn-toggle-password" data-target="signup-confirm" title="Show Password">
-                <span class="eye-icon">👁️</span>
-              </button>
-            </div>
-          </div>
-
-          <div id="signup-error-msg" class="auth-error-msg hidden"></div>
-
-          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-signup">
-            <span>✨</span> Sign Up
+          <button type="button" class="btn-hero-action btn-hero-auth" id="btn-hero-auth-toggle">
+            <span id="hero-auth-icon">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </span>
+            <span id="hero-auth-label">Sign In / Link Account</span>
           </button>
-
-          <div class="auth-secondary-actions">
-            <button type="button" class="auth-link-btn" id="btn-signup-goto-login">Already have an account? Sign
-              In</button>
-          </div>
-        </form>
+        </div>
       </div>
 
-      <!-- 3. FORGOT PASSWORD VIEW -->
-      <div id="auth-view-forgot" class="auth-view hidden">
-        <form id="form-forgot" class="auth-form">
-          <p class="auth-desc">Enter your account email to receive a password reset link from Firebase.</p>
-          <div class="form-group">
-            <label for="forgot-email">Email Address</label>
-            <input type="email" id="forgot-email" placeholder="name@example.com" required />
+      <!-- PROFILE SEGMENTED NAVIGATION TABS -->
+      <div class="profile-tabs-bar">
+        <button type="button" class="profile-tab-btn active" data-tab="overview">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Overview & Bio
+        </button>
+        <button type="button" class="profile-tab-btn" data-tab="stats">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Lab Telemetry & Stats
+        </button>
+        <button type="button" class="profile-tab-btn" data-tab="badges">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path><path d="M18 4H6v7a6 6 0 0 0 12 0V4z"></path></svg>
+          Badges (<span id="badges-unlocked-count">0</span>/14)
+        </button>
+        <button type="button" class="profile-tab-btn" data-tab="logs">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          Flight Logs (<span id="logs-count-badge">0</span>)
+        </button>
+        <button type="button" class="profile-tab-btn" data-tab="security">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          Account & Security
+        </button>
+      </div>
+
+      <!-- TAB 1: OVERVIEW & BIO -->
+      <div id="tab-overview" class="profile-tab-pane">
+        <div class="profile-overview-grid">
+          <!-- Academic & Research Card -->
+          <div class="overview-section-card">
+            <div class="section-card-title">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+              <h4>Academic & Research Identity</h4>
+            </div>
+            
+            <div class="info-fields-grid">
+              <div class="info-field">
+                <span class="info-label">Full Name</span>
+                <strong id="p-overview-name" class="info-val">Alex Henderson</strong>
+              </div>
+              <div class="info-field">
+                <span class="info-label">Academic Status</span>
+                <strong id="p-overview-edu" class="info-val">Undergraduate / College Student</strong>
+              </div>
+              <div class="info-field">
+                <span class="info-label">Affiliated Institution</span>
+                <strong id="p-overview-occ" class="info-val">Physics Department</strong>
+              </div>
+              <div class="info-field">
+                <span class="info-label">Specialization Topics</span>
+                <div class="interest-tag-list" id="p-overview-interests">
+                  <span class="p-interest-tag">2D Kinematics</span>
+                  <span class="p-interest-tag">Projectile Trajectories</span>
+                  <span class="p-interest-tag">Planetary Gravity</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-bio-box">
+              <span class="info-label">Student Statement / Lab Focus</span>
+              <p id="p-overview-bio">Exploring 2D projectile kinematics, parabolic trajectories, vector breakdown components, and gravitational effects across the solar system.</p>
+            </div>
           </div>
-          <div id="forgot-error-msg" class="auth-error-msg hidden"></div>
-          <div id="forgot-success-msg" class="auth-success-msg hidden"></div>
-          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-forgot">
-            <span>✉️</span> Send Reset Email
+
+          <!-- Account & Session Telemetry Card -->
+          <div class="overview-section-card">
+            <div class="section-card-title">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              <h4>System & Account Metadata</h4>
+            </div>
+
+            <div class="metadata-table">
+              <div class="meta-row">
+                <span class="meta-key">Account Type</span>
+                <span id="p-meta-type" class="meta-val highlight-cyan">Guest Session (Local)</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">Firebase UID / ID</span>
+                <span id="p-meta-uid" class="meta-val font-mono">GUEST-LOCAL-SESSION</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">Email Address</span>
+                <span id="p-meta-email" class="meta-val font-mono">guest@physix.lab</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">Express.js API Status</span>
+                <span id="p-meta-backend" class="meta-val highlight-cyan">● Connecting to Express API...</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">Cloud Sync Status</span>
+                <span id="p-meta-sync" class="meta-val status-local">● Local Storage Only</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">Active Simulation Hub</span>
+                <span class="meta-val">2D Projectile Kinematics</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">Student Level & Rank</span>
+                <span id="p-meta-rank" class="meta-val highlight-purple">Level 1 • Newtonian Novice</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: LAB TELEMETRY & STATS -->
+      <div id="tab-stats" class="profile-tab-pane hidden">
+        <div class="telemetry-dashboard-grid">
+          <!-- Quiz High Score Card -->
+          <div class="telemetry-stat-card card-quiz-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Kinematics Quiz High Score</span>
+              <div class="t-val-row">
+                <strong id="stat-quiz-score" class="t-val">0 / 10</strong>
+                <span id="stat-quiz-grade" class="t-grade-badge">Not Taken</span>
+              </div>
+              <span class="t-sub">10-Question Comprehensive Evaluation</span>
+            </div>
+          </div>
+
+          <!-- Target Challenge Score Card -->
+          <div class="telemetry-stat-card card-target-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Target Challenge Score</span>
+              <div class="t-val-row">
+                <strong id="stat-target-score" class="t-val">0 pts</strong>
+                <span id="stat-target-hits" class="t-grade-badge">0 Hits</span>
+              </div>
+              <span class="t-sub">Landing Accuracy Challenges</span>
+            </div>
+          </div>
+
+          <!-- Total Cannon Launches -->
+          <div class="telemetry-stat-card card-launches-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Total Trajectories Fired</span>
+              <div class="t-val-row">
+                <strong id="stat-total-launches" class="t-val">0</strong>
+                <span class="t-unit">shots</span>
+              </div>
+              <span class="t-sub">Simulation Runs Executed</span>
+            </div>
+          </div>
+
+          <!-- Max Range Achieved -->
+          <div class="telemetry-stat-card card-range-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><line x1="2" y1="12" x2="22" y2="12"></line><polyline points="18 8 22 12 18 16"></polyline><polyline points="6 8 2 12 6 16"></polyline></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Maximum Range ($R_{max}$)</span>
+              <div class="t-val-row">
+                <strong id="stat-max-range" class="t-val">0.00</strong>
+                <span class="t-unit">meters</span>
+              </div>
+              <span class="t-sub">Furthest Ground Touchdown</span>
+            </div>
+          </div>
+
+          <!-- Max Peak Altitude -->
+          <div class="telemetry-stat-card card-height-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"></line><polyline points="8 6 12 2 16 6"></polyline></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Peak Trajectory Apex ($H_{max}$)</span>
+              <div class="t-val-row">
+                <strong id="stat-max-height" class="t-val">0.00</strong>
+                <span class="t-unit">meters</span>
+              </div>
+              <span class="t-sub">Highest Altitude Reached</span>
+            </div>
+          </div>
+
+          <!-- Max Velocity Recorded -->
+          <div class="telemetry-stat-card card-speed-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path><path d="M16 16l3 3"></path></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Maximum Muzzle Velocity ($v_0$)</span>
+              <div class="t-val-row">
+                <strong id="stat-max-velocity" class="t-val">0.00</strong>
+                <span class="t-unit">m/s</span>
+              </div>
+              <span class="t-sub">Top Initial Launch Speed</span>
+            </div>
+          </div>
+
+          <!-- Favorite Planetary Gravity -->
+          <div class="telemetry-stat-card card-planet-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><ellipse cx="12" cy="12" rx="11" ry="3" transform="rotate(-20 12 12)"></ellipse></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Active Planetary Environment</span>
+              <div class="t-val-row">
+                <strong id="stat-fav-planet" class="t-val">Earth (9.8 m/s²)</strong>
+              </div>
+              <span class="t-sub">Planetary Gravitational Field</span>
+            </div>
+          </div>
+
+          <!-- Total Flight Airtime -->
+          <div class="telemetry-stat-card card-time-stat">
+            <div class="telemetry-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path></svg>
+            </div>
+            <div class="telemetry-info">
+              <span class="t-label">Cumulative Flight Airtime</span>
+              <div class="t-val-row">
+                <strong id="stat-total-airtime" class="t-val">0.00</strong>
+                <span class="t-unit">seconds</span>
+              </div>
+              <span class="t-sub">Total Projectile In-Flight Time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: BADGES & ACHIEVEMENTS -->
+      <div id="tab-badges" class="profile-tab-pane hidden">
+        <div class="badges-intro-bar">
+          <div>
+            <h4>Physics Mastery Milestones</h4>
+            <p>Accomplish kinematic feats and evaluation challenges to earn honors</p>
+          </div>
+          <span class="badges-progress-pill" id="badges-unlocked-pill">0 of 9 Unlocked</span>
+        </div>
+
+        <div class="badges-showcase-grid" id="badges-grid-container">
+          <!-- Badges dynamically rendered via main.js with vector SVGs -->
+        </div>
+      </div>
+
+      <!-- TAB 4: FLIGHT LOGS HISTORY -->
+      <div id="tab-logs" class="profile-tab-pane hidden">
+        <div class="logs-header-bar">
+          <div>
+            <h4>Telemetry Flight Records</h4>
+            <p>Live kinematic data recorded from your recent cannon launches</p>
+          </div>
+          <button type="button" class="btn-clear-logs" id="btn-clear-flight-logs">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Clear Flight Records
           </button>
-          <div class="auth-secondary-actions">
-            <button type="button" class="auth-link-btn" id="btn-forgot-goto-login">← Back to Sign In</button>
-          </div>
-        </form>
+        </div>
+
+        <div class="flight-logs-table-wrapper">
+          <table class="flight-logs-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Time</th>
+                <th>Angle (θ)</th>
+                <th>Speed (v₀)</th>
+                <th>Height (h₀)</th>
+                <th>Gravity (g)</th>
+                <th>Range (R)</th>
+                <th>Apex (H)</th>
+                <th>Airtime</th>
+              </tr>
+            </thead>
+            <tbody id="flight-logs-tbody">
+              <tr>
+                <td colspan="9" class="empty-logs-msg">No simulation flight records yet. Fire the cannon to record telemetry!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- 4. CHANGE PASSWORD VIEW -->
-      <div id="auth-view-change-password" class="auth-view hidden">
-        <form id="form-change-password" class="auth-form">
-          <div class="form-group">
-            <label for="change-new-password">New Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="change-new-password" placeholder="Enter new password" required />
-              <button type="button" class="btn-toggle-password" data-target="change-new-password" title="Show Password">
-                <span class="eye-icon">👁️</span>
+      <!-- TAB 5: ACCOUNT & SECURITY -->
+      <div id="tab-security" class="profile-tab-pane hidden">
+        <!-- Guest View inside Security Tab -->
+        <div id="sec-guest-panel" class="security-panel">
+          <div class="guest-upgrade-banner">
+            <div class="banner-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+            </div>
+            <div>
+              <h4>Sync & Protect Your Lab Progress</h4>
+              <p>Create or sign into your free Firebase account to securely sync quiz scores, target achievements, and flight logs across devices.</p>
+            </div>
+          </div>
+
+          <div class="auth-forms-segmented">
+            <div class="auth-toggle-buttons">
+              <button type="button" class="auth-subtab-btn active" id="btn-subtab-login">Sign In</button>
+              <button type="button" class="auth-subtab-btn" id="btn-subtab-signup">Create Account</button>
+              <button type="button" class="auth-subtab-btn" id="btn-subtab-forgot">Forgot Password</button>
+            </div>
+
+            <!-- Embedded Login Form -->
+            <div id="auth-view-login" class="auth-view">
+              <form id="form-login" class="auth-form">
+                <div class="form-group">
+                  <label for="login-email">Email Address</label>
+                  <input type="email" id="login-email" placeholder="name@example.com" required autocomplete="email" />
+                </div>
+
+                <div class="form-group">
+                  <label for="login-password">Password</label>
+                  <div class="password-input-wrapper">
+                    <input type="password" id="login-password" placeholder="Enter your password" required
+                      autocomplete="current-password" />
+                    <button type="button" class="btn-toggle-password" data-target="login-password" title="Show Password">
+                      <span class="eye-icon">
+                        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="login-error-msg" class="auth-error-msg hidden"></div>
+
+                <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-login">
+                  Sign In to PhysiX
+                </button>
+              </form>
+            </div>
+
+            <!-- Embedded Signup Form -->
+            <div id="auth-view-signup" class="auth-view hidden">
+              <form id="form-signup" class="auth-form">
+                <div class="form-group">
+                  <label for="signup-email">Email Address</label>
+                  <input type="email" id="signup-email" placeholder="name@example.com" required autocomplete="email" />
+                </div>
+
+                <div class="form-group">
+                  <label for="signup-password">Create Password (min 6 characters)</label>
+                  <div class="password-input-wrapper">
+                    <input type="password" id="signup-password" placeholder="Create a strong password" required minlength="6"
+                      autocomplete="new-password" />
+                    <button type="button" class="btn-toggle-password" data-target="signup-password" title="Show Password">
+                      <span class="eye-icon">
+                        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="signup-confirm">Confirm Password</label>
+                  <div class="password-input-wrapper">
+                    <input type="password" id="signup-confirm" placeholder="Re-enter password" required minlength="6"
+                      autocomplete="new-password" />
+                    <button type="button" class="btn-toggle-password" data-target="signup-confirm" title="Show Password">
+                      <span class="eye-icon">
+                        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="signup-error-msg" class="auth-error-msg hidden"></div>
+
+                <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-signup">
+                  Create PhysiX Account
+                </button>
+              </form>
+            </div>
+
+            <!-- Embedded Forgot Password Form -->
+            <div id="auth-view-forgot" class="auth-view hidden">
+              <form id="form-forgot" class="auth-form">
+                <p class="auth-desc">Enter your account email to receive a password reset link from Firebase.</p>
+                <div class="form-group">
+                  <label for="forgot-email">Email Address</label>
+                  <input type="email" id="forgot-email" placeholder="name@example.com" required />
+                </div>
+                <div id="forgot-error-msg" class="auth-error-msg hidden"></div>
+                <div id="forgot-success-msg" class="auth-success-msg hidden"></div>
+                <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-forgot">
+                  Send Password Reset Link
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Authenticated User Panel inside Security Tab -->
+        <div id="sec-user-panel" class="security-panel hidden">
+          <div class="user-security-card">
+            <div class="user-sec-header">
+              <div class="user-sec-icon">
+                <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <div>
+                <h4>Firebase Authenticated Session</h4>
+                <p id="sec-user-email-display">Connected: user@example.com</p>
+              </div>
+            </div>
+
+            <div class="user-sec-grid">
+              <div class="sec-item">
+                <span class="sec-item-label">Account Email</span>
+                <strong id="sec-detail-email">user@example.com</strong>
+              </div>
+              <div class="sec-item">
+                <span class="sec-item-label">Firebase UID</span>
+                <strong id="sec-detail-uid" class="font-mono">FIREBASE-UID-HERE</strong>
+              </div>
+              <div class="sec-item">
+                <span class="sec-item-label">Authentication Provider</span>
+                <strong>Firebase Email / Password</strong>
+              </div>
+              <div class="sec-item">
+                <span class="sec-item-label">Session Status</span>
+                <span class="status-online-pill">● Active & Synced</span>
+              </div>
+            </div>
+
+            <!-- Change Password Sub-Card -->
+            <div class="change-password-box">
+              <h5>Update Account Password</h5>
+              <form id="form-change-password" class="auth-form" style="margin-top: 10px;">
+                <div class="form-group">
+                  <label for="change-new-password">New Password (min 6 chars)</label>
+                  <div class="password-input-wrapper">
+                    <input type="password" id="change-new-password" placeholder="Enter new password" required minlength="6" />
+                    <button type="button" class="btn-toggle-password" data-target="change-new-password" title="Show Password">
+                      <span class="eye-icon">
+                        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="change-confirm-password">Confirm New Password</label>
+                  <div class="password-input-wrapper">
+                    <input type="password" id="change-confirm-password" placeholder="Confirm new password" required minlength="6" />
+                    <button type="button" class="btn-toggle-password" data-target="change-confirm-password" title="Show Password">
+                      <span class="eye-icon">
+                        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div id="change-error-msg" class="auth-error-msg hidden"></div>
+                <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-change-password">
+                  Update Password
+                </button>
+              </form>
+            </div>
+
+            <div class="sec-logout-bar">
+              <button type="button" class="auth-btn auth-btn-danger" id="btn-dashboard-logout">
+                Sign Out of PhysiX
               </button>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="change-confirm-password">Confirm New Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="change-confirm-password" placeholder="Confirm new password" required />
-              <button type="button" class="btn-toggle-password" data-target="change-confirm-password"
-                title="Show Password">
-                <span class="eye-icon">👁️</span>
-              </button>
-            </div>
-          </div>
-          <div id="change-error-msg" class="auth-error-msg hidden"></div>
-          <button type="submit" class="auth-btn auth-btn-primary" id="btn-submit-change-password">
-            <span>🔒</span> Change Password
-          </button>
-          <div class="auth-secondary-actions">
-            <button type="button" class="auth-link-btn" id="btn-change-goto-dashboard">← Back to Profile</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- 5. USER DASHBOARD / LOGGED IN PROFILE VIEW -->
-      <div id="auth-view-dashboard" class="auth-view hidden">
-        <div class="profile-dashboard-card">
-          <div class="profile-avatar-large" id="profile-avatar-char">👤</div>
-          <h3 id="profile-user-email">User Email</h3>
-          <span class="auth-status-badge">● Firebase Authenticated</span>
-
-          <div class="profile-stats-grid">
-            <div class="pstat-item">
-              <span class="pstat-label">Quiz High Score</span>
-              <strong id="profile-stat-quiz">0 / 10</strong>
-            </div>
-            <div class="pstat-item">
-              <span class="pstat-label">Target Challenge</span>
-              <strong id="profile-stat-target">0 pts</strong>
-            </div>
-          </div>
-
-          <div class="profile-actions-group">
-            <button type="button" class="auth-btn auth-btn-outline" id="btn-open-edit-profile">
-              ✏️ Edit Profile
-            </button>
-            <button type="button" class="auth-btn auth-btn-outline" id="btn-dashboard-change-pwd">
-              🔑 Change Password
-            </button>
-            <button type="button" class="auth-btn auth-btn-danger" id="btn-dashboard-logout">
-              🚪 Logout
-            </button>
           </div>
         </div>
       </div>
@@ -692,59 +1958,313 @@
     <div class="modal-card modal-card-profile-edit">
       <div class="modal-header">
         <div>
-          <h2>✏️ Customize Student Profile</h2>
-          <p>Personalize your avatar, educational status, and physics focus</p>
+          <h2>
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Customize Student Profile Dossier
+          </h2>
+          <p>Personalize your scientific avatar, credentials, institution, and research interests</p>
         </div>
-        <button id="btn-close-edit-profile" class="modal-close-btn">&times;</button>
+        <button id="btn-close-edit-profile" class="modal-close-btn" title="Close Customizer">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
       <form id="form-edit-profile" class="auth-form" style="padding: 10px 0;">
         <div class="form-group">
-          <label>Choose Avatar Preset</label>
+          <label>Choose Scientific Vector Avatar</label>
           <div class="avatar-selector-grid" id="avatar-presets-grid">
-            <button type="button" class="avatar-opt-btn selected" data-avatar="🧑‍🔬">🧑‍🔬</button>
-            <button type="button" class="avatar-opt-btn" data-avatar="👩‍🚀">👩‍🚀</button>
-            <button type="button" class="avatar-opt-btn" data-avatar="⚛️">⚛️</button>
-            <button type="button" class="avatar-opt-btn" data-avatar="⚡">⚡</button>
-            <button type="button" class="avatar-opt-btn" data-avatar="🧠">🧠</button>
-            <button type="button" class="avatar-opt-btn" data-avatar="🎯">🎯</button>
+            <button type="button" class="avatar-opt-btn selected" data-avatar="quantum" title="Quantum Particle Core">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="2"/>
+                <ellipse cx="24" cy="24" rx="16" ry="6" stroke="#06b6d4" stroke-width="1.8" transform="rotate(30 24 24)"/>
+                <circle cx="24" cy="24" r="4" fill="#38bdf8"/>
+              </svg>
+            </button>
+            <button type="button" class="avatar-opt-btn" data-avatar="astronaut" title="Orbital Astronaut">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(6,182,212,0.2)" stroke="#06b6d4" stroke-width="2"/>
+                <circle cx="24" cy="24" r="12" stroke="#e2e8f0" stroke-width="2" fill="rgba(15,23,42,0.8)"/>
+                <rect x="16" y="20" width="16" height="8" rx="4" fill="#38bdf8"/>
+              </svg>
+            </button>
+            <button type="button" class="avatar-opt-btn" data-avatar="cyber" title="Cyber Physicist">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(59,130,246,0.2)" stroke="#3b82f6" stroke-width="2"/>
+                <polygon points="24 10 36 20 32 36 16 36 12 20" stroke="#60a5fa" stroke-width="2" fill="rgba(30,58,138,0.5)"/>
+                <line x1="16" y1="22" x2="32" y2="22" stroke="#38bdf8" stroke-width="2.5"/>
+              </svg>
+            </button>
+            <button type="button" class="avatar-opt-btn" data-avatar="lightning" title="Energy Dynamo">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="2"/>
+                <polygon points="26 8 14 24 24 24 22 40 34 22 24 22 26 8" fill="#fbbf24"/>
+              </svg>
+            </button>
+            <button type="button" class="avatar-opt-btn" data-avatar="planet" title="Orbital Rings">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="2"/>
+                <circle cx="24" cy="24" r="10" fill="#059669"/>
+                <ellipse cx="24" cy="24" rx="18" ry="4" stroke="#a7f3d0" stroke-width="1.8" transform="rotate(-25 24 24)"/>
+              </svg>
+            </button>
+            <button type="button" class="avatar-opt-btn" data-avatar="cannon" title="Ballistics Master">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="2"/>
+                <rect x="18" y="12" width="12" height="20" rx="3" transform="rotate(45 24 22)" fill="#dc2626"/>
+                <circle cx="18" cy="30" r="5" stroke="#fca5a5" stroke-width="2"/>
+              </svg>
+            </button>
+            <button type="button" class="avatar-opt-btn" data-avatar="sniper" title="Target Sniper">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(168,85,247,0.2)" stroke="#a855f7" stroke-width="2"/>
+                <circle cx="24" cy="24" r="12" stroke="#c084fc" stroke-width="2"/>
+                <circle cx="24" cy="24" r="5" fill="#e9d5ff"/>
+                <line x1="24" y1="8" x2="24" y2="40" stroke="#c084fc" stroke-width="1.5"/>
+                <line x1="8" y1="24" x2="40" y2="24" stroke="#c084fc" stroke-width="1.5"/>
+              </svg>
+            </button>
+            <button type="button" class="avatar-opt-btn" data-avatar="nebula" title="Deep Space Pulsar">
+              <svg class="avatar-svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(236,72,153,0.2)" stroke="#ec4899" stroke-width="2"/>
+                <path d="M14 24C14 18 18 14 24 14C30 14 34 18 34 24C34 30 30 34 24 34C18 34 14 30 14 24Z" stroke="#f472b6" stroke-width="2"/>
+                <circle cx="24" cy="24" r="3" fill="#fdf2f8"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="profile-name-input">Student Full Name</label>
+            <input type="text" id="profile-name-input" placeholder="e.g. Alex Henderson" required />
+          </div>
+
+          <div class="form-group">
+            <label for="profile-handle-input">Call-sign / Handle</label>
+            <input type="text" id="profile-handle-input" placeholder="e.g. @alex_physicist" />
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="profile-edu-status">Educational Level</label>
+            <select id="profile-edu-status">
+              <option value="High School Student">High School (AP/IB Physics)</option>
+              <option value="Undergraduate Student" selected>Undergraduate / College (B.Sc / B.Tech)</option>
+              <option value="Graduate Researcher">Graduate / Master's / PhD Researcher</option>
+              <option value="Physics Educator">Physics Educator / Professor</option>
+              <option value="Independent Enthusiast">Independent Physics Enthusiast</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="profile-occupation-input">Institution / Department</label>
+            <input type="text" id="profile-occupation-input" placeholder="e.g. MIT Physics Lab / Student" />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="profile-name-input">Full Name</label>
-          <input type="text" id="profile-name-input" placeholder="e.g. Alex Henderson" required />
+          <label for="profile-interests-input">Specialization & Focus Areas (comma-separated)</label>
+          <input type="text" id="profile-interests-input"
+            placeholder="e.g. 2D Kinematics, Planetary Gravity, Orbital Dynamics" />
         </div>
 
         <div class="form-group">
-          <label for="profile-edu-status">Educational Status</label>
-          <select id="profile-edu-status">
-            <option value="High School Student">High School Student (AP/IB Physics)</option>
-            <option value="Undergraduate Student" selected>Undergraduate / College Student (B.Sc / B.Tech / Engineering)
-            </option>
-            <option value="Graduate / Master's / PhD">Graduate / Master's / PhD Researcher</option>
-            <option value="Physics Educator / Professor">Physics Educator / Professor</option>
-            <option value="Independent Physics Enthusiast">Independent Physics Enthusiast</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="profile-occupation-input">Occupation / Institution</label>
-          <input type="text" id="profile-occupation-input" placeholder="e.g. Stanford University / Student" />
-        </div>
-
-        <div class="form-group">
-          <label for="profile-interests-input">Physics Interests & Focus Areas</label>
-          <textarea id="profile-interests-input"
-            placeholder="e.g. 2D Kinematics, Orbital Dynamics, Quantum Mechanics"></textarea>
+          <label for="profile-interests-bio">Student Statement / Lab Notes</label>
+          <textarea id="profile-interests-bio" rows="3"
+            placeholder="Describe your physics learning goals and simulation focus..."></textarea>
         </div>
 
         <button type="submit" class="auth-btn auth-btn-primary" style="margin-top: 10px;">
-          💾 Save & Update Profile
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline></svg>
+          Save & Update Profile
         </button>
       </form>
     </div>
   </div>
+
+  <!-- =====================================
+       VECTRA AI COPILOT MODAL & DRAWER
+  ===================================== -->
+  <div id="ai-copilot-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-ai">
+      <!-- AI Header -->
+      <div class="ai-header-card">
+        <div class="ai-avatar-glow">
+          <svg class="svg-icon svg-ai-glow svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <div class="ai-pulse-ring"></div>
+        </div>
+        <div class="ai-header-info">
+          <div class="ai-title-row">
+            <h3>Vectra AI <span class="ai-badge-gradient">Copilot</span></h3>
+            <span id="ai-live-badge" class="ai-status-pill">● Gemini 3.6 Online</span>
+          </div>
+          <p class="ai-subtitle">Intelligent Physics Problem Solver & Kinematics Tutor • Project 771808668914</p>
+        </div>
+        <button id="btn-close-ai-copilot" class="modal-close-btn" title="Close Vectra AI">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Live Simulator Telemetry Strip -->
+      <div class="ai-telemetry-context-bar">
+        <span class="context-label">Live Simulator Context:</span>
+        <span id="ai-ctx-v0" class="context-chip">v₀: 20.0 m/s</span>
+        <span id="ai-ctx-angle" class="context-chip">θ: 45°</span>
+        <span id="ai-ctx-h0" class="context-chip">h₀: 0.0 m</span>
+        <span id="ai-ctx-g" class="context-chip">g: 9.8 m/s² (Earth)</span>
+      </div>
+
+      <!-- Quick Suggestion Prompts -->
+      <div class="ai-suggestions-container">
+        <button type="button" class="ai-suggestion-chip" data-prompt="How do I hit the target with my current velocity and angle?">
+          How to hit target?
+        </button>
+        <button type="button" class="ai-suggestion-chip" data-prompt="Explain why 45 degrees gives the maximum horizontal range.">
+          Why 45° for max range?
+        </button>
+        <button type="button" class="ai-suggestion-chip" data-prompt="How does launching on the Moon compare to Jupiter?">
+          Moon vs Jupiter gravity
+        </button>
+        <button type="button" class="ai-suggestion-chip" data-prompt="Derive the formula for time of flight from height h0.">
+          Time of flight derivation
+        </button>
+        <button type="button" class="ai-suggestion-chip" data-prompt="Analyze the kinematics of my latest projectile flight.">
+          Analyze my last flight
+        </button>
+        <button type="button" class="ai-suggestion-chip" data-prompt="Who built this website?">
+          Who built this?
+        </button>
+      </div>
+
+      <!-- Chat History Container -->
+      <div id="ai-chat-messages" class="ai-chat-scroll">
+        <!-- Default Welcome Message -->
+        <div class="ai-msg ai-msg-bot">
+          <div class="ai-msg-avatar">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <div class="ai-msg-content">
+            <div class="ai-msg-header">
+              <strong>Vectra AI</strong> <span class="ai-msg-time">Just now</span>
+            </div>
+            <p>Greetings, Physicist! I am <strong>Vectra AI</strong>, your intelligent Physics Lab Copilot. I'm connected in real-time to your simulator controls and telemetry.</p>
+            <p>Ask me to calculate exact trajectories, solve target challenges, explain kinematics derivations, or break down any classical mechanics concept!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Deck -->
+      <form id="form-ai-chat" class="ai-input-form">
+        <div class="ai-input-wrapper">
+          <input type="text" id="ai-chat-input" placeholder="Ask Vectra AI anything about projectile physics or equations..." autocomplete="off" />
+          <button type="button" id="btn-ai-clear" class="btn-ai-clear" title="Clear Chat History">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
+          <button type="submit" id="btn-ai-send" class="btn-ai-send">
+            <span>Send</span>
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================
+       OPTICAL FIBRE RESULTS & REPORT MODAL
+  ===================================== -->
+  <div id="of-results-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-report">
+      <div class="modal-header">
+        <div>
+          <h2>
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            Experiment 2: Laboratory Performance Report
+          </h2>
+          <p>Determination of Numerical Aperture of Optical Fibre • Divergence Method</p>
+        </div>
+        <button id="of-btn-close-results" class="modal-close-btn" title="Close Report">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="of-report-content">
+        <!-- Performance Honors Banner -->
+        <div class="of-report-banner">
+          <div class="of-report-badge-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+          </div>
+          <div>
+            <span class="of-banner-sub">Performance Evaluation</span>
+            <h3 id="of-res-grade">Virtuoso Optician (Grade A+)</h3>
+            <p>Experimental readings and Numerical Aperture calculations verified against Snell's Law and optical waveguide acceptance cone geometry.</p>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="of-report-metrics-grid">
+          <div class="of-rep-metric">
+            <span>Mean Numerical Aperture</span>
+            <strong id="of-res-mean-na" class="text-cyan">0.4498</strong>
+          </div>
+          <div class="of-rep-metric">
+            <span>Mean Acceptance Angle (θ_a)</span>
+            <strong id="of-res-mean-theta" class="text-purple">26.7°</strong>
+          </div>
+          <div class="of-rep-metric">
+            <span>Experimental Accuracy</span>
+            <strong id="of-res-accuracy" class="text-green">98.5%</strong>
+          </div>
+          <div class="of-rep-metric">
+            <span>Total XP Earned</span>
+            <strong id="of-res-xp" class="text-yellow">+275 XP</strong>
+          </div>
+        </div>
+
+        <!-- Readings Summary Table -->
+        <div class="of-report-table-section">
+          <h4>Observation Readings Recorded</h4>
+          <div class="of-report-table-wrapper">
+            <table class="obs-table">
+              <thead>
+                <tr>
+                  <th>Reading #</th>
+                  <th>Distance L (cm)</th>
+                  <th>Spot Diameter W (cm)</th>
+                  <th>Calculated NA</th>
+                  <th>Acceptance Angle</th>
+                </tr>
+              </thead>
+              <tbody id="of-res-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Theoretical Summary Formula -->
+        <div class="of-formula-recap">
+          <strong>Governing Waveguide Equations:</strong>
+          <code>NA = W / √(4L² + W²) = sin(θ_a) = √(n₁² - n₂²)</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Vectra AI Action Button (FAB) -->
+  <button id="btn-ai-fab" class="ai-fab-btn" title="Open Vectra AI Laboratory Assistant">
+    <div class="fab-glow-effect"></div>
+    <span class="fab-icon">
+      <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+    </span>
+    <span class="fab-label">Ask Vectra AI</span>
+  </button>
 
   <!-- Toast Notification Container -->
   <div id="toast" class="toast hidden"></div>
