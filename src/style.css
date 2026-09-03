@@ -295,6 +295,16 @@ body {
   background: #f59e0b;
 }
 
+.nav-btn-badges {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(6, 182, 212, 0.2));
+  border-color: rgba(139, 92, 246, 0.45);
+  color: #c4b5fd;
+}
+
+.nav-btn-badges .badge-count {
+  background: #8b5cf6;
+}
+
 /* =====================================
    MODERN SLIDING THEME TOGGLE SWITCH
 ===================================== */

@@ -224,6 +224,9 @@ const btnCloseTheory = document.getElementById("btn-close-theory");
 const btnOpenQuiz = document.getElementById("btn-open-quiz");
 const btnCloseQuiz = document.getElementById("btn-close-quiz");
 
+const btnOpenBadgesNav = document.getElementById("btn-open-badges-nav");
+const navBadgesCountBadge = document.getElementById("nav-badges-count-badge");
+
 const userProfileBtn = document.getElementById("user-profile-btn");
 const btnOpenProfileNav = document.getElementById("btn-open-profile-nav");
 const btnCloseProfile = document.getElementById("btn-close-profile");
@@ -1084,7 +1087,14 @@ let selectedAvatar = "quantum";
 let isExpressApiOnline = false;
 
 const ALL_BADGES = [
-  // Kinematics Mastery & Evaluation
+  // Kinematics Artillery & Trajectory Feats
+  { id: "badge-high-velocity", name: "Hypersonic Trajectory", desc: "Launch a projectile with high muzzle velocity v₀ ≥ 40 m/s." },
+  { id: "badge-optimal-angle", name: "Optimal 45° Angle", desc: "Fire projectile at the theoretical 45° angle for maximum horizontal range." },
+  { id: "badge-high-platform", name: "Sky Platform Artillery", desc: "Launch projectile from an elevated platform altitude h₀ ≥ 10.0m." },
+  { id: "badge-long-airtime", name: "Stratospheric Arc", desc: "Achieve sustained high projectile airtime of flight time ≥ 5.0s." },
+  { id: "badge-multi-planet", name: "Interplanetary Explorer", desc: "Launch trajectories across all 4 planetary bodies (Moon, Mars, Earth, Jupiter)." },
+
+  // Kinematics Challenges & Precision
   { id: "badge-target-hit", name: "Bullseye Sniper", desc: "Score a direct hit on the target in Target Challenge Mode." },
   { id: "badge-ch-compl", name: "Complementary Angle Ace", desc: "Verify complementary angle theorem with equivalent horizontal range." },
   { id: "badge-ch-moon", name: "Stratospheric Apex", desc: "Fire high-altitude trajectories reaching apex H ≥ 40m." },
@@ -1879,7 +1889,10 @@ function loadUserProfile() {
 
     let unlockedCount = ALL_BADGES.filter(b => badges.includes(b.id)).length;
     if (badgesUnlockedCount) badgesUnlockedCount.textContent = unlockedCount;
+    const badgesTotalCount = document.getElementById("badges-total-count");
+    if (badgesTotalCount) badgesTotalCount.textContent = ALL_BADGES.length;
     if (badgesUnlockedPill) badgesUnlockedPill.textContent = `${unlockedCount} of ${ALL_BADGES.length} Unlocked`;
+    if (navBadgesCountBadge) navBadgesCountBadge.textContent = `${unlockedCount}/${ALL_BADGES.length}`;
 
     // 6. Update Flight Logs Tab
     if (logsCountBadge) logsCountBadge.textContent = logs.length;
@@ -2309,6 +2322,25 @@ btnCloseEditProfile?.addEventListener("click", () => {
 onAuthStateChanged(auth, () => {
   loadUserProfile();
 });
+
+function openBadgesModal() {
+  loadUserProfile();
+  profileModal?.classList.remove("hidden");
+  profileTabBtns.forEach(b => {
+    if (b.getAttribute("data-tab") === "badges") {
+      b.classList.add("active");
+    } else {
+      b.classList.remove("active");
+    }
+  });
+  [tabOverview, tabStats, tabBadges, tabLogs, tabSecurity].forEach(pane => {
+    if (pane) pane.classList.add("hidden");
+  });
+  if (tabBadges) tabBadges.classList.remove("hidden");
+}
+
+btnOpenBadgesNav?.addEventListener("click", openBadgesModal);
+heroRankPill?.addEventListener("click", openBadgesModal);
 
 // Profile Button click opens modal
 userProfileBtn?.addEventListener("click", () => {
