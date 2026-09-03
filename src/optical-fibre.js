@@ -7,9 +7,10 @@
  */
 
 import { api } from "./api.js";
+import { generateLabReportPdf } from "./pdf-export.js";
 
 export function createOpticalFibreExperiment(callbacks = {}) {
-  const { onXpAwarded, showToast, getActiveUserId, loadUserProfile, unlockBadge } = callbacks;
+  const { onXpAwarded, showToast, getActiveUserId, loadUserProfile, getStoredUserProfile, unlockBadge, isUserAuthenticated, openLoginModal } = callbacks;
 
   // Scientific Model State
   const state = {
@@ -774,6 +775,7 @@ export function createOpticalFibreExperiment(callbacks = {}) {
     renderBenchCanvas();
     renderScreenCanvas();
     updateDomHud();
+    renderChallengesDom();
   }
 
   // ==========================================
@@ -1023,10 +1025,96 @@ export function createOpticalFibreExperiment(callbacks = {}) {
     if (accuracyDisplay) accuracyDisplay.textContent = `${accuracyPct.toFixed(1)}%`;
   }
 
+  function exportObservationsCsv() {
+    if (state.observations.length === 0) {
+      if (showToast) showToast("No optical fibre readings recorded yet. Record observations first!");
+      return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Reading_ID,Screen_Distance_L_cm,Spot_Diameter_W_cm,Numerical_Aperture_NA,Acceptance_Angle_deg,Theoretical_POF_NA,Timestamp\n";
+
+    state.observations.forEach((obs) => {
+      csvContent += `${obs.reading},${obs.L.toFixed(2)},${obs.W.toFixed(2)},${obs.na.toFixed(4)},${obs.theta.toFixed(1)},${getEffectiveNA().toFixed(4)},"${obs.time}"\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `PhysiX_Optical_Fibre_NA_Observations_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    if (showToast) showToast("Exported Optical Fibre observations to CSV.");
+  }
+
+  function exportObservationsPdf() {
+    if (state.observations.length === 0) {
+      if (showToast) showToast("No optical fibre readings recorded yet. Record observations first!");
+      return;
+    }
+
+    const profile = getStoredUserProfile ? getStoredUserProfile() : {};
+    const studentName = profile.name || "Student Physicist";
+    const studentEmail = getActiveUserId && getActiveUserId() !== "guest" ? `${getActiveUserId()}` : "Guest Mode";
+
+    let sumNA = 0;
+    let sumTheta = 0;
+    state.observations.forEach(o => {
+      sumNA += o.na;
+      sumTheta += o.theta;
+    });
+    const meanNA = sumNA / state.observations.length;
+    const meanTheta = sumTheta / state.observations.length;
+    const theoreticalNA = getEffectiveNA();
+    const errorPct = Math.abs((meanNA - theoreticalNA) / theoreticalNA) * 100;
+    const accuracyPct = Math.max(0, 100 - errorPct);
+
+    const columns = ["Reading #", "Screen Distance L", "Spot Diameter W", "Numerical Aperture (NA)", "Acceptance Angle (θ_a)", "Benchmark POF NA", "Logged At"];
+
+    const rows = state.observations.map(obs => [
+      `#${obs.reading}`,
+      `${obs.L.toFixed(2)} cm`,
+      `${obs.W.toFixed(2)} cm`,
+      obs.na.toFixed(4),
+      `${obs.theta.toFixed(1)}°`,
+      theoreticalNA.toFixed(4),
+      obs.time
+    ]);
+
+    try {
+      generateLabReportPdf({
+        labTitle: "Numerical Aperture of an Optical Fibre Logbook",
+        labSubtitle: "Optoelectronic Laser Divergence, Total Internal Reflection & Acceptance Angle Dynamics",
+        experimentCode: "EXP-02",
+        studentName,
+        studentEmail,
+        studentRole: profile.occ || "Student Physicist",
+        summaryMetrics: [
+          { label: "Total Readings", value: `${state.observations.length} Entries`, color: [14, 165, 233] },
+          { label: "Mean Numerical Aperture", value: `${meanNA.toFixed(4)}`, color: [6, 182, 212] },
+          { label: "Mean Acceptance Angle", value: `${meanTheta.toFixed(1)}°`, color: [139, 92, 246] },
+          { label: "Experimental Accuracy", value: `${accuracyPct.toFixed(1)}%`, color: [16, 185, 129] }
+        ],
+        columns,
+        rows,
+        filename: `PhysiX_Optical_Fibre_NA_Report_${Date.now()}.pdf`,
+        orientation: "landscape"
+      });
+
+      if (showToast) showToast("Generated and downloaded official PhysiX PDF report.");
+    } catch (err) {
+      console.error("Optical Fibre PDF export failed:", err);
+      if (showToast) showToast("Failed to generate PDF report. Please try again.");
+    }
+  }
+
   // ==========================================
   // GAMIFIED CHALLENGES
   // ==========================================
   function checkSpotMatchChallenge() {
+    if (isUserAuthenticated && !isUserAuthenticated()) return;
     const ch = state.challenges.spotMatch;
     if (ch.completed || !isSetupComplete()) return;
 
@@ -1041,6 +1129,10 @@ export function createOpticalFibreExperiment(callbacks = {}) {
   }
 
   function startRapidCalibration() {
+    if (isUserAuthenticated && !isUserAuthenticated()) {
+      if (openLoginModal) openLoginModal("Please sign in to start the 40s Rapid Calibration challenge and earn XP!");
+      return;
+    }
     const ch = state.challenges.rapidCalib;
     if (ch.isRunning || ch.completed) return;
 
@@ -1067,6 +1159,7 @@ export function createOpticalFibreExperiment(callbacks = {}) {
   }
 
   function checkRapidCalibrationChallenge() {
+    if (isUserAuthenticated && !isUserAuthenticated()) return;
     const ch = state.challenges.rapidCalib;
     if (!ch.isRunning || ch.completed || !isSetupComplete()) return;
 
@@ -1091,6 +1184,7 @@ export function createOpticalFibreExperiment(callbacks = {}) {
   }
 
   function checkMultiSweepChallenge() {
+    if (isUserAuthenticated && !isUserAuthenticated()) return;
     const ch = state.challenges.multiSweep;
     if (!ch) return;
 
@@ -1140,6 +1234,30 @@ export function createOpticalFibreExperiment(callbacks = {}) {
   }
 
   function renderChallengesDom() {
+    const isAuth = isUserAuthenticated ? isUserAuthenticated() : true;
+    const challengesCard = document.querySelector("#exp-optical-section .challenges-card");
+
+    if (!isAuth) {
+      challengesCard?.classList.add("challenges-locked");
+      const xpPill = document.getElementById("of-user-total-challenge-xp");
+      const donePill = document.getElementById("of-challenges-completed-count");
+      if (xpPill) xpPill.textContent = "+375 XP Available";
+      if (donePill) donePill.innerHTML = `<span class="lock-indicator-badge">🔒 Sign In Required</span>`;
+
+      const tag1 = document.getElementById("of-ch-tag-1");
+      const tag2 = document.getElementById("of-ch-tag-2");
+      const tag3 = document.getElementById("of-ch-tag-3");
+      [tag1, tag2, tag3].forEach(tag => {
+        if (tag) {
+          tag.className = "challenge-status-tag locked";
+          tag.innerHTML = `<svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Locked`;
+        }
+      });
+      return;
+    }
+
+    challengesCard?.classList.remove("challenges-locked");
+
     // Challenge 1
     const card1 = document.getElementById("of-ch-card-1");
     const tag1 = document.getElementById("of-ch-tag-1");
@@ -1410,6 +1528,8 @@ export function createOpticalFibreExperiment(callbacks = {}) {
     // Observations
     document.getElementById("of-btn-record")?.addEventListener("click", recordObservation);
     document.getElementById("of-btn-clear-obs")?.addEventListener("click", clearObservations);
+    document.getElementById("of-btn-export-csv")?.addEventListener("click", exportObservationsCsv);
+    document.getElementById("of-btn-export-pdf")?.addEventListener("click", exportObservationsPdf);
 
     // Results Modal
     document.getElementById("of-btn-view-results")?.addEventListener("click", showResultsModal);
@@ -1495,6 +1615,7 @@ export function createOpticalFibreExperiment(callbacks = {}) {
   return {
     init,
     renderAll,
+    renderChallengesDom,
     getState: () => state,
     setDistance: (d) => { state.distanceL = d; renderAll(); },
     setWavelength,

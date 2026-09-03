@@ -296,6 +296,52 @@ function generateClientPhysicsResponse(userMessage = "", context = {}) {
 
   const msg = userMessage.toLowerCase();
 
+  // Colour Sensor & Tristimulus Colorimetry Calculations
+  if (
+    context?.experiment === "Study of Colour Sensor" ||
+    msg.includes("colour sensor") ||
+    msg.includes("color sensor") ||
+    msg.includes("tcs3200") ||
+    msg.includes("tcs230") ||
+    msg.includes("photodiode") ||
+    msg.includes("tristimulus") ||
+    msg.includes("colorimetry") ||
+    msg.includes("spectral filter")
+  ) {
+    const d = Number(context?.distanceMm) || 12.0;
+    const filter = (context?.filterChannel || "clear").toUpperCase();
+    const fOut = Number(context?.outputFrequencyKhz) || 0;
+    const fR = Number(context?.freqRed) || 0;
+    const fG = Number(context?.freqGreen) || 0;
+    const fB = Number(context?.freqBlue) || 0;
+    const fC = Number(context?.freqClear) || 0;
+    const hex = context?.detectedHex || "#000000";
+    const fidelity = context?.matchFidelityPct || 0;
+
+    return `### Vectra AI Theoretical Analysis: Colour Sensor & Spectral Colorimetry
+
+#### 1. Fundamental Optoelectronic Principles
+The **TCS3200** color sensor converts spectral light irradiance into a digital square-wave pulse train:
+$$I_{ph} = \\eta \\cdot \\frac{q P_{opt} \\lambda}{h c} \\implies f_{out} \\propto I_{ph}$$
+- **Micro-Filter Array**: $8 \\times 8$ photodiode matrix (16 Red, 16 Green, 16 Blue, 16 Clear unfiltered silicon photodiodes).
+- **Control Multiplexer**:
+  - $S_2=0, S_3=0 \\implies \\text{Red Filter } (\\lambda \\approx 650\\text{ nm})$
+  - $S_2=0, S_3=1 \\implies \\text{Blue Filter } (\\lambda \\approx 470\\text{ nm})$
+  - $S_2=1, S_3=0 \\implies \\text{Clear / Unfiltered Broadband } (350-950\\text{ nm})$
+  - $S_2=1, S_3=1 \\implies \\text{Green Filter } (\\lambda \\approx 540\\text{ nm})$
+
+#### 2. Live Laboratory Telemetry
+- **Standoff Distance ($d$)**: **${d.toFixed(1)} mm**
+- **Selected Channel**: **${filter}** (Active Output $f_{out} = \\mathbf{${fOut.toFixed(1)}\\text{ kHz}}$)
+- **Spectral Channel Breakdown**:
+  - $f_R = ${fR.toFixed(1)}\\text{ kHz}$ | $f_G = ${fG.toFixed(1)}\\text{ kHz}$ | $f_B = ${fB.toFixed(1)}\\text{ kHz}$ | $f_C = ${fC.toFixed(1)}\\text{ kHz}$
+- **Reconstructed Color**: $\\mathbf{${hex}}$ with **${fidelity}% Spectral Fidelity**
+
+#### 3. Tristimulus Normalization Equations
+$$r = \\frac{f_R}{f_R + f_G + f_B}, \\quad g = \\frac{f_G}{f_R + f_G + f_B}, \\quad b = \\frac{f_B}{f_R + f_G + f_B}$$
+*Physical Insight*: Standoff distance $d$ follows the Inverse-Square Law ($E \\propto 1/d^2$). Optimal detection occurs at $d \\approx 10-14\\text{ mm}$ where reflected illuminance is maximized with minimal shadow vignette.`;
+  }
+
   // Optical Fibre Numerical Aperture Calculations
   if (
     context?.experiment === "Optical Fibre Numerical Aperture" ||

@@ -203,6 +203,46 @@ export function generateLocalPhysicsResponse(userMessage = "", context = {}) {
 
   const msg = userMessage.toLowerCase();
 
+  // Colour Sensor & Tristimulus Colorimetry Queries
+  if (
+    context?.experiment === "Study of Colour Sensor" ||
+    msg.includes("colour sensor") ||
+    msg.includes("color sensor") ||
+    msg.includes("tcs3200") ||
+    msg.includes("tcs230") ||
+    msg.includes("photodiode") ||
+    msg.includes("tristimulus") ||
+    msg.includes("colorimetry") ||
+    msg.includes("spectral filter")
+  ) {
+    const d = context?.distanceMm || 12.0;
+    const filter = (context?.filterChannel || "clear").toUpperCase();
+    const fOut = context?.outputFrequencyKhz || 0;
+    const hex = context?.detectedHex || "#000000";
+    const fidelity = context?.matchFidelityPct || 0;
+
+    return `### Colour Sensor & Tristimulus Analysis by **${AI_NAME}**
+
+#### 1. Fundamental Optoelectronic Principles
+The **TCS3200** color sensor converts spectral light irradiance into a calibrated square-wave pulse train:
+$$I_{ph} = \\eta \\cdot \\frac{q P_{opt} \\lambda}{h c} \\implies f_{out} \\propto I_{ph}$$
+- **Micro-Filter Array**: $8 \\times 8$ silicon photodiode matrix (16 Red, 16 Green, 16 Blue, 16 Clear unfiltered).
+- **Pin Controls**:
+  - $S_2=0, S_3=0 \\implies \\text{Red Filter } (\\approx 650\\text{ nm})$
+  - $S_2=0, S_3=1 \\implies \\text{Blue Filter } (\\approx 470\\text{ nm})$
+  - $S_2=1, S_3=0 \\implies \\text{Clear / Broadband } (350-950\\text{ nm})$
+  - $S_2=1, S_3=1 \\implies \\text{Green Filter } (\\approx 540\\text{ nm})$
+
+#### 2. Live Laboratory Telemetry
+- **Standoff Distance ($d$)**: **${Number(d).toFixed(1)} mm**
+- **Filter Channel**: **${filter}** (Active Output $f_{out} = \\mathbf{${Number(fOut).toFixed(1)}\\text{ kHz}}$)
+- **Detected Color**: $\\mathbf{${hex}}$ (${fidelity}% Match Fidelity)
+
+#### 3. Normalized Chromaticity Coordinates
+$$r = \\frac{f_R}{f_R + f_G + f_B}, \\quad g = \\frac{f_G}{f_R + f_G + f_B}, \\quad b = \\frac{f_B}{f_R + f_G + f_B}$$
+*Physical Guidance*: Light irradiance follows the Inverse-Square Law ($E \\propto 1/d^2$). Optimal standoff distance is $10-14\\text{ mm}$.`;
+  }
+
   // Optical Fibre Numerical Aperture Queries
   if (
     context?.experiment === "Optical Fibre Numerical Aperture" ||

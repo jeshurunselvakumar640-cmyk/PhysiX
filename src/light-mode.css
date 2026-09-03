@@ -673,6 +673,28 @@ body.light-mode .challenge-status-tag.completed,
   font-weight: 700 !important;
 }
 
+body.light-mode .challenge-status-tag.locked,
+[data-theme="light"] .challenge-status-tag.locked {
+  background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+  border: 1px solid #f59e0b !important;
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .challenges-card.challenges-locked,
+[data-theme="light"] .challenges-card.challenges-locked {
+  border-color: #f59e0b !important;
+  background: linear-gradient(145deg, #ffffff 0%, #fffbeb 100%) !important;
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.12) !important;
+}
+
+body.light-mode .lock-indicator-badge,
+[data-theme="light"] .lock-indicator-badge {
+  background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+  border: 1px solid #f59e0b !important;
+  color: #92400e !important;
+}
+
 body.light-mode .challenge-badge-icon,
 [data-theme="light"] .challenge-badge-icon {
   background: linear-gradient(135deg, #e0f2fe, #bae6fd) !important;
@@ -756,6 +778,22 @@ body.light-mode .btn-obs-clear,
   background: linear-gradient(135deg, #ffffff, #f0f9ff) !important;
   border: 1.5px solid #bae6fd !important;
   color: #0369a1 !important;
+}
+
+body.light-mode .btn-obs-export,
+[data-theme="light"] .btn-obs-export {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+  border: 1.5px solid #93c5fd !important;
+  color: #1d4ed8 !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .btn-obs-export-pdf,
+[data-theme="light"] .btn-obs-export-pdf {
+  background: linear-gradient(135deg, #fff1f2, #ffe4e6) !important;
+  border: 1.5px solid #fca5a5 !important;
+  color: #be123c !important;
+  font-weight: 700 !important;
 }
 
 body.light-mode .obs-count-pill,
@@ -1046,6 +1084,160 @@ body.light-mode .of-formula-recap,
 
 body.light-mode .of-formula-recap code,
 [data-theme="light"] .of-formula-recap code {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
+  font-weight: 700 !important;
+}
+
+/* =====================================
+   EXPERIMENT 3: COLOUR SENSOR LIGHT MODE
+===================================== */
+body.light-mode #exp-colour-sensor-section,
+[data-theme="light"] #exp-colour-sensor-section {
+  background: transparent !important;
+}
+
+body.light-mode .cs-procedure-ribbon,
+[data-theme="light"] .cs-procedure-ribbon {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 6px 12px !important;
+}
+
+body.light-mode .cs-proc-step .step-num,
+[data-theme="light"] .cs-proc-step .step-num {
+  background: #fdf4ff !important;
+  border: 1.5px solid #f0abfc !important;
+  color: #9333ea !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .cs-bench-card,
+body.light-mode .cs-screen-panel,
+[data-theme="light"] .cs-bench-card,
+[data-theme="light"] .cs-screen-panel {
+  background: linear-gradient(135deg, #ffffff, #fdf4ff) !important;
+  border: 1.5px solid #f0abfc !important;
+}
+
+body.light-mode .cs-bench-hud-pill,
+[data-theme="light"] .cs-bench-hud-pill {
+  background: #fdf4ff !important;
+  border: 1px solid #f0abfc !important;
+  color: #7e22ce !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .cs-canvas-wrapper,
+body.light-mode .cs-target-canvas-wrapper,
+[data-theme="light"] .cs-canvas-wrapper,
+[data-theme="light"] .cs-target-canvas-wrapper {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+}
+
+body.light-mode .cs-hardware-deck,
+[data-theme="light"] .cs-hardware-deck {
+  background: linear-gradient(135deg, #fdf4ff, #fae8ff) !important;
+  border-top: 1.5px solid #f0abfc !important;
+}
+
+body.light-mode .cs-deck-label,
+[data-theme="light"] .cs-deck-label {
+  color: #7e22ce !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .cs-hw-switch,
+[data-theme="light"] .cs-hw-switch {
+  background: #ffffff !important;
+  border: 1.5px solid #f0abfc !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.08) !important;
+}
+
+body.light-mode .cs-swatch-chip,
+[data-theme="light"] .cs-swatch-chip {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body.light-mode .cs-swatch-chip:hover,
+[data-theme="light"] .cs-swatch-chip:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .cs-swatch-chip.active,
+[data-theme="light"] .cs-swatch-chip.active {
+  background: #fdf4ff !important;
+  border-color: #9333ea !important;
+  color: #7e22ce !important;
+  box-shadow: 0 0 10px rgba(147, 51, 234, 0.25) !important;
+}
+
+body.light-mode .cs-color-compare-box,
+[data-theme="light"] .cs-color-compare-box {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+}
+
+body.light-mode .cs-filter-control-group,
+body.light-mode .cs-scale-control-group,
+body.light-mode .cs-dist-control-group,
+[data-theme="light"] .cs-filter-control-group,
+[data-theme="light"] .cs-scale-control-group,
+[data-theme="light"] .cs-dist-control-group {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+}
+
+body.light-mode .cs-filter-btn,
+body.light-mode .cs-scale-btn,
+[data-theme="light"] .cs-filter-btn,
+[data-theme="light"] .cs-scale-btn {
+  background: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-mode .cs-filter-btn.active,
+[data-theme="light"] .cs-filter-btn.active {
+  background: #fdf4ff !important;
+  border-color: #9333ea !important;
+  color: #7e22ce !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .cs-scale-btn.active,
+[data-theme="light"] .cs-scale-btn.active {
+  background: #e0f2fe !important;
+  border-color: #0284c7 !important;
+  color: #0369a1 !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .cs-btn-step,
+body.light-mode .cs-preset-btn,
+[data-theme="light"] .cs-btn-step,
+[data-theme="light"] .cs-preset-btn {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-mode .cs-badge-filter,
+[data-theme="light"] .cs-badge-filter {
+  background: #fdf4ff !important;
+  border: 1px solid #f0abfc !important;
+  color: #7e22ce !important;
+}
+
+body.light-mode .cs-hex-code,
+[data-theme="light"] .cs-hex-code {
   background: #e0f2fe !important;
   color: #0369a1 !important;
   font-weight: 700 !important;
@@ -1855,9 +2047,11 @@ body.light-mode #btn-theory-tab-exp2.active,
 body.light-mode .theory-tab-btn.active svg,
 body.light-mode #btn-theory-tab-exp1.active svg,
 body.light-mode #btn-theory-tab-exp2.active svg,
+body.light-mode #btn-theory-tab-exp3.active svg,
 [data-theme="light"] .theory-tab-btn.active svg,
 [data-theme="light"] #btn-theory-tab-exp1.active svg,
-[data-theme="light"] #btn-theory-tab-exp2.active svg {
+[data-theme="light"] #btn-theory-tab-exp2.active svg,
+[data-theme="light"] #btn-theory-tab-exp3.active svg {
   color: #ffffff !important;
   filter: none !important;
 }
@@ -2001,4 +2195,70 @@ body.light-mode .lab-card-btn.btn-active-lab,
   background: linear-gradient(135deg, #0284c7, #2563eb) !important;
   color: #ffffff !important;
   border: none !important;
+}
+
+body.light-mode .profile-calendar-card,
+[data-theme="light"] .profile-calendar-card {
+  background: linear-gradient(145deg, #ffffff, #f0f9ff) !important;
+  border: 1.5px solid #bae6fd !important;
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.08) !important;
+}
+
+body.light-mode .calendar-nav-controls,
+[data-theme="light"] .calendar-nav-controls {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .cal-btn-nav,
+[data-theme="light"] .cal-btn-nav {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-mode .cal-month-title,
+[data-theme="light"] .cal-month-title {
+  color: #0f172a !important;
+}
+
+body.light-mode .cal-today-banner,
+[data-theme="light"] .cal-today-banner {
+  background: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+}
+
+body.light-mode .cal-day,
+[data-theme="light"] .cal-day {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .cal-day.current-month:hover,
+[data-theme="light"] .cal-day.current-month:hover {
+  background: #f0f9ff !important;
+  border-color: #38bdf8 !important;
+}
+
+body.light-mode .cal-day.other-month,
+[data-theme="light"] .cal-day.other-month {
+  background: #f8fafc !important;
+  opacity: 0.5 !important;
+}
+
+body.light-mode .cal-day-num,
+[data-theme="light"] .cal-day-num {
+  color: #334155 !important;
+}
+
+body.light-mode .cal-day.today,
+[data-theme="light"] .cal-day.today {
+  background: linear-gradient(145deg, #e0f2fe, #ede9fe) !important;
+  border: 2px solid #0284c7 !important;
+  box-shadow: 0 0 14px rgba(2, 132, 199, 0.25) !important;
+}
+
+body.light-mode .cal-day.today .cal-day-num,
+[data-theme="light"] .cal-day.today .cal-day-num {
+  color: #0369a1 !important;
 }

@@ -242,7 +242,17 @@
           <circle cx="12" cy="12" r="6"></circle>
           <circle cx="12" cy="12" r="2"></circle>
         </svg>
-        <span>Exp 2: Numerical Aperture of Optical Fibre</span>
+        <span>Exp 2: Optical Fibre NA</span>
+      </button>
+
+      <button type="button" id="btn-switch-exp-colour" class="exp-switch-btn" data-exp="colour-sensor">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="#f43f5e" stroke-width="2.5"></path>
+          <path d="M22 12a10 10 0 0 1-10 10" stroke="#10b981" stroke-width="2.5"></path>
+          <path d="M12 22a10 10 0 0 1-10-10" stroke="#3b82f6" stroke-width="2.5"></path>
+        </svg>
+        <span>Exp 3: Study of Colour Sensor</span>
         <span class="exp-pill-badge">NEW LAB</span>
       </button>
     </div>
@@ -605,6 +615,14 @@
               <polyline points="17 21 17 13 7 13 7 21"></polyline>
             </svg>
             Record Observation
+          </button>
+          <button type="button" id="btn-export-proj-csv" class="btn-obs-action btn-obs-export" title="Export Observations as CSV">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export CSV
+          </button>
+          <button type="button" id="btn-export-proj-pdf" class="btn-obs-action btn-obs-export-pdf" title="Export Official PhysiX Lab Report (PDF)">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Export PDF
           </button>
           <button type="button" id="btn-clear-observations" class="btn-obs-action btn-obs-clear" title="Clear All Recorded Observations">
             <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -977,6 +995,14 @@
             </div>
           </div>
           <div class="obs-actions-group">
+            <button type="button" id="of-btn-export-csv" class="btn-obs-action btn-obs-export" title="Export Readings as CSV">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button type="button" id="of-btn-export-pdf" class="btn-obs-action btn-obs-export-pdf" title="Export Official PhysiX Lab Report (PDF)">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Export PDF
+            </button>
             <button type="button" id="of-btn-clear-obs" class="btn-obs-action btn-obs-clear" title="Clear All Recorded Observations">
               <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
               Clear Observations
@@ -1034,6 +1060,488 @@
     </section>
 
   </div><!-- /#exp-optical-section -->
+
+  <!-- =====================================
+       EXPERIMENT 3: STUDY OF COLOUR SENSOR
+  ===================================== -->
+  <div id="exp-colour-sensor-section" class="exp-section-wrapper hidden">
+    
+    <!-- LABORATORY PROCEDURE GUIDE RIBBON -->
+    <section class="cs-setup-container">
+      <div class="cs-procedure-ribbon">
+        <div class="cs-proc-step" id="cs-step-indicator-1">
+          <span class="step-num">1</span>
+          <div class="step-details">
+            <strong>Power Supply</strong>
+            <span>Switch ON 5V Supply</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="cs-proc-step" id="cs-step-indicator-2">
+          <span class="step-num">2</span>
+          <div class="step-details">
+            <strong>Illuminator</strong>
+            <span>Activate White LEDs</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="cs-proc-step" id="cs-step-indicator-3">
+          <span class="step-num">3</span>
+          <div class="step-details">
+            <strong>Frequency Scaling</strong>
+            <span>Set S0/S1 Scale (20%)</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="cs-proc-step" id="cs-step-indicator-4">
+          <span class="step-num">4</span>
+          <div class="step-details">
+            <strong>Filter & Distance</strong>
+            <span>Select S2/S3 & Adjust d</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="cs-proc-step" id="cs-step-indicator-5">
+          <span class="step-num">5</span>
+          <div class="step-details">
+            <strong>Data Capture</strong>
+            <span>Measure f_out & Spectrum</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN DUAL-CANVAS SIMULATOR WORKSTATION -->
+    <main class="dashboard cs-dashboard">
+      
+      <!-- LEFT: COLORIMETRY HARDWARE BENCH SIMULATION VIEWPORT -->
+      <section class="simulation-card cs-bench-card">
+        <div class="simulation-top-bar">
+          <div class="current-lab-badge">
+            <span class="live-dot"></span>
+            <span>● TCS3200 OPTOELECTRONIC COLORIMETRY BENCH</span>
+          </div>
+
+          <div class="cs-bench-hud-pill">
+            <span>Precision Vernier Standoff Rail: 5.0 to 30.0 mm</span>
+          </div>
+        </div>
+
+        <div class="cs-canvas-wrapper">
+          <canvas id="cs-bench-canvas" width="800" height="380"></canvas>
+        </div>
+
+        <!-- HARDWARE CONTROLS & SPECIMEN PALETTE DECK -->
+        <div class="cs-hardware-deck">
+          <div class="cs-deck-section">
+            <span class="cs-deck-label">Trainer Hardware Switches</span>
+            <div class="cs-deck-buttons">
+              <button type="button" id="cs-btn-power-switch" class="cs-hw-switch cs-power-switch" title="Toggle Main Trainer 5V Power">
+                <span class="hw-switch-led" id="cs-led-power"></span>
+                <span class="hw-switch-text">Main Power</span>
+                <span class="hw-switch-state" id="cs-state-power">OFF</span>
+              </button>
+              <button type="button" id="cs-btn-illum-switch" class="cs-hw-switch cs-illum-switch" title="Toggle 4x White LED Spotlight Array">
+                <span class="hw-switch-led" id="cs-led-illum"></span>
+                <span class="hw-switch-text">White LEDs</span>
+                <span class="hw-switch-state" id="cs-state-illum">OFF</span>
+              </button>
+              <button type="button" id="cs-btn-toggle-mystery" class="cs-hw-switch cs-mystery-btn" title="Toggle Mystery Compound Detective Specimen">
+                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span class="hw-switch-text">Mystery Sample</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="cs-deck-section" style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span class="cs-deck-label">Calibrated Surface Color Swatches</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:11px; color:#94a3b8;">Custom Palette:</span>
+                <input type="color" id="cs-custom-color-input" value="#f59e0b" title="Pick Any Custom Color" style="width:24px; height:22px; padding:0; border:none; border-radius:4px; cursor:pointer; background:transparent;" />
+              </div>
+            </div>
+            <div class="cs-swatches-grid">
+              <button type="button" class="cs-swatch-chip active" data-swatch="red" style="--swatch-color:#ef4444;" title="Crimson Red Sample">
+                <span class="swatch-dot" style="background:#ef4444;"></span>
+                <span>Red</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="green" style="--swatch-color:#10b981;" title="Emerald Green Sample">
+                <span class="swatch-dot" style="background:#10b981;"></span>
+                <span>Green</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="blue" style="--swatch-color:#3b82f6;" title="Cobalt Blue Sample">
+                <span class="swatch-dot" style="background:#3b82f6;"></span>
+                <span>Blue</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="yellow" style="--swatch-color:#eab308;" title="Cadmium Yellow Sample">
+                <span class="swatch-dot" style="background:#eab308;"></span>
+                <span>Yellow</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="cyan" style="--swatch-color:#06b6d4;" title="Cyan Aqua Sample">
+                <span class="swatch-dot" style="background:#06b6d4;"></span>
+                <span>Cyan</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="magenta" style="--swatch-color:#d946ef;" title="Magenta Violet Sample">
+                <span class="swatch-dot" style="background:#d946ef;"></span>
+                <span>Magenta</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="orange" style="--swatch-color:#f97316;" title="Amber Orange Sample">
+                <span class="swatch-dot" style="background:#f97316;"></span>
+                <span>Orange</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="violet" style="--swatch-color:#8b5cf6;" title="Deep Violet Sample">
+                <span class="swatch-dot" style="background:#8b5cf6;"></span>
+                <span>Violet</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="white" style="--swatch-color:#f8fafc;" title="White Balance Calibration Card">
+                <span class="swatch-dot" style="background:#f8fafc; border:1px solid #94a3b8;"></span>
+                <span>White Ref</span>
+              </button>
+              <button type="button" class="cs-swatch-chip" data-swatch="black" style="--swatch-color:#1e293b;" title="Matte Black Calibration Card">
+                <span class="swatch-dot" style="background:#1e293b; border:1px solid #475569;"></span>
+                <span>Black Card</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cs-bench-footer">
+          <span class="cs-hint-text">
+            <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Interactive Controls: Click the Power/LED buttons, select color swatches, or drag the target stage along the millimeter rail.
+          </span>
+        </div>
+      </section>
+
+      <!-- RIGHT: DIGITAL OSCILLOSCOPE & PIN SELECTION DECK -->
+      <aside class="controls-panel cs-screen-panel">
+        
+        <div class="cs-screen-header">
+          <div class="cs-screen-title-group">
+            <h3>Digital Pulse Oscilloscope</h3>
+            <p>Real-time square-wave output frequency f_out</p>
+          </div>
+          <div id="cs-match-badge" class="cs-status-pill pill-offline">
+            Power Supply OFF
+          </div>
+        </div>
+
+        <!-- Digital CRT Oscilloscope Canvas -->
+        <div class="cs-target-canvas-wrapper">
+          <canvas id="cs-osc-canvas" width="380" height="300"></canvas>
+        </div>
+
+        <!-- Color Reconstruction Swatch Comparison -->
+        <div class="cs-color-compare-box">
+          <div class="cs-compare-item">
+            <span class="cs-compare-lbl">Target Swatch</span>
+            <div id="cs-preview-target" class="cs-compare-patch"></div>
+          </div>
+          <div class="cs-compare-arrow">➔</div>
+          <div class="cs-compare-item">
+            <span class="cs-compare-lbl">Sensor Detected</span>
+            <div id="cs-preview-recon" class="cs-compare-patch"></div>
+          </div>
+        </div>
+
+        <!-- Pin Controls: Filter Multiplexer S2, S3 -->
+        <div class="control-group cs-filter-control-group">
+          <div class="control-header">
+            <span class="control-name">Photodiode Filter Channel (S2, S3)</span>
+          </div>
+          <div class="cs-filter-buttons-grid">
+            <button type="button" class="cs-filter-btn" data-filter="red" title="Red Micro-Filters (S2=0, S3=0)">
+              <span class="f-dot" style="background:#ef4444;"></span>
+              <span>Red (0,0)</span>
+            </button>
+            <button type="button" class="cs-filter-btn" data-filter="blue" title="Blue Micro-Filters (S2=0, S3=1)">
+              <span class="f-dot" style="background:#3b82f6;"></span>
+              <span>Blue (0,1)</span>
+            </button>
+            <button type="button" class="cs-filter-btn active" data-filter="clear" title="Clear Broadband (S2=1, S3=0)">
+              <span class="f-dot" style="background:#f8fafc; border:1px solid #94a3b8;"></span>
+              <span>Clear (1,0)</span>
+            </button>
+            <button type="button" class="cs-filter-btn" data-filter="green" title="Green Micro-Filters (S2=1, S3=1)">
+              <span class="f-dot" style="background:#10b981;"></span>
+              <span>Green (1,1)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Frequency Scaling Controls (S0, S1) -->
+        <div class="control-group cs-scale-control-group">
+          <div class="control-header">
+            <span class="control-name">Frequency Scaling (S0, S1)</span>
+          </div>
+          <div class="cs-scale-buttons-grid">
+            <button type="button" class="cs-scale-btn" data-scale="100%" title="100% Full Frequency Scale (S0=1, S1=1)">100%</button>
+            <button type="button" class="cs-scale-btn active" data-scale="20%" title="20% Scale (Recommended) (S0=1, S1=0)">20%</button>
+            <button type="button" class="cs-scale-btn" data-scale="2%" title="2% Scale (S0=0, S1=1)">2%</button>
+            <button type="button" class="cs-scale-btn" data-scale="0%" title="Power Down Mode (S0=0, S1=0)">0%</button>
+          </div>
+        </div>
+
+        <!-- Precision Standoff Distance d Controls -->
+        <div class="control-group cs-dist-control-group">
+          <div class="control-header">
+            <span class="control-name">Standoff Distance (d)</span>
+            <strong id="cs-distance-val" class="val-dist">12.0 mm</strong>
+          </div>
+
+          <div class="cs-slider-row">
+            <button type="button" id="cs-btn-dec-dist" class="cs-btn-step" title="Decrease distance by 1.0 mm">-1.0</button>
+            <input type="range" id="cs-slider-distance" min="5.0" max="30.0" step="0.5" value="12.0" />
+            <button type="button" id="cs-btn-inc-dist" class="cs-btn-step" title="Increase distance by 1.0 mm">+1.0</button>
+          </div>
+
+          <!-- Quick Distance Presets -->
+          <div class="cs-presets-bar">
+            <button type="button" class="cs-preset-btn" data-dist="5.0">5mm</button>
+            <button type="button" class="cs-preset-btn" data-dist="8.0">8mm</button>
+            <button type="button" class="cs-preset-btn" data-dist="12.0">12mm</button>
+            <button type="button" class="cs-preset-btn" data-dist="15.0">15mm</button>
+            <button type="button" class="cs-preset-btn" data-dist="20.0">20mm</button>
+            <button type="button" class="cs-preset-btn" data-dist="25.0">25mm</button>
+          </div>
+        </div>
+
+        <!-- Action Buttons Deck -->
+        <div class="buttons cs-action-buttons">
+          <button type="button" id="cs-btn-record" class="launch-btn cs-record-btn" title="Capture and Record Current Spectral Reading">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Record Observation
+          </button>
+          <button type="button" id="cs-btn-auto-setup" class="reset-btn" title="Auto-Calibrate Apparatus to Defaults">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+            Auto Setup
+          </button>
+          <button type="button" id="cs-btn-view-results" class="clear-btn" title="View Comprehensive Laboratory Report">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            Lab Report
+          </button>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- REAL-TIME OPTOELECTRONIC TELEMETRY CARDS -->
+    <section class="results-container">
+      <div class="results-card">
+        
+        <div class="result-box card-distance">
+          <div class="result-icon icon-dist">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><line x1="2" y1="12" x2="22" y2="12"></line><polyline points="18 8 22 12 18 16"></polyline><polyline points="6 8 2 12 6 16"></polyline></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Standoff Distance (d)</span>
+            <span id="cs-hud-dist" class="result-val">12.0 mm</span>
+            <span class="result-sub">Optimal focal span: 10 - 14 mm</span>
+          </div>
+        </div>
+
+        <div class="result-box card-spot">
+          <div class="result-icon icon-spot">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Output Frequency (f_out)</span>
+            <span id="cs-hud-freq" class="result-val">0.0 kHz</span>
+            <span class="result-sub">f_out ∝ Photocurrent I_ph</span>
+          </div>
+        </div>
+
+        <div class="result-box card-na">
+          <div class="result-icon icon-na">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f43f5e" stroke-width="2"></path><path d="M22 12a10 10 0 0 1-10 10" stroke="#10b981" stroke-width="2"></path><path d="M12 22a10 10 0 0 1-10-10" stroke="#3b82f6" stroke-width="2"></path></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Reconstructed Color</span>
+            <span id="cs-hud-color" class="result-val">#000000</span>
+            <span class="result-sub">Synthesized from (f_R, f_G, f_B)</span>
+          </div>
+        </div>
+
+        <div class="result-box card-angle">
+          <div class="result-icon icon-angle">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          <div class="result-meta">
+            <span class="result-label">Spectral Match Fidelity</span>
+            <span id="cs-hud-fidelity" class="result-val">0%</span>
+            <span class="result-sub">1 - (ΔE_color / ΔE_max)</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- WORKSTATION: CHALLENGES & OBSERVATIONS -->
+    <section class="lab-workstation-container">
+      
+      <!-- 1. COLOUR SENSOR MASTERY CHALLENGES (NO QUIZ) -->
+      <div class="workstation-card challenges-card">
+        <div class="workstation-header">
+          <div class="workstation-title-group">
+            <div class="workstation-icon-glow challenge-icon-glow">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div>
+              <h3>Colour Sensor Mastery Missions</h3>
+              <p>Complete precision optoelectronics challenges to earn XP and level up your Student Dossier</p>
+            </div>
+          </div>
+          <div class="challenge-xp-badge">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <span id="cs-challenges-completed-count">0 / 3 Complete</span>
+            <span class="xp-separator">•</span>
+            <span id="cs-user-total-challenge-xp" class="xp-highlight">+0 XP</span>
+          </div>
+        </div>
+
+        <!-- 3 Challenges Grid -->
+        <div class="challenges-grid">
+          <!-- Challenge 1: Primary Triplet & White Balance Calibration -->
+          <div class="challenge-item" id="cs-ch-card-1">
+            <div class="challenge-badge-icon">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 6 17 15 7 15"></polygon></svg>
+            </div>
+            <div class="challenge-info">
+              <div class="challenge-title-row">
+                <h4>1. Primary Triplet & White Balance</h4>
+                <span class="challenge-reward-pill">+100 XP</span>
+              </div>
+              <p>Calibrate White Reference card and achieve ≥92% spectral fidelity across pure <strong>Red, Green, and Blue</strong> primary swatches.</p>
+              <div class="challenge-footer">
+                <span class="challenge-status-tag pending" id="cs-ch-tag-1">0 / 4 Calibrated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Challenge 2: Mystery Pigment Detective -->
+          <div class="challenge-item" id="cs-ch-card-2">
+            <div class="challenge-badge-icon">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <div class="challenge-info">
+              <div class="challenge-title-row">
+                <h4>2. Mystery Chemical Detective</h4>
+                <span class="challenge-reward-pill">+125 XP</span>
+              </div>
+              <p>Mount the Mystery Specimen, analyze its $f_R, f_G, f_B$ spectral frequency peaks, and identify the correct compound:</p>
+              <div class="challenge-footer" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:8px;">
+                <button type="button" class="btn-obs-action cs-mystery-guess-btn" data-guess="m1" style="height:26px; font-size:11px; padding:0 8px;">Chlorophyll (A)</button>
+                <button type="button" class="btn-obs-action cs-mystery-guess-btn" data-guess="m2" style="height:26px; font-size:11px; padding:0 8px;">Copper Sulfate (B)</button>
+                <button type="button" class="btn-obs-action cs-mystery-guess-btn" data-guess="m3" style="height:26px; font-size:11px; padding:0 8px;">Permanganate (C)</button>
+                <button type="button" class="btn-obs-action cs-mystery-guess-btn" data-guess="m4" style="height:26px; font-size:11px; padding:0 8px;">Curcumin (D)</button>
+                <span class="challenge-status-tag pending" id="cs-ch-tag-2" style="margin-left:auto;">Pending Analysis</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Challenge 3: Distance Invariance & Attenuation Sweep -->
+          <div class="challenge-item" id="cs-ch-card-3">
+            <div class="challenge-badge-icon">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            </div>
+            <div class="challenge-info">
+              <div class="challenge-title-row">
+                <h4>3. Inverse-Square Distance Sweep</h4>
+                <span class="challenge-reward-pill">+150 XP</span>
+              </div>
+              <p>Record observations across 3 distinct standoff zones to verify geometric light irradiance dropoff ($E \propto 1/d^2$):</p>
+              <div class="challenge-footer" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
+                <span class="of-sweep-zone" id="cs-zone-1">Near (d ≤ 8mm)</span>
+                <span class="of-sweep-zone" id="cs-zone-2">Optimal (10-15mm)</span>
+                <span class="of-sweep-zone" id="cs-zone-3">Far (d ≥ 22mm)</span>
+                <span class="challenge-status-tag pending" id="cs-ch-tag-3" style="width:100%; margin-top:4px;">0 / 3 Zones Logged</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. OBSERVATIONS LOGBOOK & DATA EXPORT -->
+      <div class="workstation-card observations-card">
+        <div class="workstation-header">
+          <div class="workstation-title-group">
+            <div class="workstation-icon-glow obs-icon-glow">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div>
+              <h3>Colour Sensor Experimental Observations</h3>
+              <p>Documented readings of standoff distance d, filter channels, output frequency, and reconstructed RGB</p>
+            </div>
+          </div>
+          <div class="obs-actions-group">
+            <button type="button" id="cs-btn-export-csv" class="btn-obs-action btn-obs-export" title="Export Observation Data to CSV">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button type="button" id="cs-btn-export-pdf" class="btn-obs-action btn-obs-export-pdf" title="Export Official PhysiX Lab Report (PDF)">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Export PDF
+            </button>
+            <button type="button" id="cs-btn-clear-obs" class="btn-obs-action btn-obs-clear" title="Clear All Recorded Observations">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear Observations
+            </button>
+            <span class="obs-count-pill" id="cs-obs-count-badge">0 Readings</span>
+          </div>
+        </div>
+
+        <!-- Summary Statistics Bar -->
+        <div class="of-stats-summary-bar">
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Mean Spectral Fidelity</span>
+            <strong id="cs-mean-fidelity" class="of-stat-val text-green">--</strong>
+          </div>
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Mean Output Frequency</span>
+            <strong id="cs-mean-freq" class="of-stat-val text-cyan">--</strong>
+          </div>
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Unique Swatches Evaluated</span>
+            <strong id="cs-total-swatches" class="of-stat-val text-purple">0</strong>
+          </div>
+          <div class="of-stat-item">
+            <span class="of-stat-lbl">Sensor Dynamic Range</span>
+            <strong class="of-stat-val">500 kHz (Full Scale)</strong>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="obs-table-wrapper">
+          <div id="cs-obs-empty" class="obs-empty-state">
+            <div class="obs-empty-icon">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <h4>No Colour Sensor Readings Recorded</h4>
+            <p>Mount a color swatch, configure the filter channel (S2, S3), and click <strong>"Record Observation"</strong> to log data.</p>
+          </div>
+
+          <table id="cs-obs-table" class="obs-table hidden">
+            <thead>
+              <tr>
+                <th>Reading #</th>
+                <th>Sample Swatch</th>
+                <th>Filter Channel</th>
+                <th>Output Frequency</th>
+                <th>Standoff Distance</th>
+                <th>Fidelity %</th>
+                <th>Detected Color</th>
+                <th>Logged At</th>
+              </tr>
+            </thead>
+            <tbody id="cs-obs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /#exp-colour-sensor-section -->
 
   <!-- =====================================
        EXPLORE LABS HUB MODAL
@@ -1214,20 +1722,20 @@
           <button class="lab-card-btn btn-preview">Preview & Formulas</button>
         </div>
 
-        <!-- 10. COLOUR SENSOR (EXP 9) -->
-        <div class="lab-card coming-lab" data-category="sensors" data-name="Study of Colour Sensor">
-          <div class="lab-status-badge status-coming">● COMING SOON</div>
+        <!-- 10. COLOUR SENSOR (ACTIVE LAB - EXP 3) -->
+        <div class="lab-card active-lab" data-category="sensors" data-exp-target="colour-sensor" data-name="Study of Colour Sensor">
+          <div class="lab-status-badge status-active">● ACTIVE SIMULATION</div>
           <div class="lab-icon">
             <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f43f5e" stroke-width="3"></path><path d="M22 12a10 10 0 0 1-10 10" stroke="#10b981" stroke-width="3"></path><path d="M12 22a10 10 0 0 1-10-10" stroke="#3b82f6" stroke-width="3"></path></svg>
           </div>
           <h3>9. Study of Colour Sensor</h3>
-          <p>Examine RGB spectral photodiode responses, colorimetry filters, and chromatic frequency output.</p>
+          <p>Examine RGB spectral photodiode responses, colorimetry filters, and chromatic frequency output with TCS3200.</p>
           <div class="lab-tags">
             <span>Optoelectronics</span>
             <span>RGB Sensor</span>
-            <span>Colorimetry</span>
+            <span>f_out ∝ I_ph</span>
           </div>
-          <button class="lab-card-btn btn-preview">Preview & Formulas</button>
+          <button class="lab-card-btn btn-active-lab">Launch Exp 3</button>
         </div>
 
         <!-- 11. NANOTECHNOLOGY SIMULATION (EXP 10) -->
@@ -1335,6 +1843,15 @@
           </svg>
           <span>Exp 2: Optical Fibre NA</span>
         </button>
+        <button type="button" class="theory-tab-btn" id="btn-theory-tab-exp3">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="#f43f5e" stroke-width="2"></path>
+            <path d="M22 12a10 10 0 0 1-10 10" stroke="#10b981" stroke-width="2"></path>
+            <path d="M12 22a10 10 0 0 1-10-10" stroke="#3b82f6" stroke-width="2"></path>
+          </svg>
+          <span>Exp 3: Colour Sensor</span>
+        </button>
       </div>
 
       <div class="theory-content">
@@ -1401,6 +1918,71 @@
               <li><strong>Total Internal Reflection (TIR):</strong> Light rays incident at angles greater than the critical angle θ_c = arcsin(n₂/n₁) undergo total reflection at the core-cladding boundary.</li>
               <li><strong>Acceptance Cone:</strong> The maximum cone of light rays incident on the fiber core face that will be guided through the fiber by TIR.</li>
               <li><strong>Diverging Output Spot:</strong> Upon exiting the fiber tip, the light beam diverges conically with half-angle θ_a, forming a circular spot of diameter W on a screen at distance L.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TAB 3: STUDY OF COLOUR SENSOR -->
+        <div id="theory-pane-exp3" class="theory-pane hidden">
+          <div class="formula-block">
+            <h4>Aim & Optoelectronic Principle</h4>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Aim:</strong> To investigate the characteristics of the TCS3200 optoelectronic colour sensor, analyze RGB photodiode spectral responsivities, verify light-to-frequency conversion, and compute normalized chromaticity coordinates.
+            </p>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Apparatus:</strong> TCS3200 color sensor module (8×8 photodiode array), 5V DC power supply, 4-element white LED spotlight array, calibrated color swatches (Red, Green, Blue, Yellow, Cyan, Magenta, White, Black), precision Vernier optical standoff rail (5-30 mm), digital oscilloscope/frequency counter.
+            </p>
+            
+            <div class="formula-grid">
+              <div class="formula-item">
+                <span class="f-name">Photocurrent Generation:</span>
+                <code>I_ph = η × (q P_opt λ) / (h c)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Light-to-Frequency Conversion:</span>
+                <code>f_out ∝ I_ph (Linear Square Wave)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Normalized Chromaticity Coordinates:</span>
+                <code>r = f_R / (f_R + f_G + f_B)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Inverse-Square Distance Law:</span>
+                <code>E(d) = E₀ × (d₀ / d)²</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="formula-block" style="margin-top:14px;">
+            <h4>TCS3200 Pin Multiplexer Truth Tables</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;">
+              <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:6px; border:1px solid #334155;">
+                <strong style="color:#38bdf8; font-size:12px;">Filter Selection (S2, S3):</strong>
+                <ul style="color:#cbd5e1; font-size:11.5px; line-height:1.6; margin-top:4px; padding-left:16px;">
+                  <li><strong>S2=0, S3=0:</strong> Red Filter (~650nm)</li>
+                  <li><strong>S2=0, S3=1:</strong> Blue Filter (~470nm)</li>
+                  <li><strong>S2=1, S3=0:</strong> Clear (Unfiltered 350-950nm)</li>
+                  <li><strong>S2=1, S3=1:</strong> Green Filter (~540nm)</li>
+                </ul>
+              </div>
+              <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:6px; border:1px solid #334155;">
+                <strong style="color:#a855f7; font-size:12px;">Frequency Scaling (S0, S1):</strong>
+                <ul style="color:#cbd5e1; font-size:11.5px; line-height:1.6; margin-top:4px; padding-left:16px;">
+                  <li><strong>S0=0, S1=0:</strong> Power Down (0 Hz)</li>
+                  <li><strong>S0=0, S1=1:</strong> 2% Scale (0.1 - 12 kHz)</li>
+                  <li><strong>S0=1, S1=0:</strong> 20% Scale (1 - 120 kHz, Optimal)</li>
+                  <li><strong>S0=1, S1=1:</strong> 100% Scale (5 - 600 kHz)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="formula-block" style="margin-top:14px;">
+            <h4>Theoretical Foundations & Colorimetry</h4>
+            <ul style="color:#94a3b8; font-size:12.5px; line-height:1.6; padding-left:18px;">
+              <li><strong>Photodiode Matrix:</strong> The TCS3200 contains an 8×8 array of 64 silicon photodiodes (16 Red, 16 Green, 16 Blue, and 16 Clear). Grouping them symmetrically eliminates non-uniform irradiance errors.</li>
+              <li><strong>White Balance Normalization:</strong> Raw frequencies $f_R, f_G, f_B$ are scaled against a standard white reference card ($R_{norm} = (f_R / f_{R,white}) \times 255$) to reconstruct true 24-bit sRGB color.</li>
+              <li><strong>Standoff Distance Effect:</strong> At close distances ($d &lt; 8\text{ mm}$), mechanical casing shadows reduce illumination. At larger distances ($d &gt; 15\text{ mm}$), reflected irradiance drops via $1/d^2$, making $d \approx 10-14\text{ mm}$ the ideal optical focus.</li>
             </ul>
           </div>
         </div>
@@ -1612,10 +2194,6 @@
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path><path d="M18 4H6v7a6 6 0 0 0 12 0V4z"></path></svg>
           Badges (<span id="badges-unlocked-count">0</span>/14)
         </button>
-        <button type="button" class="profile-tab-btn" data-tab="logs">
-          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-          Flight Logs (<span id="logs-count-badge">0</span>)
-        </button>
         <button type="button" class="profile-tab-btn" data-tab="security">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           Account & Security
@@ -1694,6 +2272,58 @@
               <div class="meta-row">
                 <span class="meta-key">Student Level & Rank</span>
                 <span id="p-meta-rank" class="meta-val highlight-purple">Level 1 • Newtonian Novice</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Laboratory Activity & Attendance Calendar Card -->
+          <div class="overview-section-card profile-calendar-card">
+            <div class="calendar-card-header">
+              <div class="section-card-title">
+                <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <h4>Laboratory Activity & Attendance Calendar</h4>
+              </div>
+
+              <!-- Month Navigation Controls -->
+              <div class="calendar-nav-controls">
+                <button type="button" id="cal-prev-btn" class="cal-btn-nav" title="Previous Month">
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <span id="cal-month-title" class="cal-month-title">September 2026</span>
+                <button type="button" id="cal-next-btn" class="cal-btn-nav" title="Next Month">
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+                <button type="button" id="cal-today-btn" class="cal-btn-today" title="Jump to Today">Today</button>
+              </div>
+            </div>
+
+            <!-- Today's Live Status Banner -->
+            <div class="cal-today-banner">
+              <div class="cal-today-pill">
+                <span class="cal-today-dot"></span>
+                <span id="cal-today-date-text">Today: Thursday, Sep 3, 2026</span>
+              </div>
+              <span class="cal-session-text">🟢 Active Simulation Lab Session</span>
+            </div>
+
+            <!-- Calendar Days Grid -->
+            <div class="profile-calendar-wrapper">
+              <div class="calendar-weekdays">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+              </div>
+              <div id="profile-calendar-days" class="calendar-days-grid">
+                <!-- Dynamically populated via JavaScript -->
               </div>
             </div>
           </div>
@@ -1839,44 +2469,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: FLIGHT LOGS HISTORY -->
-      <div id="tab-logs" class="profile-tab-pane hidden">
-        <div class="logs-header-bar">
-          <div>
-            <h4>Telemetry Flight Records</h4>
-            <p>Live kinematic data recorded from your recent cannon launches</p>
-          </div>
-          <button type="button" class="btn-clear-logs" id="btn-clear-flight-logs">
-            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            Clear Flight Records
-          </button>
-        </div>
-
-        <div class="flight-logs-table-wrapper">
-          <table class="flight-logs-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Time</th>
-                <th>Angle (θ)</th>
-                <th>Speed (v₀)</th>
-                <th>Height (h₀)</th>
-                <th>Gravity (g)</th>
-                <th>Range (R)</th>
-                <th>Apex (H)</th>
-                <th>Airtime</th>
-              </tr>
-            </thead>
-            <tbody id="flight-logs-tbody">
-              <tr>
-                <td colspan="9" class="empty-logs-msg">No simulation flight records yet. Fire the cannon to record telemetry!</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- TAB 5: ACCOUNT & SECURITY -->
+      <!-- TAB 4: ACCOUNT & SECURITY -->
       <div id="tab-security" class="profile-tab-pane hidden">
         <!-- Guest View inside Security Tab -->
         <div id="sec-guest-panel" class="security-panel">
@@ -2361,6 +2954,90 @@
         <div class="of-formula-recap">
           <strong>Governing Waveguide Equations:</strong>
           <code>NA = W / √(4L² + W²) = sin(θ_a) = √(n₁² - n₂²)</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================
+       COLOUR SENSOR RESULTS & REPORT MODAL
+  ===================================== -->
+  <div id="cs-results-modal" class="modal-overlay hidden">
+    <div class="modal-card modal-card-report">
+      <div class="modal-header">
+        <div>
+          <h2>
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="#f43f5e" stroke-width="2.5"></path>
+              <path d="M22 12a10 10 0 0 1-10 10" stroke="#10b981" stroke-width="2.5"></path>
+              <path d="M12 22a10 10 0 0 1-10-10" stroke="#3b82f6" stroke-width="2.5"></path>
+            </svg>
+            Experiment 3: Laboratory Performance Report
+          </h2>
+          <p>Study of Colour Sensor • Optoelectronic Spectral Colorimetry</p>
+        </div>
+        <button id="cs-btn-close-results" class="modal-close-btn" title="Close Report">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="of-report-content">
+        <!-- Performance Honors Banner -->
+        <div class="of-report-banner" style="border-left:4px solid #a855f7;">
+          <div class="of-report-badge-icon">
+            <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+          </div>
+          <div>
+            <span class="of-banner-sub">Performance Evaluation</span>
+            <h3 id="cs-res-grade">Virtuoso Colorimetrist (Grade A+)</h3>
+            <p>Experimental readings, spectral responsivity curves, and light-to-frequency conversion verified against TCS3200 optoelectronic photodiode physics.</p>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="of-report-metrics-grid">
+          <div class="of-rep-metric">
+            <span>Mean Spectral Fidelity</span>
+            <strong id="cs-res-fidelity" class="text-green">96%</strong>
+          </div>
+          <div class="of-rep-metric">
+            <span>Readings Logged</span>
+            <strong id="cs-res-count" class="text-cyan">0</strong>
+          </div>
+          <div class="of-rep-metric">
+            <span>Dynamic Frequency Range</span>
+            <strong class="text-purple">500 kHz</strong>
+          </div>
+          <div class="of-rep-metric">
+            <span>Total XP Earned</span>
+            <strong id="cs-res-xp" class="text-yellow">+0 XP</strong>
+          </div>
+        </div>
+
+        <!-- Readings Summary Table -->
+        <div class="of-report-table-section">
+          <h4>Observation Readings Recorded</h4>
+          <div class="of-report-table-wrapper">
+            <table class="obs-table">
+              <thead>
+                <tr>
+                  <th>Reading #</th>
+                  <th>Sample Swatch</th>
+                  <th>Filter Channel</th>
+                  <th>Output Frequency</th>
+                  <th>Spectral Fidelity</th>
+                </tr>
+              </thead>
+              <tbody id="cs-res-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Theoretical Summary Formula -->
+        <div class="of-formula-recap">
+          <strong>Governing Optoelectronic Equations:</strong>
+          <code>I_ph = η (q P_opt λ)/(hc) ⟹ f_out ∝ I_ph | r = f_R / (f_R + f_G + f_B) | E ∝ 1/d²</code>
         </div>
       </div>
     </div>

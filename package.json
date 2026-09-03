@@ -21,6 +21,8 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "firebase": "^11.0.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "matter-js": "^0.20.0"
   }
 }

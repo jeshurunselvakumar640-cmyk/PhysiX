@@ -411,5 +411,27 @@ export const BADGE_SVGS = {
   "badge-quiz-perfect": `<svg class="badge-vector-svg" viewBox="0 0 36 36" fill="none">
     <circle cx="18" cy="18" r="16" fill="rgba(245,158,11,0.25)" stroke="#f59e0b" stroke-width="1.8"/>
     <polygon points="18 8 21 14 28 15 23 20 24 27 18 23 12 27 13 20 8 15 15 14 18 8" fill="#fbbf24" stroke="#d97706" stroke-width="1.2"/>
+  </svg>`,
+
+  "badge-cs-tristimulus": `<svg class="badge-vector-svg" viewBox="0 0 36 36" fill="none">
+    <circle cx="18" cy="18" r="16" fill="rgba(168,85,247,0.2)" stroke="#a855f7" stroke-width="1.5"/>
+    <circle cx="14" cy="14" r="5" fill="rgba(239,68,68,0.7)" stroke="#ef4444" stroke-width="1.2"/>
+    <circle cx="22" cy="14" r="5" fill="rgba(16,185,129,0.7)" stroke="#10b981" stroke-width="1.2"/>
+    <circle cx="18" cy="22" r="5" fill="rgba(59,130,246,0.7)" stroke="#3b82f6" stroke-width="1.2"/>
+  </svg>`,
+
+  "badge-cs-mystery-detective": `<svg class="badge-vector-svg" viewBox="0 0 36 36" fill="none">
+    <circle cx="18" cy="18" r="16" fill="rgba(6,182,212,0.2)" stroke="#06b6d4" stroke-width="1.5"/>
+    <circle cx="16" cy="16" r="7" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="21.5" y1="21.5" x2="27" y2="27" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+    <polygon points="16 11 19 18 13 18" stroke="#f59e0b" stroke-width="1.2" fill="rgba(245,158,11,0.4)"/>
+  </svg>`,
+
+  "badge-cs-inverse-sweep": `<svg class="badge-vector-svg" viewBox="0 0 36 36" fill="none">
+    <circle cx="18" cy="18" r="16" fill="rgba(249,115,22,0.2)" stroke="#f97316" stroke-width="1.5"/>
+    <path d="M10 12 Q 16 22 26 24" stroke="#fb923c" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="10" cy="12" r="2.5" fill="#f97316"/>
+    <circle cx="18" cy="19" r="2.5" fill="#fb923c"/>
+    <circle cx="26" cy="24" r="2.5" fill="#fed7aa"/>
   </svg>`
 };
