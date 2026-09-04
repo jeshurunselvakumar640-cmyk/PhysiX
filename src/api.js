@@ -296,6 +296,138 @@ function generateClientPhysicsResponse(userMessage = "", context = {}) {
 
   const msg = userMessage.toLowerCase();
 
+  // Website & Lab Operations Guide
+  if (
+    msg.includes("how to use") ||
+    msg.includes("how do i use") ||
+    msg.includes("guide") ||
+    msg.includes("help") ||
+    msg.includes("operations manual") ||
+    msg.includes("how to run") ||
+    msg.includes("tutorial") ||
+    msg.includes("instructions")
+  ) {
+    if (context?.experiment === "Study of Colour Sensor" || msg.includes("colour") || msg.includes("color") || msg.includes("tcs3200")) {
+      return `### How to Operate Experiment 3: Study of Colour Sensor (TCS3200)
+
+#### Step-by-Step Operating Instructions:
+1. **Turn On Main Power**: Click the **Main Power** button (\`#cs-btn-power-switch\`) to energize the TCS3200 converter IC.
+2. **Turn On White LEDs**: Click the **White LEDs** button (\`#cs-btn-illum-switch\`) to turn on the 4x spotlight ring for reflective specimen illumination.
+3. **Select Color Swatch**: Click any calibrated color chip (**Red**, **Green**, **Blue**, **Yellow**, **Orange**, **Purple**, **Cyan**, **Magenta**, **White**, **Black**) or choose a custom shade.
+4. **Select S2/S3 Filter Channel**:
+   - **RED (0,0)**: Measures red spectral irradiance ($\\lambda \\approx 650\\text{ nm}$).
+   - **GREEN (1,1)**: Measures green spectral irradiance ($\\lambda \\approx 540\\text{ nm}$).
+   - **BLUE (0,1)**: Measures blue spectral irradiance ($\\lambda \\approx 470\\text{ nm}$).
+   - **CLEAR (1,0)**: Measures unfiltered broadband irradiance ($350-950\\text{ nm}$).
+5. **Adjust Standoff Distance ($d$)**: Drag the slider between **5.0 mm** and **30.0 mm**. (Optimal reading occurs at **10.0–14.0 mm**).
+6. **Record & Export**: Click **Record Reading** to save the observation, then click **Export CSV** or **Export PDF Report** to download certified results.
+
+#### Challenges:
+- Click **Mystery Sample** (\`#cs-btn-toggle-mystery\`) to launch the **Spectroscopic Detective Challenge** and decode unknown specimen colors for **300 XP**!`;
+    }
+
+    if (context?.experiment === "Optical Fibre Numerical Aperture" || msg.includes("optical") || msg.includes("fiber") || msg.includes("fibre") || msg.includes("laser")) {
+      return `### How to Operate Experiment 2: Numerical Aperture of an Optical Fibre
+
+#### Step-by-Step Operating Instructions:
+1. **Turn On Main Power**: Click the **Main Power** button (\`#of-btn-power-switch\`) in the Trainer Hardware Deck. The green LED will turn ON.
+2. **Turn On Laser Source**: Click the **Laser Source** button (\`#of-btn-laser-switch\`). The red LED will illuminate, transmitting laser light through the fiber core.
+3. **Select Wavelength**: Choose a laser wavelength chip: **650nm (Red)**, **532nm (Green)**, **405nm (Violet)**, or **850nm (IR)**.
+4. **Set Screen Distance ($L$)**: Adjust the **Screen Distance (L)** slider between **1.0 cm** and **10.0 cm** (or click presets: **2.0 cm**, **4.0 cm**, **6.0 cm**, **8.0 cm**, **10.0 cm**).
+5. **Measure Spot Diameter ($W$)**: Observe the expanding light circle on the screen and calculate:
+   $$NA = \\frac{W}{\\sqrt{4L^2 + W^2}}, \\quad \\theta_a = \\arcsin(NA)$$
+6. **Record & Export**: Click **Record Reading** to log telemetry, then click **Export CSV** or **Export PDF Report** to download your lab report.
+
+#### Challenges:
+- Click **Start Rapid Calibration** to attempt the **40s Rapid Calibration Challenge** and earn **250 XP** & the *Optics Precisionist* badge!`;
+    }
+
+    return `### How to Operate Experiment 1: 2D Projectile Motion Virtual Lab
+
+#### Step-by-Step Operating Instructions:
+1. **Set Initial Velocity ($v_0$)**: Drag the velocity slider between **10.0 m/s** and **50.0 m/s** (or use the \`−\` / \`+\` step buttons).
+2. **Set Launch Angle ($\\theta$)**: Set the launch angle from **0.0°** (flat horizontal shot) up to **90.0°** (vertical shot).
+3. **Set Platform Height ($h_0$)**: Adjust the cannon cliff height from **0.0 m** to **100.0 m**.
+4. **Select Gravity ($g$)**: Choose **Earth** ($9.81\\text{ m/s}^2$), **Moon** ($1.62\\text{ m/s}^2$), **Mars** ($3.71\\text{ m/s}^2$), or **Jupiter** ($24.79\\text{ m/s}^2$).
+5. **Fire Cannon**: Click the green **LAUNCH PROJECTILE** button or press the **Spacebar** on your keyboard.
+6. **Record & Export**: Click **+ Record Observation** to store flight telemetry, or click **Export CSV** / **Export PDF Report** to export certified data.
+7. **Reset**: Click **RESET** (or press **[R]**) to clear trajectory trails.
+
+#### Challenges:
+- Toggle **Target Challenge Mode** to spawn a landing target and calculate the exact angle needed to score a bullseye for **Student XP**!`;
+  }
+
+  // Export Guidance Query
+  if (msg.includes("export") || msg.includes("pdf") || msg.includes("csv") || msg.includes("download report") || msg.includes("save data")) {
+    return `### Telemetry Data Export Guide by **Vectra AI**
+
+#### 1. Export CSV (Spreadsheet Logbook)
+- Click the **Export CSV** button in the Observation Logbook card.
+- Automatically compiles all recorded simulation trials into a downloadable \`.csv\` file containing exact numerical parameters (Velocity, Angle, Distance, Output Frequencies, Calculated Values, and Time Stamps).
+- Open directly in Microsoft Excel, Google Sheets, or MATLAB for further statistical analysis.
+
+#### 2. Export PDF Report (Certified Laboratory Report)
+- Click the **Export PDF Report** button.
+- Generates a certified laboratory report including:
+  * Student Name, ID, Course, and Timestamp metadata.
+  * KPI summary cards ($v_0, \\theta, h_0, g, H_{max}, R, T$ or $NA, \\theta_a, d, f_{out}$).
+  * Analytical governing physics formulas.
+  * Formatted tabular log of all recorded observations.
+- Ready for printing or academic submission!`;
+  }
+
+  // Challenges, Game Mode, XP & Badges Query
+  if (
+    msg.includes("challenge") ||
+    msg.includes("game mode") ||
+    msg.includes("xp") ||
+    msg.includes("badge") ||
+    msg.includes("gamification") ||
+    msg.includes("quiz") ||
+    msg.includes("mystery")
+  ) {
+    return `### PhysiX Gamification, Challenges & XP Guide
+
+#### 1. Target Challenge Mode (Experiment 1: Projectile Motion)
+- **Objective**: Hit a randomly placed landing pad at distance $d$.
+- **Formula**: Calculate required angle $\\theta$ via $\\sin(2\\theta) = \\frac{d \\cdot g}{v_0^2}$.
+- **Reward**: Bonus Student XP and unlocks the *Bullseye Ace* achievement badge.
+
+#### 2. 40s Rapid Calibration Challenge (Experiment 2: Optical Fibre)
+- **Objective**: Record 4 distinct distance readings ($L$) with $<2\\%$ experimental error within 40 seconds.
+- **Reward**: **250 Student XP** and the *Optics Precisionist* badge.
+
+#### 3. Spectroscopic Detective Challenge (Experiment 3: TCS3200 Colour Sensor)
+- **Objective**: Click **Mystery Sample** to load an unknown chemical specimen. Analyze output frequencies across Red, Green, Blue, and Clear filters to determine the exact color hex code.
+- **Reward**: **300 Student XP** and the *Spectra Master* badge.
+
+#### 4. Physics Quiz (10 Questions)
+- Click **Physics Quiz [10Q]** in the top navigation bar to test your conceptual knowledge across mechanics, wave optics, and sensor electronics to level up your student rank from *Apprentice* to *Master Physicist*!`;
+  }
+
+  // Machine Turn-On / Hardware Switch Specific Queries
+  if (
+    msg.includes("turn on") ||
+    msg.includes("power switch") ||
+    msg.includes("turn on machine") ||
+    msg.includes("switch on") ||
+    msg.includes("start machine") ||
+    msg.includes("laser switch") ||
+    msg.includes("led switch")
+  ) {
+    return `### Hardware Power-On Procedures
+
+#### Experiment 2: Optical Bench
+1. **Main Power**: Click **Main Power** (\`#of-btn-power-switch\`) to enable the 5V DC power bus. The green LED will glow.
+2. **Laser Source**: Click **Laser Source** (\`#of-btn-laser-switch\`) to activate the coherent diode beam. Red LED glows.
+*Note*: The laser diode cannot fire if Main Power is turned off.
+
+#### Experiment 3: TCS3200 Colour Sensor
+1. **Main Power**: Click **Main Power** (\`#cs-btn-power-switch\`) to supply 5V DC to the internal photodiode array and pulse oscillator.
+2. **White LEDs**: Click **White LEDs** (\`#cs-btn-illum-switch\`) to activate the 4-LED spotlight ring for reflective specimen illumination.
+*Note*: The LED array requires Main Power to be active.`;
+  }
+
   // Colour Sensor & Tristimulus Colorimetry Calculations
   if (
     context?.experiment === "Study of Colour Sensor" ||
@@ -306,7 +438,9 @@ function generateClientPhysicsResponse(userMessage = "", context = {}) {
     msg.includes("photodiode") ||
     msg.includes("tristimulus") ||
     msg.includes("colorimetry") ||
-    msg.includes("spectral filter")
+    msg.includes("spectral filter") ||
+    msg.includes("swatch") ||
+    msg.includes("scaling")
   ) {
     const d = Number(context?.distanceMm) || 12.0;
     const filter = (context?.filterChannel || "clear").toUpperCase();
@@ -324,11 +458,16 @@ function generateClientPhysicsResponse(userMessage = "", context = {}) {
 The **TCS3200** color sensor converts spectral light irradiance into a digital square-wave pulse train:
 $$I_{ph} = \\eta \\cdot \\frac{q P_{opt} \\lambda}{h c} \\implies f_{out} \\propto I_{ph}$$
 - **Micro-Filter Array**: $8 \\times 8$ photodiode matrix (16 Red, 16 Green, 16 Blue, 16 Clear unfiltered silicon photodiodes).
-- **Control Multiplexer**:
+- **Control Multiplexer (S2, S3)**:
   - $S_2=0, S_3=0 \\implies \\text{Red Filter } (\\lambda \\approx 650\\text{ nm})$
   - $S_2=0, S_3=1 \\implies \\text{Blue Filter } (\\lambda \\approx 470\\text{ nm})$
   - $S_2=1, S_3=0 \\implies \\text{Clear / Unfiltered Broadband } (350-950\\text{ nm})$
   - $S_2=1, S_3=1 \\implies \\text{Green Filter } (\\lambda \\approx 540\\text{ nm})$
+- **Frequency Scaling (S0, S1)**:
+  - $S_0=1, S_1=1 \\implies 100\\% \\text{ Frequency Scale}$
+  - $S_0=1, S_1=0 \\implies 20\\% \\text{ Frequency Scale}$
+  - $S_0=0, S_1=1 \\implies 2\\% \\text{ Frequency Scale}$
+  - $S_0=0, S_1=0 \\implies \\text{Power Down}$
 
 #### 2. Live Laboratory Telemetry
 - **Standoff Distance ($d$)**: **${d.toFixed(1)} mm**

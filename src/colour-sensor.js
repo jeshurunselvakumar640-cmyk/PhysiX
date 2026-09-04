@@ -996,27 +996,33 @@ export function createColourSensorExperiment(callbacks = {}) {
     calculateSensorPhysics();
 
     // 1. Hardware State Text & LEDs
+    const btnPower = document.getElementById("cs-btn-power-switch");
     const ledPower = document.getElementById("cs-led-power");
     const statePower = document.getElementById("cs-state-power");
     if (ledPower && statePower) {
       if (state.powerSupplyOn) {
-        ledPower.classList.add("active");
+        ledPower.className = "hw-switch-led led-green active";
         statePower.textContent = "ON";
+        btnPower?.classList.add("active", "power-on");
       } else {
-        ledPower.classList.remove("active");
+        ledPower.className = "hw-switch-led led-off";
         statePower.textContent = "OFF";
+        btnPower?.classList.remove("active", "power-on");
       }
     }
 
+    const btnIllum = document.getElementById("cs-btn-illum-switch");
     const ledIllum = document.getElementById("cs-led-illum");
     const stateIllum = document.getElementById("cs-state-illum");
     if (ledIllum && stateIllum) {
       if (state.ledArrayActive && state.powerSupplyOn) {
-        ledIllum.classList.add("active");
+        ledIllum.className = "hw-switch-led led-white active";
         stateIllum.textContent = "ON";
+        btnIllum?.classList.add("active", "illum-on");
       } else {
-        ledIllum.classList.remove("active");
+        ledIllum.className = "hw-switch-led led-off";
         stateIllum.textContent = "OFF";
+        btnIllum?.classList.remove("active", "illum-on");
       }
     }
 
@@ -1160,7 +1166,7 @@ export function createColourSensorExperiment(callbacks = {}) {
 
     tbody.innerHTML = state.observations
       .map(
-        (obs) => `
+        (obs, idx) => `
         <tr>
           <td><strong>#${obs.id}</strong></td>
           <td>
@@ -1175,10 +1181,36 @@ export function createColourSensorExperiment(callbacks = {}) {
           <td><strong style="color:#10b981;">${obs.fidelityPct}%</strong></td>
           <td><code class="cs-hex-code">${obs.reconHex}</code></td>
           <td style="color:#94a3b8; font-size:11px;">${obs.timestamp}</td>
+          <td style="text-align:center;">
+            <button type="button" class="btn-delete-obs cs-btn-delete-obs" data-del-cs-obs="${idx}" title="Delete Reading #${obs.id}">
+              <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
+          </td>
         </tr>
       `
       )
       .join("");
+
+    if (!tbody._deleteListenerAttached) {
+      tbody._deleteListenerAttached = true;
+      tbody.addEventListener("click", (e) => {
+        const delBtn = e.target.closest("[data-del-cs-obs]");
+        if (delBtn) {
+          const idx = parseInt(delBtn.getAttribute("data-del-cs-obs"), 10);
+          if (!isNaN(idx) && idx >= 0 && idx < state.observations.length) {
+            const deleted = state.observations.splice(idx, 1)[0];
+            saveState();
+            renderObservationsTable();
+            if (showToast) showToast(`Colour Sensor Reading #${deleted.id} deleted.`);
+          }
+        }
+      });
+    }
 
     updateObservationStats();
   }
@@ -1215,6 +1247,15 @@ export function createColourSensorExperiment(callbacks = {}) {
   }
 
   function exportObservationsCsv() {
+    if (isUserAuthenticated && !isUserAuthenticated()) {
+      if (openLoginModal) {
+        openLoginModal("Exporting Colour Sensor observations to CSV requires account sign-in. Sign in to download your dataset!");
+      } else if (showToast) {
+        showToast("Please sign in to export observations to CSV.");
+      }
+      return;
+    }
+
     if (state.observations.length === 0) {
       if (showToast) showToast("No observations to export.");
       return;
@@ -1239,6 +1280,15 @@ export function createColourSensorExperiment(callbacks = {}) {
   }
 
   function exportObservationsPdf() {
+    if (isUserAuthenticated && !isUserAuthenticated()) {
+      if (openLoginModal) {
+        openLoginModal("Generating official Colour Sensor PDF lab reports requires account sign-in. Sign in to download your certified report!");
+      } else if (showToast) {
+        showToast("Please sign in to download PDF reports.");
+      }
+      return;
+    }
+
     if (state.observations.length === 0) {
       if (showToast) showToast("No colour sensor readings recorded yet. Record observations first!");
       return;
@@ -1399,14 +1449,14 @@ export function createColourSensorExperiment(callbacks = {}) {
   }
 
   function updateChallengeCounters() {
-    const isAuth = isUserAuthenticated ? isUserAuthenticated() : true;
+    const isAuth = typeof isUserAuthenticated === "function" ? isUserAuthenticated() : true;
     const challengesCard = document.querySelector("#exp-colour-sensor-section .challenges-card");
 
     if (!isAuth) {
       challengesCard?.classList.add("challenges-locked");
       const countEl = document.getElementById("cs-challenges-completed-count");
       const xpEl = document.getElementById("cs-user-total-challenge-xp");
-      if (countEl) countEl.innerHTML = `<span class="lock-indicator-badge">🔒 Sign In Required</span>`;
+      if (countEl) countEl.innerHTML = `<span class="lock-indicator-badge"><svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Sign In Required</span>`;
       if (xpEl) xpEl.textContent = "+375 XP Available";
 
       const tag1 = document.getElementById("cs-ch-tag-1");
@@ -1764,6 +1814,7 @@ export function createColourSensorExperiment(callbacks = {}) {
       bindEvents();
       updateDomHud();
       renderObservationsTable();
+      updateChallengeCounters();
 
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
       animationFrameId = requestAnimationFrame(animationLoop);

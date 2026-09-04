@@ -1009,9 +1009,36 @@ export function createOpticalFibreExperiment(callbacks = {}) {
             <td><strong style="color:#06b6d4;">${obs.na.toFixed(4)}</strong></td>
             <td><span style="color:#c4b5fd;">${obs.theta.toFixed(1)}°</span></td>
             <td style="color:#94a3b8; font-size:11px;">${obs.time}</td>
+            <td style="text-align:center;">
+              <button type="button" class="btn-delete-obs of-btn-delete-obs" data-del-of-obs="${idx}" title="Delete Reading #${obs.reading}">
+                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </td>
           </tr>
         `;
       }).join("");
+
+      if (!tbody._deleteListenerAttached) {
+        tbody._deleteListenerAttached = true;
+        tbody.addEventListener("click", (e) => {
+          const delBtn = e.target.closest("[data-del-of-obs]");
+          if (delBtn) {
+            const idx = parseInt(delBtn.getAttribute("data-del-of-obs"), 10);
+            if (!isNaN(idx) && idx >= 0 && idx < state.observations.length) {
+              const deleted = state.observations.splice(idx, 1)[0];
+              state.observations.forEach((o, i) => { o.reading = i + 1; });
+              saveState();
+              renderObservationsDom();
+              if (showToast) showToast(`Optical Fibre Reading #${deleted.reading} deleted.`);
+            }
+          }
+        });
+      }
     }
 
     const meanNA = sumNA / state.observations.length;
@@ -1026,6 +1053,15 @@ export function createOpticalFibreExperiment(callbacks = {}) {
   }
 
   function exportObservationsCsv() {
+    if (isUserAuthenticated && !isUserAuthenticated()) {
+      if (openLoginModal) {
+        openLoginModal("Exporting Optical Fibre observations to CSV requires account sign-in. Sign in to download your dataset!");
+      } else if (showToast) {
+        showToast("Please sign in to export observations to CSV.");
+      }
+      return;
+    }
+
     if (state.observations.length === 0) {
       if (showToast) showToast("No optical fibre readings recorded yet. Record observations first!");
       return;
@@ -1050,6 +1086,15 @@ export function createOpticalFibreExperiment(callbacks = {}) {
   }
 
   function exportObservationsPdf() {
+    if (isUserAuthenticated && !isUserAuthenticated()) {
+      if (openLoginModal) {
+        openLoginModal("Generating official Optical Fibre PDF lab reports requires account sign-in. Sign in to download your certified report!");
+      } else if (showToast) {
+        showToast("Please sign in to download PDF reports.");
+      }
+      return;
+    }
+
     if (state.observations.length === 0) {
       if (showToast) showToast("No optical fibre readings recorded yet. Record observations first!");
       return;

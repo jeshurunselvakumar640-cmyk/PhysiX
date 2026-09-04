@@ -68,21 +68,21 @@
       "userId": "HP1qmVz6DsUNQHKEWSlBFlY9CuT2",
       "profile": {
         "name": "Jeshurun Selvakumar",
-        "avatar": "astronaut",
+        "avatar": "lightning",
         "handle": "@jeshurunselvakumar",
         "edu": "Undergraduate Student",
         "occ": "SIES GST",
         "interests": "2D Kinematics, Planetary Gravity, Orbital Dynamics",
         "bio": "Physics Lover",
         "createdAt": "2026-09-01T13:42:29.142Z",
-        "updatedAt": "2026-09-03T16:55:42.412Z"
+        "updatedAt": "2026-09-04T11:37:24.537Z"
       },
       "telemetry": {
-        "totalLaunches": 29,
+        "totalLaunches": 71,
         "maxRange": 68.38942729251447,
         "maxHeight": 57.05405405405405,
         "maxVelocity": 50,
-        "totalAirtime": 82.57962189648909,
+        "totalAirtime": 88.23647614598146,
         "targetHits": 0,
         "planetsUsed": {
           "Earth": 15,
@@ -92,6 +92,30 @@
         }
       },
       "flightLogs": [
+        {
+          "id": 14,
+          "createdAt": "2026-09-04T11:33:50.960Z",
+          "time": "17:03:50",
+          "angle": 45,
+          "v0": 20,
+          "h0": 0,
+          "g": 10,
+          "range": 40.00000000000001,
+          "apex": 10.000000000000002,
+          "airtime": 2.8284271247461903
+        },
+        {
+          "id": 13,
+          "createdAt": "2026-09-04T11:33:03.441Z",
+          "time": "17:03:03",
+          "angle": 45,
+          "v0": 20,
+          "h0": 0,
+          "g": 10,
+          "range": 40.00000000000001,
+          "apex": 10.000000000000002,
+          "airtime": 2.8284271247461903
+        },
         {
           "id": 12,
           "createdAt": "2026-09-03T17:22:20.848Z",
@@ -248,9 +272,12 @@
         "badge-of-spot-match",
         "badge-cs-mystery-detective",
         "badge-high-velocity",
-        "badge-multi-planet"
+        "badge-multi-planet",
+        "badge-cs-inverse-sweep",
+        "badge-quiz-pass",
+        "badge-quiz-perfect"
       ],
-      "quizHighScore": 0,
+      "quizHighScore": 10,
       "observations": [
         {
           "id": 1788456142354,
@@ -456,7 +483,7 @@
           "time": "22:32:58"
         }
       ],
-      "bonusXp": 4375
+      "bonusXp": 5675
     }
   }
 }

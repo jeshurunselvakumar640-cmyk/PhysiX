@@ -8,6 +8,13 @@ import {
   updatePassword,
   onAuthStateChanged
 } from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc
+} from "firebase/firestore";
 
 // Firebase Configuration from User Project
 const firebaseConfig = {
@@ -23,10 +30,21 @@ const firebaseConfig = {
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+let db = null;
+try {
+  db = getFirestore(app);
+} catch (e) {
+  console.warn("Firestore initialization notice:", e);
+}
 
 export {
   app,
   auth,
+  db,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,

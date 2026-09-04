@@ -17,6 +17,21 @@ import { createOpticalFibreExperiment } from "./optical-fibre.js";
 import { createColourSensorExperiment } from "./colour-sensor.js";
 import { initSplashScreen } from "./splash.js";
 import { generateLabReportPdf } from "./pdf-export.js";
+import { initContentProtection } from "./content-protection.js";
+import {
+  initCelebrations,
+  showLevelUpCelebration,
+  showChallengeGraffiti,
+  showStreakLostAnimation,
+  showStreakMilestoneAnimation,
+  triggerConfetti,
+  triggerFireConfetti
+} from "./celebrations.js";
+import {
+  processUserDailyStreak,
+  getStoredUserStreak,
+  getNextStreakMilestone
+} from "./streak.js";
 
 const {
   Engine,
@@ -230,8 +245,23 @@ const btnOpenBadgesNav = document.getElementById("btn-open-badges-nav");
 const navBadgesCountBadge = document.getElementById("nav-badges-count-badge");
 
 const userProfileBtn = document.getElementById("user-profile-btn");
-const btnOpenProfileNav = document.getElementById("btn-open-profile-nav");
 const btnCloseProfile = document.getElementById("btn-close-profile");
+
+// Active Experiment State
+let activeExperimentId = "projectile";
+let opticalExperimentInstance = null;
+let colourSensorExperimentInstance = null;
+
+// Help & Interactive User Guide DOM Elements
+const helpModal = document.getElementById("help-modal");
+const btnOpenHelp = document.getElementById("btn-open-help");
+const btnCloseHelp = document.getElementById("btn-close-help");
+const btnHelpExp1 = document.getElementById("btn-help-tab-exp1");
+const btnHelpExp2 = document.getElementById("btn-help-tab-exp2");
+const btnHelpExp3 = document.getElementById("btn-help-tab-exp3");
+const helpPaneExp1 = document.getElementById("help-pane-exp1");
+const helpPaneExp2 = document.getElementById("help-pane-exp2");
+const helpPaneExp3 = document.getElementById("help-pane-exp3");
 
 // Vectra AI DOM Elements
 const aiCopilotModal = document.getElementById("ai-copilot-modal");
@@ -1321,6 +1351,8 @@ function addStudentXp(amount, reason) {
   // Sync to Express backend
   api.addXp(getActiveUserId(), amount, reason).catch(() => {});
 
+  // Trigger celebratory cyber graffiti banner and confetti shower
+  showChallengeGraffiti(reason || "Laboratory Challenge Completed", amount);
   showToast(`+${amount} XP Earned: ${reason}!`);
   loadUserProfile();
   renderChallenges();
@@ -1517,8 +1549,40 @@ function renderObservationsTable() {
         <td style="color:#67e8f9; font-weight:700;">${Number(obs.range).toFixed(2)} m</td>
         <td style="color:#6ee7b7;">${Number(obs.impactSpeed || obs.v0).toFixed(2)} m/s</td>
         <td style="color:#94a3b8; font-size:11px;">${obs.time || 'Logged'}</td>
+        <td style="text-align:center;">
+          <button type="button" class="btn-delete-obs" data-del-obs="${idx}" title="Delete Observation #${obsList.length - idx}">
+            <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </button>
+        </td>
       </tr>
     `).join("");
+  }
+}
+
+// Delegate individual observation delete clicks
+observationsTbody?.addEventListener("click", (e) => {
+  const delBtn = e.target.closest("[data-del-obs]");
+  if (delBtn) {
+    const idx = parseInt(delBtn.getAttribute("data-del-obs"), 10);
+    if (!isNaN(idx)) {
+      deleteObservation(idx);
+    }
+  }
+});
+
+function deleteObservation(idx) {
+  const obsList = getStoredObservations();
+  if (idx >= 0 && idx < obsList.length) {
+    const runNum = obsList.length - idx;
+    obsList.splice(idx, 1);
+    saveStoredObservations(obsList);
+    renderObservationsTable();
+    showToast(`Observation #${runNum} deleted successfully.`);
   }
 }
 
@@ -1586,6 +1650,11 @@ function clearAllObservations() {
 }
 
 function exportProjectileCsv() {
+  if (!isUserAuthenticated()) {
+    openLoginModal("Exporting experimental observations to CSV requires account sign-in. Sign in to download your laboratory dataset!");
+    return;
+  }
+
   const obsList = getStoredObservations();
   if (obsList.length === 0) {
     showToast("No flight observations recorded yet. Launch and record observations first!");
@@ -1611,6 +1680,11 @@ function exportProjectileCsv() {
 }
 
 function exportProjectilePdf() {
+  if (!isUserAuthenticated()) {
+    openLoginModal("Generating official PhysiX PDF lab reports requires account sign-in. Sign in to download your certified report!");
+    return;
+  }
+
   const obsList = getStoredObservations();
   if (obsList.length === 0) {
     showToast("No flight observations recorded yet. Launch and record observations first!");
@@ -1848,6 +1922,24 @@ function loadUserProfile() {
   const user = auth.currentUser;
   const isAuth = !!user;
 
+  // Automatic Level-Up celebration: triggers ONLY when a user advances to a higher level
+  try {
+    const prevLevelKey = `physix_last_level_${user ? user.uid : "guest"}`;
+    const savedLevel = localStorage.getItem(prevLevelKey);
+    if (savedLevel !== null) {
+      const prevLevelNum = parseInt(savedLevel, 10);
+      if (!isNaN(prevLevelNum) && rankInfo.level > prevLevelNum) {
+        showLevelUpCelebration({
+          level: rankInfo.level,
+          rank: rankInfo.rank,
+          xp: rankInfo.totalXp,
+          nextThreshold: rankInfo.nextThreshold
+        });
+      }
+    }
+    localStorage.setItem(prevLevelKey, rankInfo.level.toString());
+  } catch (e) {}
+
   const displayName = profile.name || (user ? user.email.split("@")[0] : "");
   const displayEmail = user ? user.email : "";
   const displayHandle = profile.handle || (displayName ? `@${displayName.toLowerCase().replace(/[^a-z0-9_]/g, "")}` : (user ? `@${user.email.split("@")[0]}` : ""));
@@ -2060,6 +2152,40 @@ function loadUserProfile() {
     else if (activeTab === "badges" && tabBadges) tabBadges.classList.remove("hidden");
     else if (activeTab === "security" && tabSecurity) tabSecurity.classList.remove("hidden");
     else if (tabOverview) tabOverview.classList.remove("hidden");
+  }
+
+  // 7. Update Daily Login Streak (Displayed ONLY inside Student Profile Dossier)
+  const streakData = getStoredUserStreak(user ? user.uid : "guest");
+  const heroStreakText = document.getElementById("hero-streak-text");
+  const pStreakCurrent = document.getElementById("p-streak-current");
+  const pStreakHighest = document.getElementById("p-streak-highest");
+  const pStreakNextMilestone = document.getElementById("p-streak-next-milestone");
+  const pStreakMilestoneDiff = document.getElementById("p-streak-milestone-diff");
+  const pStreakSubnote = document.getElementById("p-streak-subnote");
+  const streakActiveStatus = document.getElementById("streak-active-status");
+
+  const currentStreak = Math.max(1, streakData.currentStreak || 1);
+  const highestStreak = Math.max(currentStreak, streakData.highestStreak || 1);
+  const nextMilestone = getNextStreakMilestone(currentStreak);
+  const remainingDays = Math.max(0, nextMilestone - currentStreak);
+
+  if (heroStreakText) {
+    heroStreakText.textContent = `${currentStreak} Day${currentStreak === 1 ? "" : "s"} Streak`;
+  }
+  if (pStreakCurrent) pStreakCurrent.textContent = currentStreak;
+  if (pStreakHighest) pStreakHighest.textContent = highestStreak;
+  if (pStreakNextMilestone) pStreakNextMilestone.textContent = nextMilestone;
+  if (pStreakMilestoneDiff) {
+    pStreakMilestoneDiff.textContent = remainingDays === 0 ? "Milestone Reached Today! 🔥" : `${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`;
+  }
+  if (pStreakSubnote) {
+    if (currentStreak >= 100) pStreakSubnote.textContent = "Grand Century Streaker! Legendary laboratory dedication.";
+    else if (currentStreak >= 50) pStreakSubnote.textContent = "Golden Streaker! Research mastery on full display.";
+    else if (currentStreak >= 10) pStreakSubnote.textContent = "Double-Digit Streaker! Excellent laboratory consistency.";
+    else pStreakSubnote.textContent = "Keep logging in daily to maintain laboratory momentum!";
+  }
+  if (streakActiveStatus) {
+    streakActiveStatus.textContent = "Active Today 🔥";
   }
 
   // 8. Sync Edit Profile Modal Inputs
@@ -2280,6 +2406,7 @@ formLogin?.addEventListener("submit", async (e) => {
     showToast(`Welcome back, ${userCredential.user.email}! Please review your student details.`);
     loginEmail.value = "";
     loginPassword.value = "";
+    await processUserDailyStreak(userCredential.user);
     loadUserProfile();
     openEditProfileModal();
   } catch (error) {
@@ -2320,6 +2447,7 @@ formSignup?.addEventListener("submit", async (e) => {
     signupEmail.value = "";
     signupPassword.value = "";
     signupConfirm.value = "";
+    await processUserDailyStreak(userCredential.user);
     loadUserProfile();
     openEditProfileModal();
   } catch (error) {
@@ -2578,13 +2706,6 @@ userProfileBtn?.addEventListener("click", () => {
   profileModal?.classList.remove("hidden");
 });
 
-btnOpenProfileNav?.addEventListener("click", () => {
-  loadUserProfile();
-  if (!auth.currentUser) {
-    showAuthSubView("login");
-  }
-  profileModal?.classList.remove("hidden");
-});
 
 // ==========================================
 // QUIZ ENGINE & INTERACTIVITY (ANTI-COPY SECURED)
@@ -3002,6 +3123,50 @@ btnCloseTheory.addEventListener("click", () => {
   theoryModal.classList.add("hidden");
 });
 
+// Help & Interactive User Guide Modal
+function switchHelpTab(tabIndex) {
+  [btnHelpExp1, btnHelpExp2, btnHelpExp3].forEach((btn, idx) => {
+    if (btn) {
+      if (idx === tabIndex - 1) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    }
+  });
+
+  [helpPaneExp1, helpPaneExp2, helpPaneExp3].forEach((pane, idx) => {
+    if (pane) {
+      if (idx === tabIndex - 1) {
+        pane.classList.remove("hidden");
+        pane.classList.add("active");
+      } else {
+        pane.classList.add("hidden");
+        pane.classList.remove("active");
+      }
+    }
+  });
+}
+
+btnHelpExp1?.addEventListener("click", () => switchHelpTab(1));
+btnHelpExp2?.addEventListener("click", () => switchHelpTab(2));
+btnHelpExp3?.addEventListener("click", () => switchHelpTab(3));
+
+btnOpenHelp?.addEventListener("click", () => {
+  if (activeExperimentId === "colour-sensor") {
+    switchHelpTab(3);
+  } else if (activeExperimentId === "optical") {
+    switchHelpTab(2);
+  } else {
+    switchHelpTab(1);
+  }
+  helpModal?.classList.remove("hidden");
+});
+
+btnCloseHelp?.addEventListener("click", () => {
+  helpModal?.classList.add("hidden");
+});
+
 // Close Profile Modal
 btnCloseProfile.addEventListener("click", () => {
   profileModal.classList.add("hidden");
@@ -3012,9 +3177,6 @@ btnCloseProfile.addEventListener("click", () => {
 // ==========================================
 let aiConversationHistory = [];
 let lastRecordedFlightForAi = null;
-let activeExperimentId = "projectile";
-let opticalExperimentInstance = null;
-let colourSensorExperimentInstance = null;
 
 function getLiveSimulationContext() {
   if (activeExperimentId === "colour-sensor" && colourSensorExperimentInstance) {
@@ -3386,6 +3548,7 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     explorerModal?.classList.add("hidden");
     theoryModal?.classList.add("hidden");
+    helpModal?.classList.add("hidden");
     profileModal?.classList.add("hidden");
     quizModal?.classList.add("hidden");
     editProfileModal?.classList.add("hidden");
@@ -3635,6 +3798,17 @@ function updateAuthStateRestrictions() {
 
   // Re-render challenges across all experiments
   renderChallenges();
+
+  const challengesCardExp2 = document.querySelector("#exp-optical-section .challenges-card");
+  const challengesCardExp3 = document.querySelector("#exp-colour-sensor-section .challenges-card");
+  if (isAuth) {
+    challengesCardExp2?.classList.remove("challenges-locked");
+    challengesCardExp3?.classList.remove("challenges-locked");
+  } else {
+    challengesCardExp2?.classList.add("challenges-locked");
+    challengesCardExp3?.classList.add("challenges-locked");
+  }
+
   if (opticalExperimentInstance) {
     opticalExperimentInstance.renderAll();
     if (opticalExperimentInstance.renderChallengesDom) {
@@ -3661,7 +3835,10 @@ document.addEventListener("click", (e) => {
 });
 
 // Listen to Firebase Auth state transitions
-onAuthStateChanged(auth, () => {
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    await processUserDailyStreak(user);
+  }
   updateAuthStateRestrictions();
   loadUserProfile();
 });
@@ -3669,6 +3846,8 @@ onAuthStateChanged(auth, () => {
 // ==========================================
 // INITIAL SETUP & RUN
 // ==========================================
+initContentProtection();
+initCelebrations();
 initSplashScreen();
 initTheme();
 loadUserProfile();
