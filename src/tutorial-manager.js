@@ -102,6 +102,8 @@ export function normalizeExpId(expId) {
   if (expId === "physics-sandbox" || expId === "sandbox") return "sandbox";
   if (expId === "colour-sensor" || expId === "color-sensor") return "colour-sensor";
   if (expId === "hall-effect" || expId === "hall") return "hall-effect";
+  if (expId === "diode" || expId === "diode-characteristics") return "diode";
+  if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof") return "pof-attenuation";
   return "projectile";
 }
 
@@ -113,7 +115,9 @@ export function getExperimentFriendlyName(expId) {
     case "colour-sensor": return "Exp 3: Study of Colour Sensor";
     case "hall-effect": return "Exp 4: Hall Effect Experiment";
     case "diffraction": return "Exp 5: Diffraction Grating";
-    case "sandbox": return "Exp 6: Physics Sandbox";
+    case "diode": return "Exp 6: Diode Characteristics";
+    case "pof-attenuation": return "Exp 7: Plastic Optical Fiber Attenuation";
+    case "sandbox": return "Physics Sandbox";
     default: return "Interactive Physics Lab";
   }
 }
@@ -811,6 +815,116 @@ export const TUTORIAL_DEFINITIONS = {
       description: "Resets the voltage supplies, clears the dynamic needle deflections, and resets wires or observations whenever starting a fresh experimental run.",
       placement: "top"
     }
+  ],
+
+  // -----------------------------------------------------------------------
+  // EXPERIMENT 7: PLASTIC OPTICAL FIBER ATTENUATION (POF)
+  // -----------------------------------------------------------------------
+  "pof-attenuation": [
+    {
+      id: "pof-tour-1",
+      selector: "#pof-bench-canvas",
+      title: "Identify Optical Source Assembly",
+      category: "1. IDENTIFY APPARATUS",
+      description: "Inspect the 650 nm semiconductor LED transmitter on the left mounting post. Click directly on the Optical Source assembly on the bench canvas to open its technical specification card.",
+      placement: "bottom"
+    },
+    {
+      id: "pof-tour-2",
+      selector: "#pof-btn-power",
+      title: "Switch ON the Optical Source",
+      category: "2. SOURCE ACTIVATION",
+      description: "Flip the Optical Source toggle to ON. The stabilized 650 nm red transmitter energizes, emitting a restrained reference optical beam with output aperture cues.",
+      placement: "bottom"
+    },
+    {
+      id: "pof-tour-3",
+      selector: "#pof-mode-ref",
+      title: "Select Reference Measurement Mode",
+      category: "3. REFERENCE CONFIGURATION",
+      description: "Set the Optical Power Meter mode to 'Reference (P_in)' to align the photodetector directly with the transmitter output aperture for baseline calibration.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-4",
+      selector: "#pof-btn-measure",
+      title: "Measure Reference Power (P_in)",
+      category: "4. INPUT POWER MEASUREMENT",
+      description: "Press 'MEASURE POWER' on the digital power meter. The sensor registers the stabilized incident optical power ($P_{\\text{in}}$) entering the optical bench.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-5",
+      selector: "#pof-btn-connect",
+      title: "Connect the Plastic Optical Fiber",
+      category: "5. POF CONNECTION",
+      description: "Click 'Connect Fiber' to bridge the flexible 1 mm PMMA plastic optical fiber between the input micrometer coupler and the output receiver assembly.",
+      placement: "bottom"
+    },
+    {
+      id: "pof-tour-6",
+      selector: "#pof-length-slider",
+      title: "Configure Fiber Length (L)",
+      category: "6. FIBER LENGTH (L)",
+      description: "Adjust the modeled fiber length under test (1.0 m to 25.0 m). Longer propagation paths accumulate higher bulk absorption ($-\\alpha L$) and Rayleigh scattering losses.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-7",
+      selector: "#pof-mode-out",
+      title: "Select POF Output Mode (P_out)",
+      category: "7. OUTPUT CONFIGURATION",
+      description: "Switch the meter to 'POF Output (P_out)' mode to align the photodetector receiver with the light exiting the distal end of the fiber.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-8",
+      selector: "#pof-btn-measure",
+      title: "Measure Transmitted Power (P_out)",
+      category: "8. OUTPUT POWER MEASUREMENT",
+      description: "Press 'MEASURE POWER' again. The meter samples the transmitted optical power ($P_{\\text{out}}$), reflecting material attenuation and coupling losses.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-9",
+      selector: "#pof-hud-total-att",
+      title: "Calculate Total Attenuation (A_dB)",
+      category: "9. DECIBEL ATTENUATION",
+      description: "Inspect the Total Attenuation readout: $A_{\\text{dB}} = 10 \\log_{10}(P_{\\text{in}} / P_{\\text{out}})$. Total decibel loss increases logarithmically with power ratio.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-10",
+      selector: "#pof-hud-alpha",
+      title: "Compute Attenuation Rate (α in dB/km)",
+      category: "10. ATTENUATION COEFFICIENT",
+      description: "Review the normalized attenuation coefficient: $\\alpha_{\\text{dB/km}} = (1000 / L_{\\text{m}}) \\times 10 \\log_{10}(P_{\\text{in}} / P_{\\text{out}})$. Standard PMMA fibers exhibit ~180 dB/km at 650 nm.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-11",
+      selector: "#pof-btn-record-obs",
+      title: "Record Observation into Logbook",
+      category: "11. OBSERVATION LOGBOOK",
+      description: "Click 'Record Observation' to store the length, $P_{\\text{in}}$, $P_{\\text{out}}$, $A_{\\text{dB}}$, and $\\alpha$ into your scientific observations table.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-12",
+      selector: "#pof-telemetry-graph-card",
+      title: "Analyze Power vs Length Graph",
+      category: "12. GRAPHICAL ANALYSIS",
+      description: "Observe how output power decays exponentially with fiber length according to Beer-Lambert's Law $P_{\\text{out}} = P_{\\text{in}} 10^{-\\alpha L / 10}$. Switch between Power and Attenuation plots.",
+      placement: "top"
+    },
+    {
+      id: "pof-tour-13",
+      selector: "#pof-interp-card",
+      title: "Interpret Physical Loss Mechanisms",
+      category: "13. PHYSICAL INTERPRETATION",
+      description: "Identify the dominant physical mechanisms causing attenuation in plastic optical fibers (absorption, Rayleigh scattering, Fresnel reflections, macrobending) and submit your analysis.",
+      placement: "top"
+    }
   ]
 };
 
@@ -1006,9 +1120,14 @@ class TutorialManager {
       </div>
 
       <div class="tutorial-card-footer">
-        <button type="button" class="tutorial-btn tutorial-btn-skip" id="tutorial-btn-skip">
-          Skip
-        </button>
+        <div class="tutorial-btn-group-left">
+          <button type="button" class="tutorial-btn tutorial-btn-skip" id="tutorial-btn-skip">
+            Exit
+          </button>
+          <button type="button" class="tutorial-btn tutorial-btn-restart" id="tutorial-btn-restart" title="Restart Guided Tour">
+            Restart
+          </button>
+        </div>
         <div class="tutorial-btn-group">
           ${!isFirstStep ? `
             <button type="button" class="tutorial-btn tutorial-btn-back" id="tutorial-btn-back">
@@ -1025,6 +1144,10 @@ class TutorialManager {
     // Wire Card Button Events
     document.getElementById("tutorial-btn-close")?.addEventListener("click", () => this.skipTutorial());
     document.getElementById("tutorial-btn-skip")?.addEventListener("click", () => this.skipTutorial());
+    document.getElementById("tutorial-btn-restart")?.addEventListener("click", () => {
+      this.currentStepIndex = 0;
+      this.renderCurrentStep();
+    });
     document.getElementById("tutorial-btn-back")?.addEventListener("click", () => this.prevStep());
     document.getElementById("tutorial-btn-next")?.addEventListener("click", () => {
       if (isLastStep) {
@@ -1146,6 +1269,13 @@ class TutorialManager {
   }
 
   nextStep() {
+    if (this.currentExpId === "pof-attenuation" && window.pofExperimentInstance?.validateTourStep) {
+      const res = window.pofExperimentInstance.validateTourStep(this.currentStepIndex);
+      if (res && !res.valid) {
+        this.showToast(res.error || "Please perform the required step on the apparatus before continuing.");
+        return;
+      }
+    }
     if (this.currentStepIndex < this.currentSteps.length - 1) {
       this.currentStepIndex++;
       this.renderCurrentStep();

@@ -2057,8 +2057,10 @@ export function createOpticalFibreExperiment(callbacks = {}) {
     }
 
     const profile = getStoredUserProfile ? getStoredUserProfile() : {};
-    const studentName = profile.name || "Student Physicist";
-    const studentEmail = getActiveUserId && getActiveUserId() !== "guest" ? `${getActiveUserId()}` : "Guest Mode";
+    const studentName = (profile?.name || "").trim() || "Guest Student";
+    const collegeName = (profile?.college || profile?.occ || "").trim() || "---";
+    const studentEmail = profile?.email || (getActiveUserId && getActiveUserId() !== "guest" && String(getActiveUserId()).includes("@") ? `${getActiveUserId()}` : "guest@physix.lab");
+    const studentRole = profile?.edu || "Student Researcher";
 
     let sumNA = 0;
     let sumTheta = 0;
@@ -2084,18 +2086,27 @@ export function createOpticalFibreExperiment(callbacks = {}) {
       obs.time
     ]);
 
+    const btn = document.getElementById("of-btn-export-pdf");
+    if (btn && btn.disabled) return;
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute("data-orig-html", btn.innerHTML);
+      btn.innerHTML = `<span>Generating Report...</span>`;
+    }
+
     try {
       generateLabReportPdf({
         labTitle: "Numerical Aperture of an Optical Fibre Logbook",
         labSubtitle: "Optoelectronic Laser Divergence, Total Internal Reflection & Acceptance Angle Dynamics",
         experimentCode: "EXP-02",
         studentName,
+        collegeName,
         studentEmail,
-        studentRole: profile.occ || "Student Physicist",
+        studentRole,
         summaryMetrics: [
           { label: "Total Readings", value: `${state.observations.length} Entries`, color: [14, 165, 233] },
           { label: "Mean Numerical Aperture", value: `${meanNA.toFixed(4)}`, color: [6, 182, 212] },
-          { label: "Mean Acceptance Angle", value: `${meanTheta.toFixed(1)}°`, color: [139, 92, 246] },
+          { label: "Mean Acceptance Angle", value: `${meanTheta.toFixed(1)} deg`, color: [139, 92, 246] },
           { label: "Experimental Accuracy", value: `${accuracyPct.toFixed(1)}%`, color: [16, 185, 129] }
         ],
         columns,
@@ -2105,9 +2116,17 @@ export function createOpticalFibreExperiment(callbacks = {}) {
       });
 
       if (showToast) showToast("Generated and downloaded official PhysiX PDF report.");
+      if (btn) btn.innerHTML = `<span>Report Exported!</span>`;
     } catch (err) {
       console.error("Optical Fibre PDF export failed:", err);
       if (showToast) showToast("Failed to generate PDF report. Please try again.");
+    } finally {
+      if (btn) {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = btn.getAttribute("data-orig-html") || `<span>Export PDF Logbook</span>`;
+        }, 1500);
+      }
     }
   }
 

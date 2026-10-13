@@ -45,7 +45,8 @@
         "badge-profile-saved",
         "badge-high-velocity",
         "badge-optimal-angle",
-        "badge-lab-veteran"
+        "badge-lab-veteran",
+        "badge-semiconductor-specialist"
       ],
       "quizHighScore": 10,
       "observations": [
@@ -531,11 +532,11 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-09-21T16:15:28.210Z",
-        "updatedAt": "2026-10-09T17:44:20.461Z",
+        "updatedAt": "2026-10-13T12:37:56.387Z",
         "email": "jeshurunselvakumar640@gmail.com",
-        "streak": 1,
+        "streak": 2,
         "highestStreak": 2,
-        "lastLoginDate": "2026-10-09"
+        "lastLoginDate": "2026-10-13"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -554,7 +555,7 @@
       "flightLogs": [],
       "observations": [],
       "challenges": {},
-      "bonusXp": 1475,
+      "bonusXp": 2275,
       "badges": [
         "badge-profile-saved",
         "badge-lab-veteran"
@@ -592,6 +593,318 @@
       "observations": [],
       "challenges": {},
       "bonusXp": 300,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_42": {
+      "userId": "test_user_42",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:48:19.404Z",
+        "updatedAt": "2026-10-12T13:49:08.470Z",
+        "streak": 4,
+        "highestStreak": 4,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_c1": {
+      "userId": "test_user_c1",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:53:08.986Z",
+        "updatedAt": "2026-10-12T15:32:11.500Z",
+        "streak": 1,
+        "highestStreak": 1,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_c2": {
+      "userId": "test_user_c2",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:53:09.626Z",
+        "updatedAt": "2026-10-12T15:32:12.426Z",
+        "streak": 4,
+        "highestStreak": 4,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_c3": {
+      "userId": "test_user_c3",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:53:10.273Z",
+        "updatedAt": "2026-10-12T15:32:13.474Z",
+        "streak": 4,
+        "highestStreak": 4,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_c4": {
+      "userId": "test_user_c4",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:53:10.971Z",
+        "updatedAt": "2026-10-12T15:32:14.360Z",
+        "streak": 1,
+        "highestStreak": 7,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_c6": {
+      "userId": "test_user_c6",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:53:11.853Z",
+        "updatedAt": "2026-10-12T15:32:15.097Z",
+        "streak": 6,
+        "highestStreak": 6,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_c7": {
+      "userId": "test_user_c7",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:53:12.669Z",
+        "updatedAt": "2026-10-12T15:32:15.784Z",
+        "streak": 5,
+        "highestStreak": 5,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
+      "badges": [
+        "badge-profile-saved"
+      ],
+      "quizHighScore": 0
+    },
+    "test_user_c11": {
+      "userId": "test_user_c11",
+      "profile": {
+        "name": "",
+        "avatar": "quantum",
+        "handle": "",
+        "edu": "",
+        "occ": "",
+        "interests": "",
+        "bio": "",
+        "createdAt": "2026-10-12T13:53:13.429Z",
+        "updatedAt": "2026-10-12T15:32:16.452Z",
+        "streak": 15,
+        "highestStreak": 20,
+        "lastLoginDate": "2026-10-12"
+      },
+      "telemetry": {
+        "totalLaunches": 0,
+        "maxRange": 0,
+        "maxHeight": 0,
+        "maxVelocity": 0,
+        "totalAirtime": 0,
+        "targetHits": 0,
+        "planetsUsed": {
+          "Earth": 0,
+          "Moon": 0,
+          "Mars": 0,
+          "Jupiter": 0
+        }
+      },
+      "flightLogs": [],
+      "observations": [],
+      "challenges": {},
+      "bonusXp": 0,
       "badges": [
         "badge-profile-saved"
       ],

@@ -24,6 +24,8 @@ import { createHallEffectExperiment } from "./hall-effect.js";
 import { createPhysicsSandboxExperiment } from "./sandbox/sandbox-experiment.js";
 import { createDiffractionGratingExperiment } from "./diffraction-grating.js";
 import { createDiodeExperiment } from "./diode-vi.js";
+import { createPofAttenuationExperiment } from "./pof-attenuation.js";
+import "./pof-attenuation.css";
 import {
   tutorialManager,
   normalizeExpId,
@@ -372,6 +374,11 @@ const helpPaneExp3 = document.getElementById("help-pane-exp3");
 const helpPaneExp4 = document.getElementById("help-pane-exp4");
 const helpPaneExp5 = document.getElementById("help-pane-exp5");
 const helpPaneExp6 = document.getElementById("help-pane-exp6");
+const helpNavTabs = document.getElementById("help-nav-tabs");
+const helpPaneExpDiode = document.getElementById("help-pane-exp-diode");
+const helpPaneExpPof = document.getElementById("help-pane-exp-pof");
+const helpModalTitle = document.getElementById("help-modal-title");
+const helpModalSubtitle = document.getElementById("help-modal-subtitle");
 
 // Vectra AI DOM Elements
 const aiCopilotModal = document.getElementById("ai-copilot-modal");
@@ -1323,7 +1330,15 @@ async function checkBackendStatus() {
 function getStoredUserProfile() {
   try {
     const saved = localStorage.getItem("physix_user_profile");
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === "object") {
+        const cVal = (parsed.college || parsed.occ || "").trim();
+        parsed.college = cVal;
+        parsed.occ = cVal;
+        return parsed;
+      }
+    }
   } catch (e) {
     console.warn("Error reading profile from localStorage", e);
   }
@@ -1333,12 +1348,16 @@ function getStoredUserProfile() {
     handle: "",
     edu: "",
     occ: "",
+    college: "",
     interests: "",
     bio: ""
   };
 }
 
 function saveStoredUserProfile(profileData) {
+  const cVal = (profileData.college || profileData.occ || "").trim();
+  profileData.college = cVal;
+  profileData.occ = cVal;
   try {
     localStorage.setItem("physix_user_profile", JSON.stringify(profileData));
   } catch (e) {
@@ -1364,6 +1383,8 @@ function saveStoredUserProfile(profileData) {
         totalXP: authoritativeXp,
         level: rankInfo.level,
         streak: streak.currentStreak || 1,
+        highestStreak: streak.highestStreak || streak.currentStreak || 1,
+        lastLoginDate: streak.lastLoginDate,
         experimentsPerformed: stats.totalLaunches || 0,
         badges: badges,
         bestQuizScore: quizHigh,
@@ -1372,6 +1393,7 @@ function saveStoredUserProfile(profileData) {
           handle: profileData.handle || "",
           edu: profileData.edu || "",
           occ: profileData.occ || "",
+          college: profileData.college || profileData.occ || "",
           interests: profileData.interests || "",
           bio: profileData.bio || ""
         }
@@ -2370,9 +2392,10 @@ function exportProjectilePdf() {
 
   const profile = getStoredUserProfile();
   const user = auth.currentUser;
-  const studentName = profile.name || (user ? user.email.split("@")[0] : "Student Physicist");
-  const studentEmail = user ? user.email : "Guest Mode";
-  const studentRole = profile.occ || "Student Researcher";
+  const studentName = (profile.name || user?.displayName || "").trim() || "Guest Student";
+  const collegeName = (profile.college || profile.occ || "").trim() || "---";
+  const studentEmail = user ? user.email : "guest@physix.lab";
+  const studentRole = profile.edu || profile.occ || "Student Researcher";
 
   let maxRange = 0;
   let maxApex = 0;
@@ -2398,12 +2421,21 @@ function exportProjectilePdf() {
     obs.time || 'Logged'
   ]);
 
+  const btn = document.getElementById("btn-export-proj-pdf");
+  if (btn && btn.disabled) return;
+  if (btn) {
+    btn.disabled = true;
+    btn.setAttribute("data-orig-html", btn.innerHTML);
+    btn.innerHTML = `<span>Generating Report...</span>`;
+  }
+
   try {
     generateLabReportPdf({
       labTitle: "2D Projectile Motion Kinematics Logbook",
       labSubtitle: "Classical Kinematic Trajectory Telemetry & Ballistic Flight Dynamics",
       experimentCode: "EXP-01",
       studentName,
+      collegeName,
       studentEmail,
       studentRole,
       summaryMetrics: [
@@ -2419,9 +2451,17 @@ function exportProjectilePdf() {
     });
 
     showToast("Generated and downloaded official PhysiX PDF report.");
+    if (btn) btn.innerHTML = `<span>Report Exported!</span>`;
   } catch (err) {
     console.error("PDF generation failed:", err);
     showToast("Failed to generate PDF report. Please try again.");
+  } finally {
+    if (btn) {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = btn.getAttribute("data-orig-html") || `<span>Export PDF Logbook</span>`;
+      }, 1500);
+    }
   }
 }
 
@@ -2640,183 +2680,169 @@ function loadUserProfile() {
   const profileModalHeaderTitle = profileModal?.querySelector(".modal-header h2");
   const profileModalHeaderDesc = profileModal?.querySelector(".modal-header p");
 
-  if (!isAuth) {
-    // GUEST MODE: Do not show profile or any details, show ONLY login username and password form
-    if (navAvatarChar) {
-      navAvatarChar.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
-    }
-    if (userNameEl) userNameEl.textContent = "Sign In";
-    if (userStatusEl) {
-      userStatusEl.textContent = "● Guest Mode";
-      userStatusEl.style.color = "";
-    }
-
-    if (profileHeroCard) profileHeroCard.classList.add("hidden");
-    if (profileTabsBar) profileTabsBar.classList.add("hidden");
-
-    // Hide all personal detail tabs
-    [tabOverview, tabStats, tabBadges].forEach(pane => {
-      if (pane) pane.classList.add("hidden");
-    });
-    // Show only the Security/Login tab
-    if (tabSecurity) tabSecurity.classList.remove("hidden");
-    if (secGuestPanel) secGuestPanel.classList.remove("hidden");
-    if (secUserPanel) secUserPanel.classList.add("hidden");
-
-    if (profileModalHeaderTitle) {
-      profileModalHeaderTitle.innerHTML = `
-        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-        Account Sign In & Access
-      `;
-    }
-    if (profileModalHeaderDesc) {
-      profileModalHeaderDesc.textContent = "Sign in to access your student profile, cloud-synced telemetry analytics, and physics milestones";
-    }
-
-  } else {
-    // AUTHENTICATED MODE: Show complete student profile hero card and detail tabs
-    if (navAvatarChar) setAvatarElement(navAvatarChar, photoUrl, defaultAvatarSvg);
-    if (userNameEl) userNameEl.textContent = displayName || user.email.split("@")[0];
-    if (userStatusEl) {
+  // 1. Update Header Nav Chip
+  if (navAvatarChar) setAvatarElement(navAvatarChar, photoUrl, defaultAvatarSvg);
+  if (userNameEl) userNameEl.textContent = displayName || profile.name || (isAuth ? (user.displayName || user.email.split("@")[0]) : "Student Profile");
+  if (userStatusEl) {
+    if (isAuth) {
       userStatusEl.textContent = "● Firebase Online";
       userStatusEl.style.color = "#34d399";
+    } else {
+      userStatusEl.textContent = "● Local Session";
+      userStatusEl.style.color = "#94a3b8";
     }
+  }
 
-    if (profileHeroCard) profileHeroCard.classList.remove("hidden");
-    if (profileTabsBar) profileTabsBar.classList.remove("hidden");
+  // Ensure Profile Hero Card and Tabs Bar are visible for all users
+  if (profileHeroCard) profileHeroCard.classList.remove("hidden");
+  if (profileTabsBar) profileTabsBar.classList.remove("hidden");
 
-    if (profileModalHeaderTitle) {
-      profileModalHeaderTitle.innerHTML = `
-        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
-        </svg>
-        PhysiX Student Dossier
-      `;
-    }
-    if (profileModalHeaderDesc) {
-      profileModalHeaderDesc.textContent = "Personalized physics credentials, telemetry analytics, and experimental kinematics records";
-    }
+  if (profileModalHeaderTitle) {
+    profileModalHeaderTitle.innerHTML = `
+      <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#06b6d4;">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      PhysiX Student Dossier
+    `;
+  }
+  if (profileModalHeaderDesc) {
+    profileModalHeaderDesc.textContent = "Personalized physics credentials, telemetry analytics, and experimental kinematics records";
+  }
 
-    // 2. Update Profile Hero Card
-    if (heroAvatarChar) setAvatarElement(heroAvatarChar, photoUrl, defaultAvatarSvg);
-    if (heroLevelBadge) heroLevelBadge.textContent = `LVL ${rankInfo.level}`;
-    if (heroStudentName) heroStudentName.textContent = displayName || "Student Physicist";
-    if (heroStudentHandle) heroStudentHandle.textContent = displayHandle || "@student";
-    if (heroStudentEmail) heroStudentEmail.textContent = displayEmail;
+  // 2. Update Profile Hero Card
+  if (heroAvatarChar) setAvatarElement(heroAvatarChar, photoUrl, defaultAvatarSvg);
+  if (heroLevelBadge) heroLevelBadge.textContent = `LVL ${rankInfo.level}`;
+  if (heroStudentName) heroStudentName.textContent = displayName || profile.name || "Guest Student";
+  if (heroStudentHandle) heroStudentHandle.textContent = displayHandle || "@student";
+  if (heroStudentEmail) heroStudentEmail.textContent = displayEmail || (isAuth ? user.email : "Local Session");
 
-    if (heroStatusBadge) {
+  if (heroStatusBadge) {
+    if (isAuth) {
       heroStatusBadge.textContent = "● Firebase Online (Cloud Synced)";
       heroStatusBadge.className = "profile-status-badge firebase-badge";
+    } else {
+      heroStatusBadge.textContent = "● Local Session";
+      heroStatusBadge.className = "profile-status-badge guest-badge";
     }
+  }
 
-    if (heroRankPill) heroRankPill.textContent = rankInfo.rank;
-    if (heroEduPill) heroEduPill.textContent = profile.edu || "Undergraduate Student";
-    if (heroInstPill) heroInstPill.textContent = profile.occ || "PhysiX Virtual Lab";
+  if (heroRankPill) heroRankPill.textContent = rankInfo.rank;
+  if (heroEduPill) heroEduPill.textContent = profile.edu || "Undergraduate Student";
+  if (heroInstPill) heroInstPill.textContent = profile.college || profile.occ || "PhysiX Virtual Lab";
 
-    // Render Progressive Doubling Level XP Tracker
-    const xpTitleEl = document.getElementById("hero-xp-level-title");
-    const xpReadoutEl = document.getElementById("hero-xp-progress-readout");
-    const xpBarFillEl = document.getElementById("hero-xp-bar-fill");
-    const xpNextNoteEl = document.getElementById("hero-xp-next-note");
+  // Render Progressive Doubling Level XP Tracker
+  const xpTitleEl = document.getElementById("hero-xp-level-title");
+  const xpReadoutEl = document.getElementById("hero-xp-progress-readout");
+  const xpBarFillEl = document.getElementById("hero-xp-bar-fill");
+  const xpNextNoteEl = document.getElementById("hero-xp-next-note");
 
-    if (xpTitleEl) xpTitleEl.textContent = rankInfo.title;
-    if (xpReadoutEl) xpReadoutEl.textContent = `${rankInfo.totalXp.toLocaleString()} / ${rankInfo.nextThreshold.toLocaleString()} XP (${Math.round(rankInfo.progressPct)}%)`;
-    if (xpBarFillEl) xpBarFillEl.style.width = `${rankInfo.progressPct}%`;
-    if (xpNextNoteEl) {
-      const needed = Math.max(0, rankInfo.nextThreshold - rankInfo.totalXp);
-      xpNextNoteEl.textContent = `Earn ${needed.toLocaleString()} XP to reach Level ${rankInfo.level + 1} • Target: ${rankInfo.nextThreshold.toLocaleString()} XP`;
-    }
+  if (xpTitleEl) xpTitleEl.textContent = rankInfo.title;
+  if (xpReadoutEl) xpReadoutEl.textContent = `${rankInfo.totalXp.toLocaleString()} / ${rankInfo.nextThreshold.toLocaleString()} XP (${Math.round(rankInfo.progressPct)}%)`;
+  if (xpBarFillEl) xpBarFillEl.style.width = `${rankInfo.progressPct}%`;
+  if (xpNextNoteEl) {
+    const needed = Math.max(0, rankInfo.nextThreshold - rankInfo.totalXp);
+    xpNextNoteEl.textContent = `Earn ${needed.toLocaleString()} XP to reach Level ${rankInfo.level + 1} • Target: ${rankInfo.nextThreshold.toLocaleString()} XP`;
+  }
 
-    if (heroAuthIcon && heroAuthLabel) {
+  if (heroAuthIcon && heroAuthLabel) {
+    if (isAuth) {
       heroAuthIcon.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`;
       heroAuthLabel.textContent = "Sign Out";
+    } else {
+      heroAuthIcon.innerHTML = `<svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>`;
+      heroAuthLabel.textContent = "Sign In";
     }
+  }
 
-    // 3. Update Overview & Bio Tab
-    if (pOverviewName) pOverviewName.textContent = displayName || "—";
-    if (pOverviewEdu) pOverviewEdu.textContent = profile.edu || "—";
-    if (pOverviewOcc) pOverviewOcc.textContent = profile.occ || "—";
-    if (pOverviewBio) pOverviewBio.textContent = profile.bio || "No student statement provided. Click 'Edit Profile' to customize your research identity.";
+  // 3. Update Overview & Bio Tab
+  if (pOverviewName) pOverviewName.textContent = displayName || profile.name || "Guest Student";
+  if (pOverviewEdu) pOverviewEdu.textContent = profile.edu || "Undergraduate Student";
+  if (pOverviewOcc) pOverviewOcc.textContent = profile.college || profile.occ || "—";
+  if (pOverviewBio) pOverviewBio.textContent = profile.bio || "No student statement provided. Click 'Edit Profile' to customize your research identity.";
 
-    if (pOverviewInterests) {
-      const rawInterests = profile.interests || "";
-      const tags = rawInterests.split(",").map(t => t.trim()).filter(Boolean);
-      if (tags.length > 0) {
-        pOverviewInterests.innerHTML = tags.map(tag => `<span class="p-interest-tag">${tag}</span>`).join("");
-      } else {
-        pOverviewInterests.innerHTML = `<span class="p-interest-tag" style="opacity:0.6;">No specialization tags added</span>`;
-      }
+  if (pOverviewInterests) {
+    const rawInterests = profile.interests || "";
+    const tags = rawInterests.split(",").map(t => t.trim()).filter(Boolean);
+    if (tags.length > 0) {
+      pOverviewInterests.innerHTML = tags.map(tag => `<span class="p-interest-tag">${tag}</span>`).join("");
+    } else {
+      pOverviewInterests.innerHTML = `<span class="p-interest-tag" style="opacity:0.6;">No specialization tags added</span>`;
     }
+  }
 
-    if (pMetaType) pMetaType.textContent = "Firebase Cloud Account";
-    if (pMetaUid) pMetaUid.textContent = user.uid;
-    if (pMetaEmail) pMetaEmail.textContent = displayEmail;
-    if (pMetaSync) {
+  if (pMetaType) pMetaType.textContent = isAuth ? "Firebase Cloud Account" : "Local Student Profile";
+  if (pMetaUid) pMetaUid.textContent = isAuth ? user.uid : "local-guest-session";
+  if (pMetaEmail) pMetaEmail.textContent = displayEmail || (isAuth ? user.email : "Local (Unregistered)");
+  if (pMetaSync) {
+    if (isAuth) {
       pMetaSync.textContent = "● Cloud Synced (Firebase Auth)";
       pMetaSync.className = "meta-val highlight-cyan";
+    } else {
+      pMetaSync.textContent = "● Stored Locally in Browser";
+      pMetaSync.className = "meta-val status-local";
     }
-    if (pMetaRank) pMetaRank.textContent = rankInfo.title;
+  }
+  if (pMetaRank) pMetaRank.textContent = rankInfo.title;
 
-    // 4. Update Telemetry & Stats Tab
-    if (statQuizScore) statQuizScore.textContent = `${quizHigh} / 10`;
-    if (statQuizGrade) {
-      const pct = Math.round((quizHigh / 10) * 100);
-      if (quizHigh === 10) statQuizGrade.textContent = "Grade: A+ (100%)";
-      else if (quizHigh >= 8) statQuizGrade.textContent = `Grade: A (${pct}%)`;
-      else if (quizHigh >= 6) statQuizGrade.textContent = `Grade: B (${pct}%)`;
-      else if (quizHigh >= 4) statQuizGrade.textContent = `Grade: C (${pct}%)`;
-      else if (quizHigh > 0) statQuizGrade.textContent = `Grade: D (${pct}%)`;
-      else statQuizGrade.textContent = "Not Evaluated";
-    }
+  // 4. Update Telemetry & Stats Tab
+  if (statQuizScore) statQuizScore.textContent = `${quizHigh} / 10`;
+  if (statQuizGrade) {
+    const pct = Math.round((quizHigh / 10) * 100);
+    if (quizHigh === 10) statQuizGrade.textContent = "Grade: A+ (100%)";
+    else if (quizHigh >= 8) statQuizGrade.textContent = `Grade: A (${pct}%)`;
+    else if (quizHigh >= 6) statQuizGrade.textContent = `Grade: B (${pct}%)`;
+    else if (quizHigh >= 4) statQuizGrade.textContent = `Grade: C (${pct}%)`;
+    else if (quizHigh > 0) statQuizGrade.textContent = `Grade: D (${pct}%)`;
+    else statQuizGrade.textContent = "Not Evaluated";
+  }
 
-    if (statTargetScore) statTargetScore.textContent = `${targetScore} pts`;
-    if (statTargetHits) statTargetHits.textContent = `${stats.targetHits || 0} Hits`;
-    if (statTotalLaunches) statTotalLaunches.textContent = `${stats.totalLaunches || 0}`;
-    if (statMaxRange) statMaxRange.textContent = (stats.maxRange || 0).toFixed(2);
-    if (statMaxHeight) statMaxHeight.textContent = (stats.maxHeight || 0).toFixed(2);
-    if (statMaxVelocity) statMaxVelocity.textContent = (stats.maxVelocity || 0).toFixed(1);
-    if (statTotalAirtime) statTotalAirtime.textContent = (stats.totalAirtime || 0).toFixed(2);
+  if (statTargetScore) statTargetScore.textContent = `${targetScore} pts`;
+  if (statTargetHits) statTargetHits.textContent = `${stats.targetHits || 0} Hits`;
+  if (statTotalLaunches) statTotalLaunches.textContent = `${stats.totalLaunches || 0}`;
+  if (statMaxRange) statMaxRange.textContent = (stats.maxRange || 0).toFixed(2);
+  if (statMaxHeight) statMaxHeight.textContent = (stats.maxHeight || 0).toFixed(2);
+  if (statMaxVelocity) statMaxVelocity.textContent = (stats.maxVelocity || 0).toFixed(1);
+  if (statTotalAirtime) statTotalAirtime.textContent = (stats.totalAirtime || 0).toFixed(2);
 
-    if (statFavPlanet) {
-      const gVal = Number(gravitySlider.value);
-      let pName = "Earth (9.8 m/s²)";
-      if (Math.abs(gVal - 1.6) < 0.1) pName = "Moon (1.6 m/s²)";
-      else if (Math.abs(gVal - 3.7) < 0.1) pName = "Mars (3.7 m/s²)";
-      else if (Math.abs(gVal - 24.8) < 0.1) pName = "Jupiter (24.8 m/s²)";
-      else if (Math.abs(gVal - 9.8) >= 0.1) pName = `Custom Planet (${gVal.toFixed(1)} m/s²)`;
-      statFavPlanet.textContent = pName;
-    }
+  if (statFavPlanet) {
+    const gVal = Number(gravitySlider.value);
+    let pName = "Earth (9.8 m/s²)";
+    if (Math.abs(gVal - 1.6) < 0.1) pName = "Moon (1.6 m/s²)";
+    else if (Math.abs(gVal - 3.7) < 0.1) pName = "Mars (3.7 m/s²)";
+    else if (Math.abs(gVal - 24.8) < 0.1) pName = "Jupiter (24.8 m/s²)";
+    else if (Math.abs(gVal - 9.8) >= 0.1) pName = `Custom Planet (${gVal.toFixed(1)} m/s²)`;
+    statFavPlanet.textContent = pName;
+  }
 
-    // 5. Update Badges Tab with Dynamic Vector SVGs
-    const badgesGridContainer = document.getElementById("badges-grid-container");
-    if (badgesGridContainer) {
-      badgesGridContainer.innerHTML = ALL_BADGES.map(b => {
-        const isUnlocked = badges.includes(b.id);
-        return `
-          <div class="badge-item-card ${isUnlocked ? "unlocked" : "locked"}" id="${b.id}">
-            <div class="badge-card-icon">
-              ${BADGE_SVGS[b.id] || BADGE_SVGS["badge-profile-saved"]}
-            </div>
-            <div class="badge-card-content">
-              <h5>${b.name}</h5>
-              <p>${b.desc}</p>
-              <span class="badge-status-tag">${isUnlocked ? "Unlocked" : "Locked"}</span>
-            </div>
+  // 5. Update Badges Tab with Dynamic Vector SVGs
+  const badgesGridContainer = document.getElementById("badges-grid-container");
+  if (badgesGridContainer) {
+    badgesGridContainer.innerHTML = ALL_BADGES.map(b => {
+      const isUnlocked = badges.includes(b.id);
+      return `
+        <div class="badge-item-card ${isUnlocked ? "unlocked" : "locked"}" id="${b.id}">
+          <div class="badge-card-icon">
+            ${BADGE_SVGS[b.id] || BADGE_SVGS["badge-profile-saved"]}
           </div>
-        `;
-      }).join("");
-    }
+          <div class="badge-card-content">
+            <h5>${b.name}</h5>
+            <p>${b.desc}</p>
+            <span class="badge-status-tag">${isUnlocked ? "Unlocked" : "Locked"}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
 
-    let unlockedCount = ALL_BADGES.filter(b => badges.includes(b.id)).length;
-    if (badgesUnlockedCount) badgesUnlockedCount.textContent = unlockedCount;
-    const badgesTotalCount = document.getElementById("badges-total-count");
-    if (badgesTotalCount) badgesTotalCount.textContent = ALL_BADGES.length;
-    if (badgesUnlockedPill) badgesUnlockedPill.textContent = `${unlockedCount} of ${ALL_BADGES.length} Unlocked`;
-    if (navBadgesCountBadge) navBadgesCountBadge.textContent = `${unlockedCount}/${ALL_BADGES.length}`;
+  let unlockedCount = ALL_BADGES.filter(b => badges.includes(b.id)).length;
+  if (badgesUnlockedCount) badgesUnlockedCount.textContent = unlockedCount;
+  const badgesTotalCount = document.getElementById("badges-total-count");
+  if (badgesTotalCount) badgesTotalCount.textContent = ALL_BADGES.length;
+  if (badgesUnlockedPill) badgesUnlockedPill.textContent = `${unlockedCount} of ${ALL_BADGES.length} Unlocked`;
+  if (navBadgesCountBadge) navBadgesCountBadge.textContent = `${unlockedCount}/${ALL_BADGES.length}`;
 
-    // 6. Update Security Tab
+  // 6. Update Security Tab
+  if (isAuth) {
     if (secGuestPanel) secGuestPanel.classList.add("hidden");
     if (secUserPanel) secUserPanel.classList.remove("hidden");
     if (secUserEmailDisplay) secUserEmailDisplay.textContent = `Connected: ${user.email}`;
@@ -2827,19 +2853,22 @@ function loadUserProfile() {
       const isGoogle = user.providerData?.some(p => p.providerId === "google.com");
       secDetailProvider.textContent = isGoogle ? "Google Account (OAuth)" : "Firebase Email / Password";
     }
-
-    // Show active tab
-    const activeBtn = document.querySelector(".profile-tab-btn.active");
-    const activeTab = activeBtn ? activeBtn.getAttribute("data-tab") : "overview";
-    [tabOverview, tabStats, tabBadges, tabSecurity].forEach(pane => {
-      if (pane) pane.classList.add("hidden");
-    });
-    if (activeTab === "overview" && tabOverview) tabOverview.classList.remove("hidden");
-    else if (activeTab === "stats" && tabStats) tabStats.classList.remove("hidden");
-    else if (activeTab === "badges" && tabBadges) tabBadges.classList.remove("hidden");
-    else if (activeTab === "security" && tabSecurity) tabSecurity.classList.remove("hidden");
-    else if (tabOverview) tabOverview.classList.remove("hidden");
+  } else {
+    if (secGuestPanel) secGuestPanel.classList.remove("hidden");
+    if (secUserPanel) secUserPanel.classList.add("hidden");
   }
+
+  // Show active tab
+  const activeBtn = document.querySelector(".profile-tab-btn.active");
+  const activeTab = activeBtn ? activeBtn.getAttribute("data-tab") : "overview";
+  [tabOverview, tabStats, tabBadges, tabSecurity].forEach(pane => {
+    if (pane) pane.classList.add("hidden");
+  });
+  if (activeTab === "overview" && tabOverview) tabOverview.classList.remove("hidden");
+  else if (activeTab === "stats" && tabStats) tabStats.classList.remove("hidden");
+  else if (activeTab === "badges" && tabBadges) tabBadges.classList.remove("hidden");
+  else if (activeTab === "security" && tabSecurity) tabSecurity.classList.remove("hidden");
+  else if (tabOverview) tabOverview.classList.remove("hidden");
 
   // 7. Update Daily Login Streak (Displayed ONLY inside Student Profile Dossier)
   const streakData = getStoredUserStreak(user ? user.uid : "guest");
@@ -2851,8 +2880,8 @@ function loadUserProfile() {
   const pStreakSubnote = document.getElementById("p-streak-subnote");
   const streakActiveStatus = document.getElementById("streak-active-status");
 
-  const currentStreak = Math.max(1, streakData.currentStreak || 1);
-  const highestStreak = Math.max(currentStreak, streakData.highestStreak || 1);
+  const currentStreak = Math.max(0, streakData.currentStreak || 0);
+  const highestStreak = Math.max(currentStreak, streakData.highestStreak || 0);
   const nextMilestone = getNextStreakMilestone(currentStreak);
   const remainingDays = Math.max(0, nextMilestone - currentStreak);
 
@@ -2869,10 +2898,18 @@ function loadUserProfile() {
     if (currentStreak >= 100) pStreakSubnote.textContent = "Grand Century Streaker! Legendary laboratory dedication.";
     else if (currentStreak >= 50) pStreakSubnote.textContent = "Golden Streaker! Research mastery on full display.";
     else if (currentStreak >= 10) pStreakSubnote.textContent = "Double-Digit Streaker! Excellent laboratory consistency.";
-    else pStreakSubnote.textContent = "Keep logging in daily to maintain laboratory momentum!";
+    else if (currentStreak >= 1) pStreakSubnote.textContent = "Keep logging in daily to maintain laboratory momentum!";
+    else pStreakSubnote.textContent = "Begin your daily streak by exploring the physics laboratory!";
   }
   if (streakActiveStatus) {
-    streakActiveStatus.textContent = "Active Today 🔥";
+    const todayStr = getLocalDateString();
+    if (streakData.lastLoginDate === todayStr) {
+      streakActiveStatus.textContent = streakData.pendingSync ? "Recorded Offline (Pending Sync) 🔥" : "Active Today 🔥";
+      streakActiveStatus.style.background = "";
+    } else {
+      streakActiveStatus.textContent = "Streak Inactive";
+      streakActiveStatus.style.background = "rgba(148, 163, 184, 0.2)";
+    }
   }
 
   // 8. Sync Edit Profile Modal Inputs
@@ -3520,7 +3557,7 @@ function openEditProfileModal() {
   }
   if (handleInput) handleInput.value = profile.handle || defaultHandle;
   if (eduInput) eduInput.value = profile.edu || "Undergraduate Student";
-  if (occInput) occInput.value = profile.occ || "";
+  if (occInput) occInput.value = profile.college || profile.occ || "";
   if (interestsInput) interestsInput.value = profile.interests || "";
   if (bioInput) bioInput.value = profile.bio || "";
 
@@ -3564,6 +3601,7 @@ if (formEditProfile) {
       handle: handleInput?.value.trim() || `@${nameVal.toLowerCase().replace(/[^a-z0-9_]/g, "")}`,
       edu: eduInput?.value || "Undergraduate Student",
       occ: occInput?.value.trim() || "",
+      college: occInput?.value.trim() || "",
       interests: interestsInput?.value.trim() || "",
       bio: bioInput?.value.trim() || ""
     };
@@ -3607,13 +3645,28 @@ function openBadgesModal() {
 btnOpenBadgesNav?.addEventListener("click", openBadgesModal);
 heroRankPill?.addEventListener("click", openBadgesModal);
 
-// Profile Button click opens modal
-userProfileBtn?.addEventListener("click", () => {
+export function openProfileModal(initialTab = "overview") {
   loadUserProfile();
-  if (!auth.currentUser) {
-    showAuthSubView("login");
-  }
   profileModal?.classList.remove("hidden");
+  profileTabBtns.forEach(b => {
+    if (b.getAttribute("data-tab") === initialTab) {
+      b.classList.add("active");
+    } else {
+      b.classList.remove("active");
+    }
+  });
+  [tabOverview, tabStats, tabBadges, tabSecurity].forEach(pane => {
+    if (pane) pane.classList.add("hidden");
+  });
+  if (initialTab === "stats" && tabStats) tabStats.classList.remove("hidden");
+  else if (initialTab === "badges" && tabBadges) tabBadges.classList.remove("hidden");
+  else if (initialTab === "security" && tabSecurity) tabSecurity.classList.remove("hidden");
+  else if (tabOverview) tabOverview.classList.remove("hidden");
+}
+
+// Profile Button click opens student profile modal
+userProfileBtn?.addEventListener("click", () => {
+  openProfileModal("overview");
 });
 
 
@@ -4132,7 +4185,9 @@ function showTheoryForExperiment(expId) {
     "colour-sensor": document.getElementById("theory-pane-exp3"),
     "hall-effect": document.getElementById("theory-pane-exp4"),
     "diffraction": document.getElementById("theory-pane-exp5"),
-    "sandbox": document.getElementById("theory-pane-exp6")
+    "sandbox": document.getElementById("theory-pane-exp6"),
+    "diode": document.getElementById("theory-pane-exp-diode"),
+    "pof-attenuation": document.getElementById("theory-pane-exp-pof")
   };
 
   const titles = {
@@ -4157,8 +4212,16 @@ function showTheoryForExperiment(expId) {
       desc: "Fraunhofer multi-slit diffraction, grating equation, and dispersion formulas"
     },
     "sandbox": {
-      title: "Exp 6: Physics Sandbox — Theory & Formulas",
+      title: "Physics Sandbox — Theory & Formulas",
       desc: "Newtonian rigid-body mechanics, impulse momentum, and energy conservation"
+    },
+    "diode": {
+      title: "Exp 6: Diode Characteristics — Theory & Formulas",
+      desc: "Shockley equation, barrier potential, and dynamic resistance relationships"
+    },
+    "pof-attenuation": {
+      title: "Exp 7: Plastic Optical Fiber Attenuation — Theory & Formulas",
+      desc: "Bouguer-Lambert-Beer attenuation, decibel loss, and coupling loss models"
     }
   };
 
@@ -4187,6 +4250,13 @@ function showTheoryForExperiment(expId) {
     `;
   }
   if (modalDesc) modalDesc.textContent = info.desc;
+
+  // Render project-wide shared References & Further Reading inside Theory modal
+  const refsContainer = document.getElementById("theory-references-container");
+  if (refsContainer) {
+    const data = EXPERIMENT_DETAILS[norm] || EXPERIMENT_DETAILS["projectile"] || {};
+    refsContainer.innerHTML = renderReferencesHtml(data.referenceBooks || []);
+  }
 }
 
 btnOpenTheory?.addEventListener("click", (e) => {
@@ -4239,23 +4309,101 @@ btnHelpExp4?.addEventListener("click", () => switchHelpTab(4));
 btnHelpExp5?.addEventListener("click", () => switchHelpTab(5));
 btnHelpExp6?.addEventListener("click", () => switchHelpTab(6));
 
-btnOpenHelp?.addEventListener("click", () => {
-  if (activeExperimentId === "sandbox") {
-    switchHelpTab(6);
-  } else if (activeExperimentId === "diffraction") {
-    switchHelpTab(5);
-  } else if (activeExperimentId === "hall-effect") {
-    switchHelpTab(4);
-    switchHelpTab(4);
-  } else if (activeExperimentId === "colour-sensor") {
-    switchHelpTab(3);
-  } else if (activeExperimentId === "optical") {
-    switchHelpTab(2);
-  } else {
-    switchHelpTab(1);
+function openHelpForCurrentExperiment() {
+  if (!helpModal) return;
+
+  // 1. Remove/hide experiment switcher tabs when opened from an experiment
+  if (helpNavTabs) {
+    helpNavTabs.classList.add("hidden");
+    helpNavTabs.style.display = "none";
   }
-  helpModal?.classList.remove("hidden");
-  if (helpModal) renderMathInElement(helpModal);
+
+  // 2. Hide ALL help panes to completely prevent stale content from any previous experiment
+  const allPanes = document.querySelectorAll(".help-pane");
+  allPanes.forEach(pane => {
+    pane.classList.add("hidden");
+    pane.classList.remove("active");
+  });
+
+  // 3. Resolve active experiment guide pane and header text
+  const currentExp = activeExperimentId;
+  let targetPane = null;
+  let titleText = "PhysiX Virtual Laboratory User Guide & Operations Manual";
+  let subtitleText = "Complete step-by-step instructions, interactive Control Deck breakdown, machine hardware switches, and telemetry export walkthrough";
+
+  if (currentExp === "diode" || currentExp === "diode-vi" || currentExp === "pn-junction") {
+    targetPane = helpPaneExpDiode || document.getElementById("help-pane-exp-diode");
+    titleText = "Diode V-I Characteristics — Interactive User Guide & Lab Manual";
+    subtitleText = "Step-by-step procedure, circuit controls breakdown, Shockley diode equations, forward/reverse bias recording, and challenge walkthrough";
+  } else if (currentExp === "pof-attenuation" || currentExp === "optical-attenuation" || currentExp === "pof") {
+    targetPane = helpPaneExpPof || document.getElementById("help-pane-exp-pof");
+    titleText = "POF Attenuation Experiment — User Guide & Lab Manual";
+    subtitleText = "Step-by-step optical power attenuation procedure, optical bench components, Bouguer-Lambert-Beer law, and challenge walkthrough";
+  } else if (currentExp === "optical" || currentExp === "optical-fibre") {
+    targetPane = helpPaneExp2;
+    titleText = "Optical Fibre Numerical Aperture — User Guide";
+    subtitleText = "Measurement of numerical aperture and normalized frequency (V-number) in multimode step-index optical fibers";
+  } else if (currentExp === "colour-sensor") {
+    targetPane = helpPaneExp3;
+    titleText = "Colour Sensor (TCS3200) — User Guide";
+    subtitleText = "Measurement of RGB spectral sensitivity and square-wave frequency output response";
+  } else if (currentExp === "hall-effect") {
+    targetPane = helpPaneExp4;
+    titleText = "Hall Effect Virtual Laboratory — User Guide";
+    subtitleText = "Determination of Hall coefficient, carrier density, charge polarity, and carrier mobility";
+  } else if (currentExp === "diffraction") {
+    targetPane = helpPaneExp5;
+    titleText = "Diffraction Grating Spectrometer — User Guide";
+    subtitleText = "Measurement of laser wavelength and line density using optical diffraction patterns";
+  } else if (currentExp === "sandbox") {
+    targetPane = helpPaneExp6;
+    titleText = "Physics Sandbox Simulation Engine — User Guide";
+    subtitleText = "Freeform physics simulation, kinematics, trajectories, and gravity experimentation";
+  } else {
+    targetPane = helpPaneExp1;
+    titleText = "2D Projectile Motion Laboratory — User Guide";
+    subtitleText = "Ballistic kinematics, launch parameters, atmospheric drag, and trajectory analysis";
+  }
+
+  // 4. Update Modal Header Title & Subtitle
+  if (helpModalTitle) {
+    helpModalTitle.innerHTML = `
+      <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" style="color:#38bdf8;">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      ${titleText}
+    `;
+  }
+  if (helpModalSubtitle) {
+    helpModalSubtitle.textContent = subtitleText;
+  }
+
+  // 5. Activate exclusively the target experiment guide pane
+  if (targetPane) {
+    targetPane.classList.remove("hidden");
+    targetPane.classList.add("active");
+    if (typeof renderMathInElement === "function") {
+      try {
+        renderMathInElement(targetPane);
+      } catch (err) {
+        console.warn("[Help Guide] Math rendering error:", err);
+      }
+    }
+  }
+
+  // 6. Reveal modal
+  helpModal.classList.remove("hidden");
+  if (typeof renderMathInElement === "function") {
+    try {
+      renderMathInElement(helpModal);
+    } catch (_) {}
+  }
+}
+
+btnOpenHelp?.addEventListener("click", () => {
+  openHelpForCurrentExperiment();
 });
 
 btnCloseHelp?.addEventListener("click", () => {
@@ -4718,6 +4866,8 @@ const expHallSection = document.getElementById("exp-hall-effect-section");
 const expSandboxSection = document.getElementById("exp-sandbox-section");
 const expDiffractionSection = document.getElementById("exp-diffraction-section");
 const expDiodeSection = document.getElementById("exp-diode-section");
+const expPofSection = document.getElementById("exp-pof-attenuation-section");
+let pofExperimentInstance = null;
 
 async function trackExperimentEngagement(expId) {
   if (!canPerformCloudOperation()) return;
@@ -4761,8 +4911,10 @@ async function trackExperimentEngagement(expId) {
 }
 
 function switchExperiment(expId, updateUrl = true) {
+  window.switchExperiment = switchExperiment;
   let normalizedId = expId;
-  if (expId === "diode" || expId === "diode-vi" || expId === "pn-junction") normalizedId = "diode";
+  if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof") normalizedId = "pof-attenuation";
+  else if (expId === "diode" || expId === "diode-vi" || expId === "pn-junction") normalizedId = "diode";
   else if (expId === "diffraction-grating") normalizedId = "diffraction";
   else if (expId === "optical-fibre") normalizedId = "optical";
   else if (expId === "physics-sandbox") normalizedId = "sandbox";
@@ -4777,12 +4929,15 @@ function switchExperiment(expId, updateUrl = true) {
   expSandboxSection?.classList.add("hidden");
   expDiffractionSection?.classList.add("hidden");
   expDiodeSection?.classList.add("hidden");
+  expPofSection?.classList.add("hidden");
 
-  const routeSlug = normalizedId === "diode"
-    ? "diode-vi"
-    : (normalizedId === "diffraction"
-      ? "diffraction-grating"
-      : (normalizedId === "optical" ? "optical-fibre" : normalizedId));
+  const routeSlug = normalizedId === "pof-attenuation"
+    ? "pof-attenuation"
+    : (normalizedId === "diode"
+      ? "diode-vi"
+      : (normalizedId === "diffraction"
+        ? "diffraction-grating"
+        : (normalizedId === "optical" ? "optical-fibre" : normalizedId)));
 
   if (updateUrl && !document.body.classList.contains("on-homepage")) {
     const targetUrl = `/simulations/${routeSlug}`;
@@ -4792,7 +4947,7 @@ function switchExperiment(expId, updateUrl = true) {
   }
 
   if (normalizedId === "diffraction") {
-    expDiffractionSection?.classList.remove("hidden");
+    expDiffractionSection?.classList.remove("hidden");
 
     if (!diffractionExperimentInstance) {
       diffractionExperimentInstance = createDiffractionGratingExperiment({
@@ -4832,7 +4987,7 @@ function switchExperiment(expId, updateUrl = true) {
 
     showToast("Switched to Exp 4: Diffraction Grating");
   } else if (normalizedId === "sandbox") {
-    expSandboxSection?.classList.remove("hidden");
+    expSandboxSection?.classList.remove("hidden");
 
     if (!physicsSandboxExperimentInstance) {
       physicsSandboxExperimentInstance = createPhysicsSandboxExperiment({
@@ -4862,7 +5017,7 @@ function switchExperiment(expId, updateUrl = true) {
 
     showToast("Switched to Exp 6: Physics Sandbox");
   } else if (normalizedId === "hall-effect") {
-    expHallSection?.classList.remove("hidden");
+    expHallSection?.classList.remove("hidden");
 
     if (!hallEffectExperimentInstance) {
       hallEffectExperimentInstance = createHallEffectExperiment({
@@ -4902,7 +5057,7 @@ function switchExperiment(expId, updateUrl = true) {
 
     showToast("Switched to Exp 4: Hall Effect Experiment");
   } else if (normalizedId === "colour-sensor") {
-    expColourSection?.classList.remove("hidden");
+    expColourSection?.classList.remove("hidden");
 
     if (!colourSensorExperimentInstance) {
       colourSensorExperimentInstance = createColourSensorExperiment({
@@ -4942,7 +5097,7 @@ function switchExperiment(expId, updateUrl = true) {
 
     showToast("Switched to Exp 3: Study of Colour Sensor");
   } else if (normalizedId === "optical") {
-    expOptSection?.classList.remove("hidden");
+    expOptSection?.classList.remove("hidden");
 
     if (!opticalExperimentInstance) {
       opticalExperimentInstance = createOpticalFibreExperiment({
@@ -4982,7 +5137,7 @@ function switchExperiment(expId, updateUrl = true) {
 
     showToast("Switched to Exp 2: Numerical Aperture of Optical Fibre");
   } else if (normalizedId === "diode") {
-    expDiodeSection?.classList.remove("hidden");
+    expDiodeSection?.classList.remove("hidden");
 
     if (!diodeExperimentInstance) {
       diodeExperimentInstance = createDiodeExperiment({
@@ -5020,9 +5175,50 @@ function switchExperiment(expId, updateUrl = true) {
       diodeExperimentInstance.renderAll();
     }
 
-    showToast("Switched to Exp 5: Diode V-I Characteristics");
+    showToast("Switched to Exp 6: Diode Characteristics");
+  } else if (normalizedId === "pof-attenuation") {
+    expPofSection?.classList.remove("hidden");
+
+    if (!pofExperimentInstance) {
+      pofExperimentInstance = createPofAttenuationExperiment({
+        onXpAwarded: (amount, reason) => addStudentXp(amount, reason),
+        onExperimentRecorded: (id, data) => {
+          if (auth.currentUser && canPerformCloudOperation()) {
+            recordExperimentInFirestore(auth.currentUser.uid, id, data).then(res => {
+              if (res && typeof res.totalXP === "number") {
+                setAuthoritativeUserXp(auth.currentUser.uid, res.totalXP);
+                loadUserProfile();
+              }
+              if (res && res.experimentsPerformed >= 5) {
+                unlockBadge("badge-lab-veteran", "Laboratory Veteran (Explored Labs 5+ Times)");
+              }
+            }).catch(() => {});
+          }
+        },
+        showToast,
+        getActiveUserId,
+        loadUserProfile,
+        getStoredUserProfile,
+        unlockBadge: (badgeId, badgeName) => unlockBadge(badgeId, badgeName),
+        isUserAuthenticated,
+        openLoginModal,
+        onChallengeCompleted: (data) => completeChallengeAuthoritatively(data)
+      });
+      pofExperimentInstance.init();
+      window.pofExperimentInstance = pofExperimentInstance;
+      if (activeAuthoritativeCompletedChallenges.length > 0 && typeof pofExperimentInstance.hydrateChallenges === "function") {
+        pofExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
+      }
+    } else {
+      if (activeAuthoritativeCompletedChallenges.length > 0 && typeof pofExperimentInstance.hydrateChallenges === "function") {
+        pofExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
+      }
+      pofExperimentInstance.renderAll();
+    }
+
+    showToast("Switched to Exp 7: Plastic Optical Fiber Attenuation");
   } else {
-    expProjSection?.classList.remove("hidden");
+    expProjSection?.classList.remove("hidden");
 
     showToast("Switched to Exp 1: 2D Projectile Motion");
   }
@@ -5031,7 +5227,9 @@ function switchExperiment(expId, updateUrl = true) {
 
   // Automatic first-time interactive guided onboarding tour
   tutorialManager.maybeTriggerFirstTimeTutorial(normalizedId);
-}
+  renderMathInDOM(document.body); // Update math on experiment switch
+}
+window.switchExperiment = switchExperiment;
 
 // ==========================================
 // LAB & EXPERIMENT CARDS INTERACTION & WHITE LIGHT EFFECT
@@ -5046,7 +5244,8 @@ allExperimentCards.forEach(card => {
     const name = card.getAttribute("data-name") || "";
 
     let expId = null;
-    if (target === "diode" || target === "diode-vi" || name.toLowerCase().includes("diode") || name.toLowerCase().includes("p-n junction")) expId = "diode";
+    if (target === "pof-attenuation" || target === "pof" || name.toLowerCase().includes("attenuation") || name.toLowerCase().includes("plastic optical fiber")) expId = "pof-attenuation";
+    else if (target === "diode" || target === "diode-vi" || name.toLowerCase().includes("diode") || name.toLowerCase().includes("p-n junction")) expId = "diode";
     else if (target === "diffraction" || target === "diffraction-grating" || name.toLowerCase().includes("diffraction")) expId = "diffraction-grating";
     else if (target === "hall-effect" || name.toLowerCase().includes("hall effect")) expId = "hall-effect";
     else if (target === "sandbox" || name.toLowerCase().includes("sandbox")) expId = "sandbox";
@@ -5176,6 +5375,9 @@ function applyTheme(theme) {
   if (hallEffectExperimentInstance) {
     hallEffectExperimentInstance.renderAll();
   }
+
+  // Update math rendering on theme toggle
+  renderMathInDOM(document.body); // Update math on theme toggle
 }
 
 function initTheme() {
@@ -5325,6 +5527,7 @@ async function completeVerifiedUserInitialization(user) {
 
       activeAuthoritativeCompletedChallenges = localCandidates;
       hydrateAllExperimentChallenges(localCandidates);
+      await processUserDailyStreak(user);
       updateAuthStateRestrictions();
       loadUserProfile();
       renderChallenges();
@@ -5378,6 +5581,25 @@ async function completeVerifiedUserInitialization(user) {
             localStorage.setItem("physix_quiz_highscore", String(cloudQuizScore));
           }
         }
+
+        // Sync student profile information from Firestore into local storage
+        const currentProfile = getStoredUserProfile();
+        const cloudCollege = (cUser.college || cUser.occ || cUser.extra?.college || cUser.extra?.occ || "").trim();
+        const cloudName = (cUser.name || cUser.displayName || user.displayName || "").trim();
+        const updatedProfile = {
+          ...currentProfile,
+          name: cloudName || currentProfile.name || "",
+          college: cloudCollege || currentProfile.college || currentProfile.occ || "",
+          occ: cloudCollege || currentProfile.occ || currentProfile.college || "",
+          handle: cUser.handle || cUser.extra?.handle || currentProfile.handle || "",
+          avatar: cUser.avatar || cUser.extra?.avatar || currentProfile.avatar || "quantum",
+          edu: cUser.edu || cUser.extra?.edu || currentProfile.edu || "",
+          bio: cUser.bio || cUser.extra?.bio || currentProfile.bio || "",
+          interests: cUser.interests || cUser.extra?.interests || currentProfile.interests || ""
+        };
+        try {
+          localStorage.setItem("physix_user_profile", JSON.stringify(updatedProfile));
+        } catch (e) {}
       }
     } catch (err) {
       console.warn("[Firestore] fetchFullUserDataFromFirestore sync notice:", err);
@@ -5452,6 +5674,8 @@ async function completeVerifiedUserInitialization(user) {
         totalXP: authoritativeXp,
         level: rankInfo.level,
         streak: streak.currentStreak || 1,
+        highestStreak: streak.highestStreak || streak.currentStreak || 1,
+        lastLoginDate: streak.lastLoginDate,
         experimentsPerformed: Math.max(cloudExpCount, stats.totalLaunches || 0),
         badges: badges,
         completedChallenges: mergedChallenges,
@@ -5476,6 +5700,26 @@ async function completeVerifiedUserInitialization(user) {
         setAuthoritativeUserXp(user.uid, remoteXp);
         loadUserProfile();
         renderChallenges();
+      }
+
+      // Synchronize streak updates across multiple devices in real-time
+      if (typeof cloudUser.streak === "number" || typeof cloudUser.highestStreak === "number") {
+        const localStreak = getStoredUserStreak(user.uid);
+        const remoteStreak = Number(cloudUser.streak) || 0;
+        const remoteHighest = Number(cloudUser.highestStreak) || remoteStreak;
+        const remoteLogin = cloudUser.lastLoginDate || null;
+
+        if (remoteStreak > localStreak.currentStreak || remoteHighest > localStreak.highestStreak) {
+          console.log(`%c[Firestore Realtime] Multi-device streak synchronized: ${localStreak.currentStreak} -> ${remoteStreak} (best: ${remoteHighest})`, "color: #10b981; font-weight: bold;");
+          saveStoredUserStreak(user.uid, {
+            ...localStreak,
+            currentStreak: remoteStreak,
+            highestStreak: remoteHighest,
+            lastLoginDate: remoteLogin || localStreak.lastLoginDate,
+            pendingSync: false
+          });
+          loadUserProfile();
+        }
       }
 
       if (cloudUser.tutorialsCompleted) {
@@ -5570,11 +5814,52 @@ document.addEventListener("visibilitychange", async () => {
 let isExperimentsPageInitialized = false;
 let currentActiveDetailExpId = "projectile";
 
+/**
+ * Shared, reusable References renderer.
+ * Renders a "References & Further Reading" subsection using the project-wide
+ * ref-card component so it works in both dark and light themes.
+ * @param {Array<{title, source, url, description}>} books
+ */
+export function renderReferencesHtml(books) {
+  const safeBooks = Array.isArray(books) ? books : [];
+  if (safeBooks.length === 0) {
+    return `<div class="refs-empty">No reference resources are listed for this experiment yet.</div>`;
+  }
+  const validBooks = safeBooks.filter(b => b && b.title && b.url);
+  if (validBooks.length === 0) {
+    return `<div class="refs-empty">No verified reference resources are listed for this experiment yet.</div>`;
+  }
+  return `
+    <h3 style="margin-bottom:16px; color:var(--accent-cyan, #00f0ff); font-size:1.08rem; letter-spacing:0.5px;">References & Further Reading</h3>
+    <div class="refs-grid">
+      ${validBooks.map(b => `
+        <a href="${b.url}" target="_blank" rel="noopener noreferrer" class="ref-card" aria-label="${b.title}">
+          <div class="ref-card-header">
+            <svg class="ref-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"></path>
+              <path d="M8 7h12M8 12h12M8 17h12"></path>
+            </svg>
+            <strong class="ref-card-title">${b.title}</strong>
+          </div>
+          <div class="ref-card-source">${b.source || ""}</div>
+          <div class="ref-card-desc">${b.description || ""}</div>
+          <div class="ref-card-link">
+            <span>Open resource</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9-9M7 7h9v9"></path></svg>
+          </div>
+        </a>
+      `).join("")}
+    </div>
+  `;
+}
+
 export function openExperimentDetailsPage(expId) {
   tutorialManager.destroyTour();
-  const normalizedId = (expId === "sandbox" || expId === "hall-effect" || expId === "colour-sensor" || expId === "optical" || expId === "projectile" || expId === "diffraction" || expId === "diffraction-grating" || expId === "diode" || expId === "diode-vi")
+  const normalizedId = (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof")
+    ? "pof-attenuation"
+    : ((expId === "sandbox" || expId === "hall-effect" || expId === "colour-sensor" || expId === "optical" || expId === "projectile" || expId === "diffraction" || expId === "diffraction-grating" || expId === "diode" || expId === "diode-vi")
     ? (expId === "diffraction-grating" ? "diffraction" : (expId === "diode-vi" ? "diode" : expId))
-    : "projectile";
+    : "projectile");
 
   const data = EXPERIMENT_DETAILS[normalizedId] || EXPERIMENT_DETAILS["projectile"];
   currentActiveDetailExpId = normalizedId;
@@ -5614,33 +5899,10 @@ export function openExperimentDetailsPage(expId) {
   if (obsContent) obsContent.innerHTML = data.observations || "";
   if (resultContent) resultContent.innerHTML = data.result || "";
 
-  // Render Reference Books & Learning Resources
+  // Render Reference Books & Learning Resources using the shared ref-card component
   const refsContent = document.getElementById("manual-content-references");
   if (refsContent) {
-    const books = data.referenceBooks || [];
-    if (books.length > 0) {
-      refsContent.innerHTML = `
-        <h3 style="margin-bottom:16px; color:var(--accent-cyan, #00f0ff); font-size:1.1rem; letter-spacing:0.5px;">Reference Books & Learning Resources</h3>
-        <div class="refs-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;">
-          ${books.map(b => `
-            <a href="${b.url}" target="_blank" rel="noopener noreferrer" class="ref-card" style="display:flex; flex-direction:column; gap:8px; padding:14px 16px; background:var(--card-bg, rgba(15,23,42,0.7)); border:1px solid var(--border-color, rgba(148,163,184,0.15)); border-radius:10px; text-decoration:none; color:var(--text-primary, #e2e8f0); transition:border-color 0.2s, transform 0.2s;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-cyan, #00f0ff);"><path d="M4 19V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"></path><path d="M8 7h12M8 12h12M8 17h12"></path></svg>
-                <strong style="font-size:0.95rem; line-height:1.3;">${b.title}</strong>
-              </div>
-              <div style="font-size:0.8rem; color:var(--text-muted, #94a3b8);">${b.source}</div>
-              <div style="font-size:0.82rem; color:var(--text-secondary, #cbd5e1); line-height:1.5;">${b.description}</div>
-              <div style="font-size:0.75rem; color:var(--accent-cyan, #00f0ff); margin-top:auto; display:flex; align-items:center; gap:4px;">
-                <span>Open resource</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9-9M7 7h9v9"></path></svg>
-              </div>
-            </a>
-          `).join("")}
-        </div>
-      `;
-    } else {
-      refsContent.innerHTML = "";
-    }
+    refsContent.innerHTML = renderReferencesHtml(data.referenceBooks || []);
   }
   renderMathInDOM(detailPage);
 
@@ -5661,6 +5923,7 @@ export function openExperimentDetailsPage(expId) {
 }
 
 export function startSimulatorFromDetails(expId) {
+  window.startSimulatorFromDetails = startSimulatorFromDetails;
   const targetId = expId || currentActiveDetailExpId || "projectile";
 
   // Hide standalone pages & leave standalone mode
@@ -5680,6 +5943,7 @@ export function startSimulatorFromDetails(expId) {
   switchExperiment(targetId, true);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+window.startSimulatorFromDetails = startSimulatorFromDetails;
 
 function initExperimentsPage() {
   const pageGrid = document.getElementById("exp-page-labs-grid");
@@ -5751,7 +6015,8 @@ function initExperimentsPage() {
     const name = card.getAttribute("data-name") || "";
 
     let expId = null;
-    if (target === "diode" || target === "diode-vi" || name.toLowerCase().includes("diode") || name.toLowerCase().includes("p-n junction")) expId = "diode";
+    if (target === "pof-attenuation" || target === "pof" || name.toLowerCase().includes("attenuation") || name.toLowerCase().includes("plastic optical fiber")) expId = "pof-attenuation";
+    else if (target === "diode" || target === "diode-vi" || name.toLowerCase().includes("diode") || name.toLowerCase().includes("p-n junction")) expId = "diode";
     else if (target === "diffraction" || target === "diffraction-grating" || name.toLowerCase().includes("diffraction")) expId = "diffraction-grating";
     else if (target === "hall-effect" || name.toLowerCase().includes("hall effect")) expId = "hall-effect";
     else if (target === "sandbox" || name.toLowerCase().includes("sandbox")) expId = "sandbox";
@@ -5826,15 +6091,26 @@ export function handleRoute(path = window.location.pathname, hash = window.locat
   if (cleanPath.startsWith("/experiment/")) {
     const parts = cleanPath.split("/").filter(Boolean);
     const expId = parts[1] || "projectile";
+    if (expId.includes("nanotech")) {
+      showToast("The Nanotechnology Simulation experiment is no longer available.");
+      navigateTo("/experiments", true);
+      return;
+    }
     openExperimentDetailsPage(expId);
   } else if (cleanPath.startsWith("/simulations/") || cleanPath.startsWith("/simulation/")) {
     const parts = cleanPath.split("/").filter(Boolean);
     const expId = parts[1] || "projectile";
+    if (expId.includes("nanotech")) {
+      showToast("The Nanotechnology Simulation experiment is no longer available.");
+      navigateTo("/experiments", true);
+      return;
+    }
     document.body.classList.remove("on-homepage");
     document.body.classList.remove("on-standalone-page");
     physixHome?.classList.add("hidden");
     let mappedId = expId;
-    if (expId === "diode" || expId === "diode-vi" || expId === "pn-junction") mappedId = "diode";
+    if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof") mappedId = "pof-attenuation";
+    else if (expId === "diode" || expId === "diode-vi" || expId === "pn-junction") mappedId = "diode";
     else if (expId === "diffraction-grating" || expId === "diffraction") mappedId = "diffraction";
     else if (expId === "optical-fibre" || expId === "optical") mappedId = "optical";
     else if (expId === "colour-sensor") mappedId = "colour-sensor";
@@ -5860,7 +6136,7 @@ export function handleRoute(path = window.location.pathname, hash = window.locat
     expPage?.classList.remove("hidden");
     initExperimentsPage();
     window.scrollTo({ top: 0, behavior: "instant" });
-  } else if (cleanHash === "#diffraction" || cleanHash === "#diffraction-grating" || cleanHash === "#hall-effect" || cleanHash === "#sandbox" || cleanHash === "#optical" || cleanHash === "#colour-sensor" || cleanHash === "#projectile") {
+  } else if (cleanHash === "#diffraction" || cleanHash === "#diffraction-grating" || cleanHash === "#hall-effect" || cleanHash === "#sandbox" || cleanHash === "#pof-attenuation" || cleanHash === "#optical" || cleanHash === "#colour-sensor" || cleanHash === "#projectile") {
     // Direct link to simulation
     document.body.classList.remove("on-homepage");
     document.body.classList.remove("on-standalone-page");
@@ -5869,6 +6145,14 @@ export function handleRoute(path = window.location.pathname, hash = window.locat
     if (mapped === "diode-vi" || mapped === "pn-junction") mapped = "diode";
     else if (mapped === "diffraction-grating") mapped = "diffraction";
     switchExperiment(mapped, false);
+  } else if (cleanPath.endsWith("/profile") || cleanHash === "#profile") {
+    document.body.classList.remove("on-standalone-page");
+    if (!physixHome || physixHome.classList.contains("hidden")) {
+      // Keep simulator active underneath
+    } else {
+      showHomePage();
+    }
+    openProfileModal("overview");
   } else {
     // Default to Homepage
     document.body.classList.remove("on-standalone-page");
@@ -5883,15 +6167,24 @@ export function navigateTo(path, pushState = true) {
   handleRoute(path);
 }
 
-// Global listener for [data-route] triggers
+// Global listener for [data-route] and profile triggers
 document.addEventListener("click", (e) => {
   const routeTrigger = e.target.closest("[data-route]");
   if (routeTrigger) {
     const route = routeTrigger.getAttribute("data-route");
     if (route) {
       e.preventDefault();
+      if (route === "/profile" || route.endsWith("/profile")) {
+        openProfileModal("overview");
+        return;
+      }
       navigateTo(route);
     }
+  }
+  const profileTrigger = e.target.closest("[data-action='open-profile']");
+  if (profileTrigger) {
+    e.preventDefault();
+    openProfileModal("overview");
   }
 });
 
@@ -6054,8 +6347,37 @@ if (initialPath.startsWith("/experiment/") || initialPath.startsWith("/simulatio
   });
 }
 initPhysixLogoAnimation();
+initMathRenderer();
 initTheme();
 loadUserProfile();
+
+// Asynchronously hydrate profile from Express API if available and local profile is incomplete
+(async () => {
+  try {
+    const activeUid = getActiveUserId();
+    const serverProf = await api.getProfile(activeUid);
+    if (serverProf && (serverProf.name || serverProf.college || serverProf.occ)) {
+      const cur = getStoredUserProfile();
+      const sCollege = (serverProf.college || serverProf.occ || "").trim();
+      const sName = (serverProf.name || "").trim();
+      if ((!cur.name && sName) || (!cur.college && sCollege)) {
+        const merged = {
+          ...cur,
+          name: cur.name || sName,
+          college: cur.college || sCollege,
+          occ: cur.occ || sCollege,
+          handle: cur.handle || serverProf.handle || "",
+          avatar: cur.avatar || serverProf.avatar || "quantum",
+          edu: cur.edu || serverProf.edu || "",
+          bio: cur.bio || serverProf.bio || "",
+          interests: cur.interests || serverProf.interests || ""
+        };
+        localStorage.setItem("physix_user_profile", JSON.stringify(merged));
+        loadUserProfile();
+      }
+    }
+  } catch (e) {}
+})();
 renderObservationsTable();
 renderChallenges();
 updateLauncher(DEFAULT_ANGLE, DEFAULT_HEIGHT);

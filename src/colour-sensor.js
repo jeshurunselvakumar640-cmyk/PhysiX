@@ -1631,8 +1631,10 @@ export function createColourSensorExperiment(callbacks = {}) {
     }
 
     const profile = getStoredUserProfile ? getStoredUserProfile() : {};
-    const studentName = profile.name || "Student Colorimetrist";
-    const studentEmail = getActiveUserId && getActiveUserId() !== "guest" ? `${getActiveUserId()}` : "Guest Mode";
+    const studentName = (profile?.name || "").trim() || "Guest Student";
+    const collegeName = (profile?.college || profile?.occ || "").trim() || "---";
+    const studentEmail = profile?.email || (getActiveUserId && getActiveUserId() !== "guest" && String(getActiveUserId()).includes("@") ? `${getActiveUserId()}` : "guest@physix.lab");
+    const studentRole = profile?.edu || "Student Researcher";
 
     const totalFid = state.observations.reduce((acc, o) => acc + o.fidelityPct, 0);
     const meanFid = Math.round(totalFid / state.observations.length);
@@ -1655,14 +1657,23 @@ export function createColourSensorExperiment(callbacks = {}) {
       obs.timestamp
     ]);
 
+    const btn = document.getElementById("cs-btn-export-pdf");
+    if (btn && btn.disabled) return;
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute("data-orig-html", btn.innerHTML);
+      btn.innerHTML = `<span>Generating Report...</span>`;
+    }
+
     try {
       generateLabReportPdf({
         labTitle: "Study of Colour Sensor (TCS3200) Logbook",
         labSubtitle: "Optoelectronic Photodiode Responsivity, Tristimulus Colorimetry & Inverse-Square Irradiance Dynamics",
         experimentCode: "EXP-03",
         studentName,
+        collegeName,
         studentEmail,
-        studentRole: profile.occ || "Student Colorimetrist",
+        studentRole,
         summaryMetrics: [
           { label: "Total Observations", value: `${state.observations.length} Readings`, color: [14, 165, 233] },
           { label: "Mean Spectral Fidelity", value: `${meanFid}%`, color: [16, 185, 129] },
@@ -1676,9 +1687,17 @@ export function createColourSensorExperiment(callbacks = {}) {
       });
 
       if (showToast) showToast("Generated and downloaded official PhysiX PDF report.");
+      if (btn) btn.innerHTML = `<span>Report Exported!</span>`;
     } catch (err) {
       console.error("Colour Sensor PDF export failed:", err);
       if (showToast) showToast("Failed to generate PDF report. Please try again.");
+    } finally {
+      if (btn) {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = btn.getAttribute("data-orig-html") || `<span>Export PDF Logbook</span>`;
+        }, 1500);
+      }
     }
   }
 

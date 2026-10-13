@@ -546,6 +546,7 @@
       </div>
       <nav class="standalone-nav-links">
         <button type="button" class="standalone-link-btn" data-route="/experiments">Explore Simulations</button>
+        <button type="button" class="standalone-link-btn" data-route="/profile">Profile</button>
         <button type="button" class="standalone-link-btn" data-route="/privacy">Privacy Policy</button>
         <button type="button" class="standalone-btn-back" data-route="/">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -705,6 +706,7 @@
       </div>
       <nav class="standalone-nav-links">
         <button type="button" class="standalone-link-btn" data-route="/experiments">Explore Simulations</button>
+        <button type="button" class="standalone-link-btn" data-route="/profile">Profile</button>
         <button type="button" class="standalone-link-btn" data-route="/terms">Terms of Service</button>
         <button type="button" class="standalone-btn-back" data-route="/">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -892,6 +894,7 @@
         <span class="standalone-brand-badge badge-labs">LABORATORIES</span>
       </div>
       <nav class="standalone-nav-links">
+        <button type="button" class="standalone-link-btn" data-route="/profile">Profile</button>
         <button type="button" class="standalone-link-btn" data-route="/terms">Terms</button>
         <button type="button" class="standalone-link-btn" data-route="/privacy">Privacy</button>
         <button type="button" class="standalone-btn-back" data-route="/">
@@ -1056,6 +1059,7 @@
       </div>
       <nav class="standalone-nav-links">
         <button type="button" class="standalone-link-btn" data-route="/experiments">All Experiments</button>
+        <button type="button" class="standalone-link-btn" data-route="/profile">Profile</button>
         <button type="button" class="standalone-btn-back" id="exp-detail-back-btn" data-route="/experiments">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           <span>Back to Experiments</span>
@@ -1158,6 +1162,15 @@
             <h2>RESULT / CONCLUSION</h2>
           </div>
           <div class="manual-sec-content" id="manual-content-result"></div>
+        </section>
+
+        <!-- References & Further Reading -->
+        <section class="manual-section" id="manual-sec-references">
+          <div class="manual-sec-header">
+            <span class="sec-number">08</span>
+            <h2>REFERENCES & FURTHER READING</h2>
+          </div>
+          <div class="manual-sec-content" id="manual-content-references"></div>
         </section>
       </div>
 
@@ -4610,6 +4623,549 @@
     </main>
   </div><!-- /#exp-diode-section -->
 
+  <!-- =====================================
+       EXPERIMENT 7: PLASTIC OPTICAL FIBER ATTENUATION (POF)
+  ===================================== -->
+  <div id="exp-pof-attenuation-section" class="exp-section-wrapper hidden">
+    <!-- LABORATORY PROCEDURE GUIDE RIBBON -->
+    <section class="of-setup-container">
+      <div class="of-procedure-ribbon pof-procedure-ribbon">
+        <div class="of-proc-step active" id="pof-step-indicator-1">
+          <span class="step-num">1</span>
+          <div class="step-details">
+            <strong>Source Calibration</strong>
+            <span>Power ON &amp; Measure P_in</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="of-proc-step" id="pof-step-indicator-2">
+          <span class="step-num">2</span>
+          <div class="step-details">
+            <strong>POF Coupling</strong>
+            <span>Connect &amp; Align Waveguide</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="of-proc-step" id="pof-step-indicator-3">
+          <span class="step-num">3</span>
+          <div class="step-details">
+            <strong>Fiber Geometry</strong>
+            <span>Set Length L &amp; Curvature</span>
+          </div>
+        </div>
+        <div class="proc-arrow">›</div>
+        <div class="of-proc-step" id="pof-step-indicator-4">
+          <span class="step-num">4</span>
+          <div class="step-details">
+            <strong>Telemetry Log</strong>
+            <span>Capture P_out &amp; Compute &alpha;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN WORKSTATION DASHBOARD -->
+    <main class="dashboard pof-dashboard">
+      <!-- 1. OPTICAL BENCH PROFILE SIMULATION VIEWPORT -->
+      <section class="simulation-card pof-bench-card">
+        <div class="simulation-top-bar">
+          <div class="current-lab-badge">
+            <span class="live-dot" id="pof-top-live-dot"></span>
+            <span>&bull; PRECISION OPTICAL BENCH &bull; DUAL-RAIL TRANSLATION STAGE</span>
+          </div>
+
+          <div class="pof-top-controls-group">
+            <button type="button" class="pof-master-power-btn" id="pof-top-power-btn" title="Toggle Main Laser Source Power (ON / OFF)">
+              <span class="pof-power-pilot-lamp" id="pof-top-power-lamp"></span>
+              <span class="pof-power-text">MASTER POWER: <strong id="pof-top-power-state">OFF</strong></span>
+            </button>
+            <div class="of-bench-hud-pill">
+              <span>Dual 1000mm Chrome Rails &bull; 650 nm TX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pof-bench-viewport" id="pof-bench-viewport">
+          <canvas id="pof-bench-canvas" width="960" height="380"></canvas>
+        </div>
+
+        <!-- Component Inspector Modal Overlay -->
+        <div id="pof-inspector-modal" class="pof-inspector-modal hidden" role="dialog" aria-modal="true">
+          <div class="pof-insp-backdrop"></div>
+          <div class="pof-insp-card">
+            <div class="pof-insp-header">
+              <div class="pof-insp-title-box">
+                <span class="pof-insp-badge" id="pof-insp-badge">COMPONENT SPECIFICATION</span>
+                <h4 id="pof-insp-title">Optical Component</h4>
+              </div>
+              <button type="button" class="pof-insp-close" id="pof-insp-close-btn" aria-label="Close Inspector">&times;</button>
+            </div>
+            <div class="pof-insp-body">
+              <p class="pof-insp-desc" id="pof-insp-desc"></p>
+              <div class="pof-insp-params-block">
+                <h5>Technical Operating Parameters</h5>
+                <div class="pof-insp-params" id="pof-insp-params"></div>
+              </div>
+            </div>
+            <div class="pof-insp-footer">
+              <button type="button" class="btn btn-secondary btn-sm" id="pof-insp-dismiss-btn">Close Inspector</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. HARDWARE DECK GRID & INSTRUMENT CARDS -->
+      <div class="pof-deck-grid">
+        <!-- Instrument 1: Digital Optical Power Meter -->
+        <div class="pof-deck-card pof-meter-card" id="pof-meter-card">
+          <div class="pof-card-header">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              DIGITAL OPTICAL POWER METER
+            </h4>
+            <span class="pof-meter-status-pill" id="pof-meter-status-pill">READY</span>
+          </div>
+
+          <div class="pof-meter-display-chassis">
+            <div class="pof-meter-lcd">
+              <div class="pof-meter-lcd-top">
+                <span class="pof-meter-mode-lbl" id="pof-screen-mode-lbl">MODE: REFERENCE (P_in)</span>
+                <span class="pof-meter-wl-lbl">CAL: 650 nm</span>
+              </div>
+              <div class="pof-meter-lcd-main">
+                <span class="pof-meter-val" id="pof-meter-val">0.000</span>
+                <span class="pof-meter-unit" id="pof-meter-unit">mW</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meter Controls -->
+          <div class="pof-meter-controls-bar">
+            <div class="pof-meter-modes">
+              <button type="button" class="btn btn-sm active" id="pof-mode-ref" title="Align detector to optical source for input reference">
+                1. Reference (P_in)
+              </button>
+              <button type="button" class="btn btn-sm" id="pof-mode-out" title="Align detector to fiber output facet">
+                2. POF Output (P_out)
+              </button>
+            </div>
+            <div class="pof-meter-units">
+              <button type="button" class="btn btn-sm active" id="pof-unit-mw">mW</button>
+              <button type="button" class="btn btn-sm" id="pof-unit-uw">&mu;W</button>
+            </div>
+          </div>
+
+          <div class="pof-meter-actions">
+            <button type="button" class="btn btn-primary pof-btn-measure" id="pof-btn-measure">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              MEASURE POWER
+            </button>
+          </div>
+        </div>
+
+        <!-- Instrument 2: Transmitter & Coupler Deck -->
+        <div class="pof-deck-card pof-tx-card" id="pof-tx-card">
+          <div class="pof-card-header">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+              </svg>
+              OPTICAL SOURCE &amp; COUPLERS
+            </h4>
+          </div>
+
+          <div class="pof-tx-controls">
+            <!-- Apparent Master Power Toggle Button -->
+            <div class="pof-ctrl-row">
+              <label>Master Optical Source (650 nm Laser Diode):</label>
+              <button type="button" class="pof-btn-power-main" id="pof-btn-power" title="Click to turn Laser Source ON / OFF">
+                <span class="pof-power-indicator" id="pof-deck-power-indicator"></span>
+                <span id="pof-deck-power-text">SOURCE: POWER OFF</span>
+                <span class="pof-power-badge" id="pof-deck-power-badge">CLICK TO START</span>
+              </button>
+            </div>
+
+            <!-- Optical Source Emitted Power Control (P_in) -->
+            <div class="pof-ctrl-row pof-power-setting-row">
+              <div class="pof-align-lbl">
+                <label for="pof-source-power-slider">Laser Emitted Power (P_in):</label>
+                <strong id="pof-val-source-power">3.00 mW</strong>
+              </div>
+              <input type="range" id="pof-source-power-slider" min="0.5" max="10.0" step="0.1" value="3.0" class="pof-slider" aria-label="Laser Emitted Power in mW">
+              <div class="pof-length-presets" style="margin-top:6px;">
+                <span class="pof-preset-lbl">Power Presets:</span>
+                <button type="button" class="pof-preset-chip pof-power-preset-chip" data-power="1.0">1.0 mW</button>
+                <button type="button" class="pof-preset-chip pof-power-preset-chip" data-power="2.0">2.0 mW</button>
+                <button type="button" class="pof-preset-chip pof-power-preset-chip active" data-power="3.0">3.0 mW</button>
+                <button type="button" class="pof-preset-chip pof-power-preset-chip" data-power="5.0">5.0 mW</button>
+                <button type="button" class="pof-preset-chip pof-power-preset-chip" data-power="8.0">8.0 mW</button>
+              </div>
+            </div>
+
+            <div class="pof-ctrl-row">
+              <label>Plastic Optical Fiber (POF) Waveguide Coupling:</label>
+              <button type="button" class="btn btn-secondary btn-sm pof-btn-connect connected" id="pof-btn-connect">
+                <span class="pof-conn-indicator"></span>
+                <span>POF: CONNECTED</span>
+              </button>
+            </div>
+
+            <!-- Precision Micrometer Alignments -->
+            <div class="pof-align-row">
+              <div class="pof-align-col">
+                <div class="pof-align-lbl">
+                  <span>Input Coupler Offset:</span>
+                  <strong id="pof-val-input-align">0.0 mm</strong>
+                </div>
+                <input type="range" id="pof-input-align-slider" min="-2.0" max="2.0" step="0.1" value="0.0" class="pof-slider" aria-label="Input Coupler Alignment Offset">
+              </div>
+              <div class="pof-align-col">
+                <div class="pof-align-lbl">
+                  <span>Output Coupler Offset:</span>
+                  <strong id="pof-val-output-align">0.0 mm</strong>
+                </div>
+                <input type="range" id="pof-output-align-slider" min="-2.0" max="2.0" step="0.1" value="0.0" class="pof-slider" aria-label="Output Coupler Alignment Offset">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instrument 3: Fiber Parameters & Bending Deck -->
+        <div class="pof-deck-card pof-fiber-card" id="pof-fiber-card">
+          <div class="pof-card-header">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+              POF LINK LENGTH &amp; MACROBENDING
+            </h4>
+          </div>
+
+          <div class="pof-fiber-controls">
+            <div class="pof-length-control-box">
+              <div class="pof-length-header">
+                <label for="pof-length-slider">Modeled Fiber Length (L):</label>
+                <strong class="pof-length-val" id="pof-display-length">5.0 m</strong>
+              </div>
+              <input type="range" id="pof-length-slider" min="1.0" max="25.0" step="0.5" value="5.0" class="pof-slider" aria-label="Fiber Length in meters">
+              <div class="pof-length-presets">
+                <span class="pof-preset-lbl">Quick Presets:</span>
+                <button type="button" class="pof-preset-chip" data-length="1.0">1.0 m</button>
+                <button type="button" class="pof-preset-chip active" data-length="5.0">5.0 m</button>
+                <button type="button" class="pof-preset-chip" data-length="10.0">10.0 m</button>
+                <button type="button" class="pof-preset-chip" data-length="15.0">15.0 m</button>
+                <button type="button" class="pof-preset-chip" data-length="20.0">20.0 m</button>
+                <button type="button" class="pof-preset-chip" data-length="25.0">25.0 m</button>
+              </div>
+            </div>
+
+            <!-- Macrobending Condition -->
+            <div class="pof-bend-control-box">
+              <label>Fiber Curvature / Macrobending Mode:</label>
+              <div class="pof-bend-chips">
+                <button type="button" class="pof-bend-chip active" data-bend="straight">
+                  <strong>Straight</strong> (0 dB Loss)
+                </button>
+                <button type="button" class="pof-bend-chip" data-bend="moderate">
+                  <strong>Moderate Bend (R &approx; 25 mm)</strong> (+0.8 dB)
+                </button>
+                <button type="button" class="pof-bend-chip" data-bend="sharp">
+                  <strong>Sharp Bend (R &approx; 10 mm)</strong> (+2.5 dB)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. REAL-TIME OPTICAL TELEMETRY CARDS -->
+      <section class="results-container pof-results-container">
+        <div class="results-card">
+          <div class="result-box card-distance">
+            <div class="result-icon icon-dist">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              </svg>
+            </div>
+            <div class="result-meta">
+              <span class="result-label">Incident Reference (P_in)</span>
+              <span id="pof-hud-pin" class="result-val">-- mW</span>
+              <span class="result-sub">Calibrated optical source power</span>
+            </div>
+          </div>
+
+          <div class="result-box card-spot">
+            <div class="result-icon icon-spot">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+            <div class="result-meta">
+              <span class="result-label">Transmitted Power (P_out)</span>
+              <span id="pof-hud-pout" class="result-val">-- mW</span>
+              <span class="result-sub">Fiber output facet reading</span>
+            </div>
+          </div>
+
+          <div class="result-box card-na">
+            <div class="result-icon icon-na">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
+            <div class="result-meta">
+              <span class="result-label">Total Attenuation (A_dB)</span>
+              <span id="pof-hud-total-att" class="result-val text-amber">-- dB</span>
+              <span class="result-sub">10 &middot; log10(P_in / P_out)</span>
+            </div>
+          </div>
+
+          <div class="result-box card-angle">
+            <div class="result-icon icon-angle">
+              <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+            <div class="result-meta">
+              <span class="result-label">Attenuation Rate (&alpha;)</span>
+              <span id="pof-hud-alpha" class="result-val text-green">-- dB/km</span>
+              <span class="result-sub">(1000 / L_m) &middot; A_dB</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. WORKSTATION: CHALLENGES, OBSERVATIONS & TELEMETRY -->
+      <section class="lab-workstation-container pof-workstation-container">
+        <!-- 4.1 PLASTIC OPTICAL FIBER MASTERY CHALLENGES -->
+        <div class="workstation-card challenges-card" id="pof-challenges-card">
+          <div class="workstation-header">
+            <div class="workstation-title-group">
+              <div class="workstation-icon-glow challenge-icon-glow">
+                <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+              <div>
+                <h3>Plastic Optical Fiber Mastery Challenges</h3>
+                <p>Complete precision optical telemetry missions to earn XP and advance your Photonics Dossier</p>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+              <div class="challenge-xp-badge">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span id="pof-challenges-completed-count">0 / 6 Complete</span>
+                <span class="xp-separator">&bull;</span>
+                <span id="pof-user-total-challenge-xp" class="xp-highlight">+0 XP</span>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="pof-btn-reset-exp">
+                Reset Apparatus
+              </button>
+            </div>
+          </div>
+
+          <!-- Challenges 3-Column Responsive Grid -->
+          <div class="challenges-grid" id="pof-challenges-grid">
+            <!-- Dynamically populated -->
+          </div>
+          <!-- Hidden fallback list for backwards compatibility -->
+          <div class="pof-challenges-list hidden" id="pof-challenges-list"></div>
+        </div>
+
+        <!-- 4.2 OBSERVATIONS LOGBOOK & TELEMETRY TABLE -->
+        <div class="workstation-card observations-card" id="pof-obs-card">
+          <div class="workstation-header">
+            <div class="workstation-title-group">
+              <div class="workstation-icon-glow obs-icon-glow">
+                <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </div>
+              <div>
+                <h3>Optical Fiber Attenuation Observations</h3>
+                <p>Documented readings of fiber length L, incident power P_in, output power P_out, and computed &alpha;</p>
+              </div>
+            </div>
+            <div class="obs-actions-group">
+              <button type="button" id="pof-btn-record-obs" class="btn-obs-action btn-obs-record" title="Capture and Record Current Reading into Observation Table">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                Record Observation
+              </button>
+              <button type="button" id="pof-btn-export-pdf" class="btn-obs-action btn-obs-export-pdf" title="Export Official PhysiX Lab Report (PDF)">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                Export PDF
+              </button>
+              <button type="button" id="pof-btn-clear-obs" class="btn-obs-action btn-obs-clear" title="Clear All Recorded Observations">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Clear Observations
+              </button>
+              <span class="obs-count-pill" id="pof-obs-count-badge">0 Readings</span>
+            </div>
+          </div>
+
+          <!-- Summary Statistics Bar -->
+          <div class="of-stats-summary-bar">
+            <div class="of-stat-item">
+              <span class="of-stat-lbl">Mean Attenuation Rate (&alpha;)</span>
+              <strong id="pof-mean-alpha" class="of-stat-val text-cyan">--</strong>
+            </div>
+            <div class="of-stat-item">
+              <span class="of-stat-lbl">Incident Reference (P_in)</span>
+              <strong id="pof-stat-pin" class="of-stat-val text-purple">--</strong>
+            </div>
+            <div class="of-stat-item">
+              <span class="of-stat-lbl">Selected Fiber Length (L)</span>
+              <strong id="pof-stat-len" class="of-stat-val text-green">5.0 m</strong>
+            </div>
+            <div class="of-stat-item">
+              <span class="of-stat-lbl">PMMA Core Benchmark</span>
+              <strong class="of-stat-val">180 dB/km</strong>
+            </div>
+          </div>
+
+          <!-- Observation Table Wrapper & Empty State -->
+          <div class="obs-table-wrapper">
+            <div id="pof-obs-empty" class="obs-empty-state">
+              <div class="obs-empty-icon">
+                <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <h4>No Optical Fiber Readings Recorded</h4>
+              <p>Power on the 650 nm source, measure power in Reference and POF Output modes, then click <strong>"Record Observation"</strong> to log data.</p>
+            </div>
+
+            <div class="obs-table-container">
+              <table class="obs-table" id="pof-obs-table">
+                <thead>
+                  <tr>
+                    <th>S. No.</th>
+                    <th>Fiber Length (m)</th>
+                    <th>Input Power (mW)</th>
+                    <th>Output Power (mW)</th>
+                    <th>Total Loss (dB)</th>
+                    <th>Attenuation &alpha; (dB/km)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="pof-obs-tbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.3 TELEMETRY GRAPH & LOSS INTERPRETATION GRID -->
+        <div class="pof-analysis-grid">
+          <!-- Telemetry Graph Card -->
+          <div class="workstation-card pof-graph-card" id="pof-telemetry-graph-card">
+            <div class="workstation-header" style="margin-bottom:12px; padding-bottom:8px;">
+              <div class="workstation-title-group">
+                <div class="workstation-icon-glow" style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.35);">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                </div>
+                <div>
+                  <h3>Dynamic Telemetry Graph</h3>
+                  <p>Attenuation decay and power transmission telemetry</p>
+                </div>
+              </div>
+              <div class="pof-graph-tabs">
+                <button type="button" class="btn btn-sm active" id="pof-graph-tab-power">P_out vs Length</button>
+                <button type="button" class="btn btn-sm" id="pof-graph-tab-att">Attenuation vs Length</button>
+              </div>
+            </div>
+            <div class="pof-graph-canvas-container">
+              <canvas id="pof-graph-canvas" width="600" height="280"></canvas>
+            </div>
+          </div>
+
+          <!-- Physical Loss Interpretation Card -->
+          <div class="workstation-card pof-interp-card" id="pof-interp-card">
+            <div class="workstation-header" style="margin-bottom:12px; padding-bottom:8px;">
+              <div class="workstation-title-group">
+                <div class="workstation-icon-glow" style="background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.35);">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+                <div>
+                  <h3>Loss Mechanisms Analysis</h3>
+                  <p>Waveguide scattering &amp; absorption verification</p>
+                </div>
+              </div>
+            </div>
+            <div class="pof-interp-content">
+              <p class="pof-interp-prompt">
+                <strong>Laboratory Analysis Question:</strong> Which of the following statements correctly accounts for the observed optical power loss along the plastic optical fiber?
+              </p>
+              <div class="pof-interp-options">
+                <button type="button" class="pof-interp-opt-btn" data-correct="false">
+                  A. Attenuation is entirely independent of fiber length; loss only occurs at the photodetector surface.
+                </button>
+                <button type="button" class="pof-interp-opt-btn" data-correct="true">
+                  B. Attenuation increases exponentially with fiber length due to intrinsic Rayleigh scattering and C-H absorption, compounded by coupling misalignment and bending radiation loss.
+                </button>
+                <button type="button" class="pof-interp-opt-btn" data-correct="false">
+                  C. Output power increases with fiber length because core reflections amplify light intensity along the waveguide.
+                </button>
+              </div>
+              <div class="pof-interp-feedback" id="pof-interp-feedback">
+                Select an interpretation option to verify physical understanding.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div><!-- /#exp-pof-attenuation-section -->
+
+
 
 
   <!-- =====================================
@@ -5250,62 +5806,8 @@
           <div class="card-specular-rim"></div>
         </div>
 
-        <!-- 12. NANOTECHNOLOGY SIMULATION (EXP 10) -->
-        <div class="lab-card coming-lab" data-category="sensors" data-name="Simulation Experiments based on Nanotechnology using Open-Source Simulation">
-          <div class="card-header-bar">
-            <div class="card-icon-badge">
-              <svg class="badge-ring" viewBox="0 0 44 44">
-                <circle cx="22" cy="22" r="19" class="ring-bg"></circle>
-                <circle cx="22" cy="22" r="19" class="ring-fill" style="stroke: #06b6d4; stroke-dashoffset: 80;"></circle>
-              </svg>
-              <div class="badge-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <circle cx="6" cy="6" r="2"></circle>
-                  <circle cx="18" cy="6" r="2"></circle>
-                  <circle cx="6" cy="18" r="2"></circle>
-                  <circle cx="18" cy="18" r="2"></circle>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </div>
-            </div>
-            <button type="button" class="card-bookmark-btn" aria-label="Bookmark experiment" title="Bookmark experiment">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-              </svg>
-            </button>
-          </div>
-
-          <div class="card-preview-art">
-            <svg viewBox="0 0 280 110" class="preview-svg">
-              <polygon points="140,25 200,55 140,85 80,55" fill="none" stroke="rgba(6, 182, 212, 0.4)" stroke-width="1.5"></polygon>
-              <circle cx="140" cy="55" r="10" fill="rgba(6, 182, 212, 0.3)" stroke="#06b6d4" stroke-width="2" filter="drop-shadow(0 0 8px #06b6d4)"></circle>
-              <circle cx="140" cy="55" r="3" fill="#ffffff"></circle>
-              <text x="140" y="100" fill="rgba(148,163,184,0.6)" font-family="monospace" font-size="8" text-anchor="middle">Quantum Confinement E_n ∝ 1/L²</text>
-            </svg>
-          </div>
-
-          <div class="card-content-block">
-            <h3 class="card-title">
-              <span class="title-grad">Nanotech</span>
-              <span class="title-main">Simulation</span>
-            </h3>
-            <p class="card-desc">Simulate electron quantum confinement, density of states, and nanoscale semiconductor bandgaps</p>
-          </div>
-
-          <div class="card-action-bar">
-            <button type="button" class="lab-card-btn btn-perform" aria-label="Perform Nanotech experiment">
-              Perform
-            </button>
-          </div>
-
-          <div class="card-ambient-nebula"></div>
-          <div class="card-white-light-effect"></div>
-          <div class="card-specular-rim"></div>
-        </div>
-
         <!-- 13. OPTICAL ATTENUATION (EXP 11) -->
-        <div class="lab-card coming-lab" data-category="optics" data-name="Measuring Optical Power Attenuation in Plastic Optical Fiber">
+        <div class="lab-card active-lab" data-category="all optics" data-exp-target="pof-attenuation" data-name="Measuring Optical Power Attenuation in Plastic Optical Fiber">
           <div class="card-header-bar">
             <div class="card-icon-badge">
               <svg class="badge-ring" viewBox="0 0 44 44">
@@ -5467,7 +5969,7 @@
     <div class="modal-card modal-card-lg help-modal-card">
       <div class="modal-header">
         <div>
-          <h2>
+          <h2 id="help-modal-title">
             <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" style="color:#38bdf8;">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
@@ -5475,7 +5977,7 @@
             </svg>
             PhysiX Virtual Laboratory User Guide &amp; Operations Manual
           </h2>
-          <p>Complete step-by-step instructions, interactive Control Deck breakdown, machine hardware switches, and telemetry export walkthrough</p>
+          <p id="help-modal-subtitle">Complete step-by-step instructions, interactive Control Deck breakdown, machine hardware switches, and telemetry export walkthrough</p>
         </div>
         <button id="btn-close-help" class="modal-close-btn" title="Close User Guide">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -5483,7 +5985,7 @@
       </div>
 
       <!-- HIGH-TECH HELP EXPERIMENT SWITCHER TABS -->
-      <div class="help-nav-tabs">
+      <div class="help-nav-tabs" id="help-nav-tabs">
         <button type="button" class="help-tab-btn active" id="btn-help-tab-exp1">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
@@ -6219,21 +6721,409 @@
             </div>
           </div>
 
-        <!-- TAB 6: DIODE V-I CHARACTERISTICS -->
-        <div id="help-pane-exp6" class="help-pane hidden">
-          <div class="help-section">
-            <h4>Experiment Overview &amp; Objective</h4>
-            <p>Study the voltage-current (V-I) response of a P-N junction semiconductor diode in both Forward Bias (conduction state) and Reverse Bias (blocking state). Observe the cut-in knee voltage ($V_k \approx 0.65 - 0.7\text{ V}$ for Silicon) and measure the microampere reverse saturation current.</p>
+        
+        <!-- ==========================================
+             DEDICATED PANE: DIODE V-I CHARACTERISTICS
+        ========================================== -->
+        <div id="help-pane-exp-diode" class="help-pane hidden">
+          <!-- Hero Card -->
+          <div class="help-hero-card">
+            <div class="help-hero-icon-box" style="background: rgba(2, 132, 199, 0.18); border-color: rgba(2, 132, 199, 0.45);">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+                <polygon points="12 8 16 12 12 16" fill="#0284c7"></polygon>
+                <line x1="16" y1="8" x2="16" y2="16"></line>
+              </svg>
+            </div>
+            <div class="help-hero-body">
+              <h3>Experiment 6: Diode V-I Characteristics Virtual Laboratory</h3>
+              <p>Simulate and study the voltage-current ($V-I$) response of a P-N junction semiconductor diode under Forward Bias and Reverse Bias conditions. Determine the cut-in knee voltage ($V_k \approx 0.65 - 0.7\text{ V}$ for Silicon), observe barrier potential collapse, measure reverse saturation leakage current ($I_0$ in $\mu\text{A}$), and compute static ($R_{\text{dc}}$) and dynamic ($r_{\text{ac}}$) junction resistances.</p>
+              <button type="button" class="btn-help-start-tour" data-tour-exp="diode">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Launch Interactive Guided Tour
+              </button>
+            </div>
           </div>
 
-          <div class="help-section">
-            <h4>Step-by-Step Laboratory Procedure</h4>
+          <!-- Section 1: Step-by-Step Operations Guide -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">1</span>
+              Step-by-Step Laboratory Procedure (Forward &amp; Reverse Bias)
+            </h4>
             <div class="help-steps-grid">
               <div class="help-step-item">
                 <span class="step-num">Step 1</span>
-                <h5>Meter Range Configuration</h5>
-                <p>For Forward Bias, select 1.5 V on the voltmeter and 10 mA on the milliammeter. For Reverse Bias, select 30 V and 100 μA.</p>
+                <h5>Meter Range Alignment</h5>
+                <p><strong>Forward Bias:</strong> Set Voltmeter range to <code>1.5 V</code> and Ammeter range to <code>10 mA</code> (Upper dial scales active).<br><strong>Reverse Bias:</strong> Set Voltmeter to <code>30 V</code> and Ammeter to <code>100 &mu;A</code> (Lower dial scales active).</p>
               </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 2</span>
+                <h5>Circuit Wiring &amp; Patching</h5>
+                <p>Connect banana cables by clicking binding posts, or click <strong>"Auto Connect Forward"</strong> / <strong>"Auto Connect Reverse"</strong>. The indicator must show <span style="color:#10b981;font-weight:700;">CIRCUIT VALID</span> with ammeter in series and voltmeter in parallel across supply.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 3</span>
+                <h5>Switch Master Power ON</h5>
+                <p>Toggle the <strong>Master Power Switch</strong> on the center trainer panel. The green pilot lamp illuminates, enabling the dual variable DC power supplies.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 4</span>
+                <h5>Voltage Sweep &amp; Meter Readings</h5>
+                <p>Rotate the voltage potentiometer knob (or click <code>&gt;</code> step buttons) in calibrated increments:
+                <br>&bull; <em>Forward:</em> Sweep from $0.0\text{ V}$ to $1.5\text{ V}$. Current remains tiny until $V_k \approx 0.65\text{ V}$, then rises sharply.
+                <br>&bull; <em>Reverse:</em> Sweep from $0\text{ V}$ to $30\text{ V}$. Observe tiny microampere saturation leakage ($I_0 \approx 2 - 5\ \mu\text{A}$).</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 5</span>
+                <h5>Record Observations</h5>
+                <p>Click <strong>"Record Observation"</strong> at each voltage step. Live meter readings $(V_F, I_F)$ or $(V_R, I_R)$ are logged into the synchronous observation logbook with automatic unit conversion.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 6</span>
+                <h5>Analyze Curves &amp; Export</h5>
+                <p>Switch between the <strong>Forward Bias (1st Quadrant)</strong> and <strong>Reverse Bias (3rd Quadrant)</strong> graph tabs. Calculate static resistance $R_{\text{dc}} = V_F / I_F$ and export an official PDF lab report.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Controls & Interactive Apparatus Breakdown -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">2</span>
+              Bench Hardware Controls &amp; Terminal Binding Posts
+            </h4>
+            <div class="help-ui-showcase-grid">
+              <div class="help-ui-item">
+                <span class="help-ui-label">Dual Variable DC Supplies</span>
+                <p class="help-ui-desc">Independent power supplies: fine <strong>$0 - 1.5\text{ V}$</strong> potentiometer for forward bias resolution and coarse <strong>$0 - 30\text{ V}$</strong> potentiometer for reverse breakdown sweeps.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">Dual-Scale Analog Taut-Band Meters</span>
+                <p class="help-ui-desc">Voltmeter ($1.5\text{ V} / 30\text{ V}$) and Ammeter ($10\text{ mA} / 100\ \mu\text{A}$) feature real-time needle mechanics with mechanical damping, least count strips, and digital validation readouts.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">8 Spring-Loaded Banana Terminals</span>
+                <p class="help-ui-desc">Color-coded terminals: DC Output (+, &minus;), Voltmeter (+, &minus;), Ammeter (+, &minus;), Forward Diode (P, N), and Reverse Diode (N, P). Renders realistic catenary Bezier wire physics.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">Fail-Safe Auto Connect &amp; Clear Buttons</span>
+                <p class="help-ui-desc"><strong>"Auto Connect Forward"</strong> and <strong>"Auto Connect Reverse"</strong> automatically patch valid polarities and verify the circuit without risking meter damage.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Scientific Model & Graph Interpretation -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">3</span>
+              Scientific Equations, Axes &amp; Graph Interpretation
+            </h4>
+            <div class="help-card-inner" style="margin-bottom:12px;">
+              <div class="help-card-inner-header">
+                <h5>Shockley Semiconductor Diode Equation</h5>
+              </div>
+              <p>$I = I_0 \left( e^{\frac{q V}{\eta k_B T}} - 1 \right)$</p>
+              <p>Where $I_0$ is the reverse saturation current, $q = 1.602 \times 10^{-19}\text{ C}$ is elementary charge, $k_B = 1.381 \times 10^{-23}\text{ J/K}$ is Boltzmann's constant, $T = 300\text{ K}$ is ambient temperature, and $\eta \approx 2$ is the ideality factor for Silicon.</p>
+            </div>
+            <div class="help-card-inner" style="margin-bottom:12px;">
+              <div class="help-card-inner-header">
+                <h5>Forward Characteristic Graph (1st Quadrant)</h5>
+              </div>
+              <p>&bull; <strong>X-axis:</strong> Forward Voltage $V_F$ in Volts (Range: $0$ to $1.5\text{ V}$, scale: $1\text{ cm} = 0.1\text{ V}$).<br>
+              &bull; <strong>Y-axis:</strong> Forward Current $I_F$ in Milliamperes (Range: $0$ to $10\text{ mA}$, scale: $1\text{ cm} = 1\text{ mA}$).<br>
+              &bull; <strong>Knee (Cut-in) Voltage ($V_k$):</strong> Point where barrier potential is overcome and current rises steeply ($V_k \approx 0.65\text{ V}$ for Silicon).<br>
+              &bull; <strong>Static Resistance:</strong> $R_{\text{dc}} = \frac{V_F}{I_F}$ at any given operating point.<br>
+              &bull; <strong>Dynamic (AC) Resistance:</strong> $r_{\text{ac}} = \frac{\Delta V_F}{\Delta I_F}$ in the steep linear conduction region (typically $10 - 30\ \Omega$).</p>
+            </div>
+            <div class="help-card-inner">
+              <div class="help-card-inner-header">
+                <h5>Reverse Characteristic Graph (3rd Quadrant)</h5>
+              </div>
+              <p>&bull; <strong>Origin:</strong> Positioned at the Top-Right corner $(0, 0)$.<br>
+              &bull; <strong>X-axis (Extending Left):</strong> Reverse Voltage $V_R$ in Volts (Range: $0$ to $30\text{ V}$).<br>
+              &bull; <strong>Y-axis (Extending Downwards):</strong> Reverse Current $I_R$ in Microamperes (Range: $0$ to $40+\ \mu\text{A}$).<br>
+              &bull; <strong>Physical Observation:</strong> Current remains at a nearly flat saturation level ($I_0 \approx 2 - 5\ \mu\text{A}$) due to minority charge carriers across the widened depletion barrier.</p>
+            </div>
+          </div>
+
+          <!-- Section 4: Gamification Challenges Walkthrough -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">4</span>
+              Gamification Challenges &amp; Student XP Rewards (Total: 660 XP)
+            </h4>
+            <div class="help-steps-grid">
+              <div class="help-step-item">
+                <span class="step-num">Challenge 1 &bull; 60 XP</span>
+                <h5>Forward Bias Meter Range Alignment</h5>
+                <p>Click the range selectors to set Voltmeter = 1.5 V and Ammeter = 10 mA (Upper dial scales).</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 2 &bull; 100 XP</span>
+                <h5>Forward Bias Circuit Patching</h5>
+                <p>Connect the series ammeter and forward diode (P to +, N to Ammeter), or click Auto Connect Forward.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 3 &bull; 75 XP</span>
+                <h5>Log First Forward Bias Trial</h5>
+                <p>Turn power ON, increase $V_F$ knob past the cut-in knee ($V_F &gt; 0.6\text{ V}$), and record the reading.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 4 &bull; 60 XP</span>
+                <h5>Reverse Bias Range Alignment</h5>
+                <p>Switch Voltmeter = 30 V and Ammeter = 100 &mu;A (Lower dial scales).</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 5 &bull; 100 XP</span>
+                <h5>Reverse Bias Circuit Patching</h5>
+                <p>Wire the reverse diode (N to +, P to Ammeter), or click Auto Connect Reverse.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 6 &bull; 75 XP</span>
+                <h5>Log Reverse Saturation Trial</h5>
+                <p>Apply reverse bias ($V_R &gt; 5\text{ V}$) and record reading into the microampere table.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 7 &bull; 120 XP</span>
+                <h5>Plot Forward V-I Characteristic</h5>
+                <p>Log at least 4 forward observations across the voltage range to render the complete 1st quadrant curve.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 8 &bull; 120 XP</span>
+                <h5>Plot Reverse V-I Characteristic</h5>
+                <p>Log at least 4 reverse observations across $0 - 30\text{ V}$ to render the complete 3rd quadrant curve.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Troubleshooting & FAQs -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">5</span>
+              Troubleshooting &amp; Frequently Asked Questions
+            </h4>
+            <div class="help-steps-grid">
+              <div class="help-step-item">
+                <span class="step-num">Issue A</span>
+                <h5>Needles Not Deflecting?</h5>
+                <p>Ensure the <strong>Master Power Switch</strong> is toggled to ON (green LED illuminated) and the circuit validation pill displays <code>CIRCUIT VALID</code>.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Issue B</span>
+                <h5>Reverse Current Reads 0.00?</h5>
+                <p>Confirm the Ammeter range is switched to <strong>100 &mu;A</strong>. The 10 mA range cannot resolve microampere leakage currents.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Issue C</span>
+                <h5>Graph Points Not Plotted?</h5>
+                <p>You must click <strong>"Record Observation"</strong> while the power supply is on and non-zero voltage is applied to populate graph coordinates.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ==========================================
+             DEDICATED PANE: POF ATTENUATION
+        ========================================== -->
+        <div id="help-pane-exp-pof" class="help-pane hidden">
+          <!-- Hero Card -->
+          <div class="help-hero-card">
+            <div class="help-hero-icon-box" style="background: rgba(234, 179, 8, 0.18); border-color: rgba(234, 179, 8, 0.45);">
+              <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a10 10 0 0 1 10 10"></path>
+                <circle cx="12" cy="12" r="4"></circle>
+              </svg>
+            </div>
+            <div class="help-hero-body">
+              <h3>Experiment 7: Plastic Optical Fiber (POF) Attenuation Virtual Laboratory</h3>
+              <p>Simulate and measure optical power transmission loss and the distributed attenuation coefficient ($\alpha$) in step-index polymethyl methacrylate (PMMA) plastic optical fiber waveguides on a precision optical bench. Study the Bouguer-Lambert-Beer exponential decay law, extrinsic macrobending radiation leakage, and transverse coupling alignment losses.</p>
+              <button type="button" class="btn-help-start-tour" data-tour-exp="pof-attenuation">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Launch Interactive Guided Tour
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 1: Step-by-Step Operations Guide -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">1</span>
+              Step-by-Step Laboratory Procedure
+            </h4>
+            <div class="help-steps-grid">
+              <div class="help-step-item">
+                <span class="step-num">Step 1</span>
+                <h5>Power ON 650 nm Optical Source</h5>
+                <p>Click <strong>"MASTER POWER"</strong> (top simulation bar or hardware deck). The 650 nm Laser Transmitter lights up and emits coherent red radiation into the optical path.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 2</span>
+                <h5>Calibrate Reference Input Power (P_in)</h5>
+                <p>Adjust the laser output power slider ($P_{\text{in}} = 0.5$ to $10.0\text{ mW}$, default $3.00\text{ mW}$). Switch the power meter to <strong>1. Reference (P_in)</strong> mode and click <strong>MEASURE POWER</strong> to capture $P_{\text{in}}$.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 3</span>
+                <h5>Couple the POF Waveguide</h5>
+                <p>Verify the POF cable is securely coupled between Mount 3 (Input Coupler) and Mount 1 (Output Screen). Click <strong>"POF: CONNECTED"</strong> if detached.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 4</span>
+                <h5>Select Fiber Length (L)</h5>
+                <p>Set the POF cable length using the slider or quick preset chips: <code>1.0 m</code>, <code>2.0 m</code>, <code>5.0 m</code>, <code>10.0 m</code>, <code>15.0 m</code>, or <code>20.0 m</code>. Watch the catenary sag adjust dynamically.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 5</span>
+                <h5>Measure Transmitted Output Power (P_out)</h5>
+                <p>Switch the power meter to <strong>2. POF Output (P_out)</strong> mode. Click <strong>MEASURE POWER</strong> to capture the optical power exiting the fiber facet.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Step 6</span>
+                <h5>Log Observation &amp; Analyze Attenuation</h5>
+                <p>Click <strong>"Record Current Observation"</strong>. The simulator computes decibel loss $A_{\text{dB}}$ and $\alpha$ (dB/km). Inspect the live Telemetry Graph and export an official PDF lab report.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Apparatus Assemblies Breakdown -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">2</span>
+              Hardware Apparatus Breakdown (Precision Dual-Rail Optical Bench)
+            </h4>
+            <div class="help-ui-showcase-grid">
+              <div class="help-ui-item">
+                <span class="help-ui-label">Mount 5 &bull; Optical Source (Transmitter)</span>
+                <p class="help-ui-desc">Stabilized visible red laser diode ($650\text{ nm}$) emitting up to $10.0\text{ mW}$ output with power indicator pilot lamp and rear heavy power umbilical.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">Mount 4 &bull; 10x/0.25 Microscope Objective</span>
+                <p class="help-ui-desc">Precision achromatic microscope objective focusing collimated 650 nm laser light into a high numerical aperture converging cone directed at the fiber core.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">Mount 3 &bull; Input Coupling Stage</span>
+                <p class="help-ui-desc">Dark anodized carrier plate with X-Y transverse micrometer thumbscrews and SMA ferrule receptor. Simulates Gaussian misalignment coupling loss.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">Component 3 &bull; Flexible POF Waveguide</span>
+                <p class="help-ui-desc">Step-index PMMA plastic optical fiber with $980\ \mu\text{m}$ core and $10\ \mu\text{m}$ cladding. Real-time traveling photon pulse animation and core light fading.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">Mount 1 &bull; Output Screen &amp; Detector Mount</span>
+                <p class="help-ui-desc">White target plate with central optical aperture displaying a focused 650 nm red beam spot whose diameter and brightness scale with transmitted power.</p>
+              </div>
+              <div class="help-ui-item">
+                <span class="help-ui-label">Instrument 1 &bull; Digital Optical Power Meter</span>
+                <p class="help-ui-desc">Calibrated detector meter with high-contrast LCD display, mW vs &mu;W readout units, Reference ($P_{\text{in}}$) vs Output ($P_{\text{out}}$) modes, and status pill.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Scientific Equations & Physical Model -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">3</span>
+              Scientific Equations, Physical Model &amp; Graph Interpretation
+            </h4>
+            <div class="help-card-inner" style="margin-bottom:12px;">
+              <div class="help-card-inner-header">
+                <h5>Total Decibel Optical Power Loss</h5>
+              </div>
+              <p>$\text{Loss (dB)} = 10 \cdot \log_{10}\left( \frac{P_{\text{in}}}{P_{\text{out}}} \right)$</p>
+              <p>Where $P_{\text{in}}$ is the optical power launched into the fiber and $P_{\text{out}}$ is the optical power received at the detector (both expressed in matching milliwatt units).</p>
+            </div>
+            <div class="help-card-inner" style="margin-bottom:12px;">
+              <div class="help-card-inner-header">
+                <h5>Distributed Attenuation Coefficient (&alpha;)</h5>
+              </div>
+              <p>$\alpha = \left( \frac{1000}{L} \right) \cdot 10 \cdot \log_{10}\left( \frac{P_{\text{in}}}{P_{\text{out}}} \right) \quad [\text{dB/km}]$</p>
+              <p>$\alpha = \left( \frac{10}{L} \right) \cdot \log_{10}\left( \frac{P_{\text{in}}}{P_{\text{out}}} \right) \quad [\text{dB/m}]$</p>
+              <p>Where $L$ is the transmission fiber length in metres. For standard commercial PMMA plastic optical fiber at $\lambda = 650\text{ nm}$, $\alpha \approx 180\text{ dB/km} = 0.180\text{ dB/m}$.</p>
+            </div>
+            <div class="help-card-inner">
+              <div class="help-card-inner-header">
+                <h5>Transmitted Optical Power (Bouguer-Lambert-Beer Law)</h5>
+              </div>
+              <p>$P_{\text{out}} = P_{\text{in coupled}} \cdot 10^{-\frac{A_{\text{total}}}{10}}$</p>
+              <p>Where total loss $A_{\text{total}} = \left(\frac{\alpha}{1000} \cdot L\right) + A_{\text{coupling}} + A_{\text{bend}}$:
+              <br>&bull; <strong>Transverse Misalignment Loss:</strong> $\eta = \exp\left(-\frac{\Delta x^2}{2\sigma^2}\right)$ with insertion loss $A_{\text{coupling}} = -10\log_{10}(\eta)$.
+              <br>&bull; <strong>Macrobending Radiation Leakage:</strong> $0.0\text{ dB}$ (Straight), $0.8\text{ dB}$ (Moderate bend), and $2.5\text{ dB}$ (Sharp bend).</p>
+            </div>
+          </div>
+
+          <!-- Section 4: Gamification Challenges Walkthrough -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">4</span>
+              Gamification Challenges &amp; Student XP Rewards (Total: 800 XP)
+            </h4>
+            <div class="help-steps-grid">
+              <div class="help-step-item">
+                <span class="step-num">Challenge 1 &bull; 100 XP</span>
+                <h5>Master Optical Reference Power (P_in)</h5>
+                <p>Power ON the laser source, select Reference mode, and click Measure Power with $P_{\text{in}} &gt; 2.0\text{ mW}$.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 2 &bull; 100 XP</span>
+                <h5>Secure Optical Waveguide Coupling</h5>
+                <p>Verify or toggle the POF cable connection to securely couple the waveguide between the optical mounts.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 3 &bull; 120 XP</span>
+                <h5>Transmitted Output Power Measurement</h5>
+                <p>Set fiber length to $L \ge 5.0\text{ m}$, select POF Output mode, and measure transmitted output power $P_{\text{out}}$.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 4 &bull; 150 XP</span>
+                <h5>Compute Decibel Attenuation &amp; &alpha;</h5>
+                <p>Measure both $P_{\text{in}}$ and $P_{\text{out}}$ to trigger automatic mathematical computation of total loss and $\alpha$.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 5 &bull; 180 XP</span>
+                <h5>Systematic Multi-Length Attenuation Log</h5>
+                <p>Record at least 3 distinct observations across different cable lengths into the observation table.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Challenge 6 &bull; 150 XP</span>
+                <h5>Macrobending Radiation Loss Inspection</h5>
+                <p>Select Moderate or Sharp bending and take an optical power measurement to quantify curvature radiation loss.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Troubleshooting & FAQs -->
+          <div class="help-section-card">
+            <h4 class="help-section-title">
+              <span class="help-step-badge">5</span>
+              Troubleshooting &amp; Frequently Asked Questions
+            </h4>
+            <div class="help-steps-grid">
+              <div class="help-step-item">
+                <span class="step-num">Issue A</span>
+                <h5>Power Meter Reads "NO SIGNAL"?</h5>
+                <p>Verify that <strong>Master Power</strong> is active. If in POF Output mode, confirm that the fiber cable is coupled (click POF: CONNECTED).</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Issue B</span>
+                <h5>Total Attenuation Displays 0.000 dB?</h5>
+                <p>You must measure $P_{\text{in}}$ in <strong>1. Reference Mode</strong> first before switching to <strong>2. Output Mode</strong> so the baseline is stored.</p>
+              </div>
+              <div class="help-step-item">
+                <span class="step-num">Issue C</span>
+                <h5>Status Pill Says "PRESS MEASURE"?</h5>
+                <p>Changing length, alignment, or bending flags the meter as updated. Click <strong>MEASURE POWER</strong> to capture the stabilized reading.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
               <div class="help-step-item">
                 <span class="step-num">Step 2</span>
                 <h5>Interactive Circuit Wiring</h5>
@@ -6638,6 +7528,95 @@
             </ul>
           </div>
         </div>
+      
+        <!-- TAB: DIODE V-I CHARACTERISTICS -->
+        <div id="theory-pane-exp-diode" class="theory-pane hidden">
+          <div class="formula-block">
+            <h4>Aim &amp; Semiconductor Physics</h4>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Aim:</strong> To study the voltage-current ($V-I$) characteristics of a P-N junction diode under forward and reverse bias conditions, determine the knee voltage ($V_\gamma$), and calculate dynamic forward and reverse resistances.
+            </p>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Theory:</strong> Under forward bias ($V > 0$), the external electric field opposes the built-in barrier potential, reducing the depletion width. Once the applied voltage exceeds the cut-in knee threshold ($V_\gamma \approx 0.65\text{ V}$ for silicon), majority charge carriers diffuse across the junction, resulting in exponential current growth according to the Shockley diode equation:
+              <br><div class="formula-latex">$I = I_s \left( e^{\frac{q V}{\eta k_B T}} - 1 \right)$</div>
+            </p>
+          </div>
+
+          <div class="formula-block" style="margin-top:14px;">
+            <h4>Governing Formulas</h4>
+            <div class="formula-grid">
+              <div class="formula-item">
+                <span class="f-name">Shockley Diode Equation:</span>
+                <code>I = I_s &middot; [exp(qV / &eta;k_B T) - 1]</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Thermal Voltage (at 300 K):</span>
+                <code>V_T = k_B T / q &approx; 25.85 mV</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Dynamic Forward Resistance:</span>
+                <code>r_f = &Delta;V_f / &Delta;I_f = (&eta; V_T) / I_f</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Dynamic Reverse Resistance:</span>
+                <code>r_r = &Delta;V_r / &Delta;I_r</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Reverse Saturation Current:</span>
+                <code>I &approx; -I_s  (for V_r &gt;&gt; V_T)</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: PLASTIC OPTICAL FIBER ATTENUATION -->
+        <div id="theory-pane-exp-pof" class="theory-pane hidden">
+          <div class="formula-block">
+            <h4>Aim &amp; Optical Waveguide Theory</h4>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Aim:</strong> To measure optical power attenuation in a step-index plastic optical fiber (POF) as a function of propagation length, calculate total attenuation in decibels ($A_{\text{dB}}$), and determine the attenuation coefficient ($\alpha$ in $\text{dB/km}$).
+            </p>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Theory:</strong> When monochromatic light ($\lambda = 650\text{ nm}$) propagates along an optical fiber waveguide, optical power decreases exponentially with length $L$ in accordance with the Bouguer-Lambert-Beer law:
+              <br><div class="formula-latex">$P_{\text{out}} = P_{\text{in}} \times 10^{-\frac{\alpha L}{10}}$</div>
+              Losses originate from intrinsic material attenuation (Rayleigh scattering from sub-microscopic polymer fluctuations and carbon-hydrogen vibrational overtone absorption) and extrinsic factors (Fresnel reflections, facet misalignment, and macrobending radiation leakage).
+            </p>
+          </div>
+
+          <div class="formula-block" style="margin-top:14px;">
+            <h4>Governing Attenuation Formulas</h4>
+            <div class="formula-grid">
+              <div class="formula-item">
+                <span class="f-name">Total Attenuation (dB):</span>
+                <code>A_dB = 10 &middot; log10(P_in / P_out)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Attenuation Coefficient per km:</span>
+                <code>&alpha; = (1000 / L_m) &middot; 10 &middot; log10(P_in / P_out)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Exponential Power Decay:</span>
+                <code>P_out = P_in &middot; 10^(-&alpha; &middot; L / 10)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Decibel-Milliwatt Conversion:</span>
+                <code>P_dBm = 10 &middot; log10(P_mW / 1 mW)</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Total Link Budget:</span>
+                <code>A_total = &alpha; &middot; L + Loss_coupling + Loss_bending</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Coupling Efficiency (&eta;):</span>
+                <code>&eta; = exp[ -(&Delta;r / &omega;)&sup2; ]</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shared References & Further Reading Container -->
+        <div id="theory-references-container" class="manual-sec-references" style="margin-top:24px;"></div>
+
       </div>
     </div>
   </div>
@@ -6879,7 +7858,7 @@
                 <strong id="p-overview-edu" class="info-val">—</strong>
               </div>
               <div class="info-field">
-                <span class="info-label">Affiliated Institution</span>
+                <span class="info-label">College / Institution</span>
                 <strong id="p-overview-occ" class="info-val">—</strong>
               </div>
               <div class="info-field">
@@ -7542,8 +8521,8 @@
           </div>
 
           <div class="form-group">
-            <label for="profile-occupation-input">Institution / Department</label>
-            <input type="text" id="profile-occupation-input" placeholder="e.g. University / Department" />
+            <label for="profile-occupation-input">College / Institution / Department</label>
+            <input type="text" id="profile-occupation-input" placeholder="e.g. College / University / Department" />
           </div>
         </div>
 

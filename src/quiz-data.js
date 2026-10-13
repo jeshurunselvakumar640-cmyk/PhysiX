@@ -4384,6 +4384,767 @@ function shuffleArray(array) {
   return arr;
 }
 
+
+export const POF_ATTENUATION_QUESTION_BANK = {
+  title: "Plastic Optical Fiber Attenuation - Question Bank",
+  experimentId: "pof-attenuation",
+  quizId: "pof-attenuation-mastery-quiz",
+  experimentName: "Plastic Optical Fiber Attenuation Experiment",
+  total_questions: 50,
+  questions: [
+  {
+    "id": 1,
+    "question": "What does optical fiber attenuation measure?",
+    "options": [
+      "The reduction or loss of optical signal power as light travels through the fiber",
+      "The increase in wavelength of the light beam",
+      "The change in core diameter of the optical cable",
+      "The velocity increase of photons inside the waveguide"
+    ],
+    "answer": "A",
+    "correct_option": "The reduction or loss of optical signal power as light travels through the fiber",
+    "difficulty": "easy",
+    "global_id": 271,
+    "explanation": "Attenuation is the physical attenuation (decay) of optical power along an optical fiber due to absorption, scattering, and radiative losses."
+  },
+  {
+    "id": 2,
+    "question": "Which mathematical formula defines the total optical power attenuation (A_dB) in decibels?",
+    "options": [
+      "A_dB = 10 · log10(P_in / P_out)",
+      "A_dB = 20 · log10(P_out / P_in)",
+      "A_dB = 10 · ln(P_out / P_in)",
+      "A_dB = (P_in - P_out) / 10"
+    ],
+    "answer": "A",
+    "correct_option": "A_dB = 10 · log10(P_in / P_out)",
+    "difficulty": "easy",
+    "global_id": 272,
+    "explanation": "Decibel power attenuation is defined as A_dB = 10 · log10(P_in / P_out), expressing the ratio of input power to output power on a logarithmic scale."
+  },
+  {
+    "id": 3,
+    "question": "How is the attenuation coefficient (α) per unit length calculated from total attenuation A_dB and fiber length L?",
+    "options": [
+      "α = A_dB / L",
+      "α = A_dB · L",
+      "α = L / A_dB",
+      "α = √(A_dB · L)"
+    ],
+    "answer": "A",
+    "correct_option": "α = A_dB / L",
+    "difficulty": "easy",
+    "global_id": 273,
+    "explanation": "The attenuation coefficient α represents the loss normalized per unit distance: α = A_dB / L (expressed in dB/km or dB/m)."
+  },
+  {
+    "id": 4,
+    "question": "When fiber length is measured in metres (L_m), how is the attenuation coefficient α in dB/km expressed?",
+    "options": [
+      "α = (1000 / L_m) · 10 · log10(P_in / P_out)",
+      "α = (L_m / 1000) · 10 · log10(P_in / P_out)",
+      "α = (1 / L_m) · 10 · log10(P_in / P_out)",
+      "α = 1000 · (P_in / P_out)"
+    ],
+    "answer": "A",
+    "correct_option": "α = (1000 / L_m) · 10 · log10(P_in / P_out)",
+    "difficulty": "medium",
+    "global_id": 274,
+    "explanation": "Because L_km = L_m / 1000, α_dB/km = A_dB / L_km = (1000 / L_m) · 10 · log10(P_in / P_out)."
+  },
+  {
+    "id": 5,
+    "question": "What is the core material of standard Plastic Optical Fiber (POF)?",
+    "options": [
+      "Polymethyl methacrylate (PMMA)",
+      "Pure fused silica glass (SiO2)",
+      "Gallium arsenide (GaAs)",
+      "Silicon carbide (SiC)"
+    ],
+    "answer": "A",
+    "correct_option": "Polymethyl methacrylate (PMMA)",
+    "difficulty": "easy",
+    "global_id": 275,
+    "explanation": "Standard step-index POF utilizes polymethyl methacrylate (PMMA, acrylic) as its flexible, high-transparency core."
+  },
+  {
+    "id": 6,
+    "question": "What is the primary transmission window commonly used for PMMA-based Plastic Optical Fiber?",
+    "options": [
+      "Visible red light (~650 nm)",
+      "Ultraviolet light (~250 nm)",
+      "Long-wave infrared (~10.6 μm)",
+      "Near-infrared telecom band (1550 nm)"
+    ],
+    "answer": "A",
+    "correct_option": "Visible red light (~650 nm)",
+    "difficulty": "medium",
+    "global_id": 276,
+    "explanation": "PMMA polymer fibers exhibit an optical transmission window in the visible spectrum around 650 nm (red), where absorption minima occur."
+  },
+  {
+    "id": 7,
+    "question": "Under the Bouguer-Lambert-Beer law, how does optical power P_out decay with fiber length L for distributed loss α?",
+    "options": [
+      "P_out = P_in · 10^(-α · L / 10)",
+      "P_out = P_in - α · L",
+      "P_out = P_in / (1 + α · L)",
+      "P_out = P_in · (α · L)^2"
+    ],
+    "answer": "A",
+    "correct_option": "P_out = P_in · 10^(-α · L / 10)",
+    "difficulty": "medium",
+    "global_id": 277,
+    "explanation": "Optical power undergoes exponential attenuation with propagation distance: P_out = P_in · 10^(-αL/10), matching the linear rate equation dP/dz = -α_p P."
+  },
+  {
+    "id": 8,
+    "question": "Why must input power (P_in) and output power (P_out) be measured in the same units before computing attenuation?",
+    "options": [
+      "Because decibel loss is derived from a dimensionless power ratio",
+      "Because conversion to decibels is only possible for milliwatts",
+      "Because optical detectors only support one electrical unit at a time",
+      "Because powers must add up to 100%"
+    ],
+    "answer": "A",
+    "correct_option": "Because decibel loss is derived from a dimensionless power ratio",
+    "difficulty": "easy",
+    "global_id": 278,
+    "explanation": "The argument of the logarithm (P_in / P_out) must be a dimensionless ratio; mixing mW and μW would introduce a 1000-fold error (+30 dB)."
+  },
+  {
+    "id": 9,
+    "question": "What is Rayleigh scattering in plastic optical fibers caused by?",
+    "options": [
+      "Microscopic density and refractive index fluctuations in the polymer matrix",
+      "Bending of the outer cable jacket",
+      "Total reflection at the metallic bench rail",
+      "Thermal expansion of the copper connectors"
+    ],
+    "answer": "A",
+    "correct_option": "Microscopic density and refractive index fluctuations in the polymer matrix",
+    "difficulty": "medium",
+    "global_id": 279,
+    "explanation": "Rayleigh scattering results from microscopic, sub-wavelength density fluctuations frozen into the amorphous polymer during manufacturing."
+  },
+  {
+    "id": 10,
+    "question": "How does Rayleigh scattering loss depend on the optical wavelength (λ)?",
+    "options": [
+      "It is proportional to 1 / λ⁴",
+      "It is proportional to λ²",
+      "It is linearly proportional to λ",
+      "It is independent of wavelength"
+    ],
+    "answer": "A",
+    "correct_option": "It is proportional to 1 / λ⁴",
+    "difficulty": "medium",
+    "global_id": 280,
+    "explanation": "Rayleigh scattering cross-section varies inversely with the fourth power of wavelength (1/λ⁴), resulting in much stronger scattering at shorter wavelengths."
+  },
+  {
+    "id": 11,
+    "question": "What causes the strong infrared absorption bands in PMMA plastic optical fiber?",
+    "options": [
+      "Vibrational overtones and harmonics of carbon-hydrogen (C-H) molecular bonds",
+      "Electronic band transitions in silicon crystals",
+      "Conductance band electron scattering in copper",
+      "Magnetic dipole moments in the cladding"
+    ],
+    "answer": "A",
+    "correct_option": "Vibrational overtones and harmonics of carbon-hydrogen (C-H) molecular bonds",
+    "difficulty": "hard",
+    "global_id": 281,
+    "explanation": "C-H stretching vibration fundamentals and high-order overtones in PMMA create strong intrinsic absorption bands in the infrared region (>700 nm)."
+  },
+  {
+    "id": 12,
+    "question": "What is macrobending loss in an optical fiber?",
+    "options": [
+      "Radiative loss caused by curving the fiber below its permissible bend radius",
+      "Scattering from nanoscale core bubbles",
+      "Loss due to cable length being too long",
+      "Attenuation caused by thermal ambient changes"
+    ],
+    "answer": "A",
+    "correct_option": "Radiative loss caused by curving the fiber below its permissible bend radius",
+    "difficulty": "medium",
+    "global_id": 282,
+    "explanation": "Macrobending occurs when the fiber is curved with a macroscopic radius such that the angle of incidence at the outer core-cladding boundary falls below the critical angle, radiating light into the cladding."
+  },
+  {
+    "id": 13,
+    "question": "What is microbending loss in an optical fiber?",
+    "options": [
+      "Loss caused by microscopic localized lateral deformations and axial stress along the core-cladding boundary",
+      "Reflection off the power meter LCD screen",
+      "Dispersion caused by multiple optical modes",
+      "Signal loss from slow photodetector response"
+    ],
+    "answer": "A",
+    "correct_option": "Loss caused by microscopic localized lateral deformations and axial stress along the core-cladding boundary",
+    "difficulty": "medium",
+    "global_id": 283,
+    "explanation": "Microbending arises from microscopic repetitive mechanical imperfections, surface roughness, or lateral pinching that couple guided modes into radiating cladding modes."
+  },
+  {
+    "id": 14,
+    "question": "What typical attenuation coefficient (α) is expected for standard PMMA step-index POF at 650 nm?",
+    "options": [
+      "Approximately 150 to 200 dB/km (0.15 to 0.20 dB/m)",
+      "Approximately 0.2 dB/km (0.0002 dB/m)",
+      "Approximately 15,000 dB/km (15 dB/m)",
+      "0.00 dB/km (Lossless)"
+    ],
+    "answer": "A",
+    "correct_option": "Approximately 150 to 200 dB/km (0.15 to 0.20 dB/m)",
+    "difficulty": "medium",
+    "global_id": 284,
+    "explanation": "Standard PMMA step-index POF has an attenuation of ~150-200 dB/km at 650 nm, which is around 0.15-0.20 dB per metre."
+  },
+  {
+    "id": 15,
+    "question": "If input power P_in = 3.00 mW and output power P_out = 1.50 mW, what is the total attenuation in decibels?",
+    "options": [
+      "~3.01 dB",
+      "~6.02 dB",
+      "~1.50 dB",
+      "~10.00 dB"
+    ],
+    "answer": "A",
+    "correct_option": "~3.01 dB",
+    "difficulty": "easy",
+    "global_id": 285,
+    "explanation": "A_dB = 10 · log10(3.00 / 1.50) = 10 · log10(2) ≈ 10 · 0.30103 = 3.01 dB (halving of power corresponds to 3 dB loss)."
+  },
+  {
+    "id": 16,
+    "question": "If input power P_in = 3.00 mW and output power P_out = 0.30 mW, what is the total attenuation in decibels?",
+    "options": [
+      "10.00 dB",
+      "1.00 dB",
+      "20.00 dB",
+      "3.00 dB"
+    ],
+    "answer": "A",
+    "correct_option": "10.00 dB",
+    "difficulty": "easy",
+    "global_id": 286,
+    "explanation": "A_dB = 10 · log10(3.00 / 0.30) = 10 · log10(10) = 10 · 1 = 10.00 dB."
+  },
+  {
+    "id": 17,
+    "question": "If a 10.0 m optical fiber has a total attenuation of 1.80 dB, what is its attenuation coefficient in dB/km?",
+    "options": [
+      "180 dB/km",
+      "18 dB/km",
+      "1.8 dB/km",
+      "1800 dB/km"
+    ],
+    "answer": "A",
+    "correct_option": "180 dB/km",
+    "difficulty": "easy",
+    "global_id": 287,
+    "explanation": "L_km = 10.0 / 1000 = 0.01 km. α = 1.80 dB / 0.01 km = 180 dB/km."
+  },
+  {
+    "id": 18,
+    "question": "What is the purpose of measuring reference power (P_in) before measuring the fiber output?",
+    "options": [
+      "To establish a baseline coupled source power against which transmission loss is evaluated",
+      "To calibrate the physical guide rail ruler scale",
+      "To check whether the room ambient lighting is off",
+      "To determine the focal length of the detector lens"
+    ],
+    "answer": "A",
+    "correct_option": "To establish a baseline coupled source power against which transmission loss is evaluated",
+    "difficulty": "easy",
+    "global_id": 288,
+    "explanation": "Measuring P_in directly from the source or calibrated reference patch provides the known input power necessary to compute the decibel attenuation ratio."
+  },
+  {
+    "id": 19,
+    "question": "What happens to the Optical Power Meter reading when the optical source is switched OFF?",
+    "options": [
+      "It reads zero (or subtle instrument dark noise floor)",
+      "It retains its previous measurement indefinitely",
+      "It displays 100 mW automatically",
+      "It shows Infinity (∞)"
+    ],
+    "answer": "A",
+    "correct_option": "It reads zero (or subtle instrument dark noise floor)",
+    "difficulty": "easy",
+    "global_id": 289,
+    "explanation": "With the light source de-energized, no optical photons strike the photodetector, yielding 0.00 mW (aside from negligible dark current)."
+  },
+  {
+    "id": 20,
+    "question": "What happens to the power meter reading when the optical fiber is disconnected on the bench?",
+    "options": [
+      "No light reaches the detector, producing zero measured output power",
+      "The meter reading increases due to free space propagation",
+      "The meter switches automatically into laser mode",
+      "The meter calculates negative decibels"
+    ],
+    "answer": "A",
+    "correct_option": "No light reaches the detector, producing zero measured output power",
+    "difficulty": "easy",
+    "global_id": 290,
+    "explanation": "Disconnecting the fiber breaks the waveguide path, preventing source photons from arriving at the detector."
+  },
+  {
+    "id": 21,
+    "question": "Why should an optical transmitter be allowed to stabilize (warm up) prior to taking readings?",
+    "options": [
+      "To ensure stable optical power output and eliminate semiconductor thermal drift",
+      "To allow the plastic optical fiber to melt slightly for better coupling",
+      "To discharge static electricity on the optical bench rails",
+      "To let the room reach ambient equilibrium"
+    ],
+    "answer": "A",
+    "correct_option": "To ensure stable optical power output and eliminate semiconductor thermal drift",
+    "difficulty": "medium",
+    "global_id": 291,
+    "explanation": "Semiconductor LED/laser junctions undergo thermal shift during initial turn-on; warm-up ensures steady forward current and constant optical emission."
+  },
+  {
+    "id": 22,
+    "question": "What type of curve is observed when plotting measured output power P_out against fiber length L on linear axes?",
+    "options": [
+      "An exponentially decaying downward curve",
+      "A straight horizontal line",
+      "A strictly linear ascending slope",
+      "A sinusoidal oscillation"
+    ],
+    "answer": "A",
+    "correct_option": "An exponentially decaying downward curve",
+    "difficulty": "medium",
+    "global_id": 292,
+    "explanation": "Because P_out = P_in · 10^(-αL/10), plotting power vs length on linear axes produces an exponential decay curve."
+  },
+  {
+    "id": 23,
+    "question": "What type of relationship is observed when plotting total decibel attenuation (A_dB) against fiber length L?",
+    "options": [
+      "A linear relationship whose slope is the attenuation coefficient (α)",
+      "An exponential curve bending upward rapidly",
+      "A parabolic parabola with vertex at zero",
+      "An inverse hyperbola asymptotically approaching zero"
+    ],
+    "answer": "A",
+    "correct_option": "A linear relationship whose slope is the attenuation coefficient (α)",
+    "difficulty": "medium",
+    "global_id": 293,
+    "explanation": "Since A_dB = α · L, total decibel loss is directly proportional to length, producing a straight line whose slope d(A)/dL = α."
+  },
+  {
+    "id": 24,
+    "question": "What is Fresnel reflection loss at the cleaved fiber end-facet?",
+    "options": [
+      "Reflective loss caused by refractive index discontinuity between air (n≈1.0) and the polymer core (n≈1.49)",
+      "Scattering from impurities inside the optical detector silicon",
+      "Absorption by water vapour in the laboratory room",
+      "Loss caused by mechanical vibration of the optical bench"
+    ],
+    "answer": "A",
+    "correct_option": "Reflective loss caused by refractive index discontinuity between air (n≈1.0) and the polymer core (n≈1.49)",
+    "difficulty": "hard",
+    "global_id": 294,
+    "explanation": "At normal incidence, reflection R = [(n1 - n0) / (n1 + n0)]² ≈ [(1.49 - 1) / (1.49 + 1)]² ≈ 3.9% (~0.17 dB loss per facet) due to index mismatch."
+  },
+  {
+    "id": 25,
+    "question": "Why does lateral or angular misalignment of the input coupler degrade transmission?",
+    "options": [
+      "It reduces coupling efficiency, as fewer incident rays fall within the fiber acceptance cone",
+      "It permanently alters the refractive index of the cladding",
+      "It shifts the laser emission wavelength to infrared",
+      "It increases electrical resistance of the power meter leads"
+    ],
+    "answer": "A",
+    "correct_option": "It reduces coupling efficiency, as fewer incident rays fall within the fiber acceptance cone",
+    "difficulty": "medium",
+    "global_id": 295,
+    "explanation": "Misalignment causes rays to strike outside the fiber core area or at angles exceeding the acceptance cone (θ > θ_a), failing total internal reflection."
+  },
+  {
+    "id": 26,
+    "question": "How does dirt, dust, or fingerprints on the optical fiber facet affect the measurement?",
+    "options": [
+      "They cause localized optical scattering and severe insertion loss",
+      "They decrease optical attenuation across the link",
+      "They transform multimode fiber into singlemode fiber",
+      "They have zero effect because polymer is immune to contamination"
+    ],
+    "answer": "A",
+    "correct_option": "They cause localized optical scattering and severe insertion loss",
+    "difficulty": "easy",
+    "global_id": 296,
+    "explanation": "Contaminants on the core face scatter and absorb light, introducing artificial extrinsic loss and corrupting baseline measurements."
+  },
+  {
+    "id": 27,
+    "question": "What is the typical core diameter of standard step-index plastic optical fiber compared to silica singlemode fiber?",
+    "options": [
+      "POF core is very large (~980 μm to 1000 μm), whereas singlemode silica is ~9 μm",
+      "POF core is tiny (~1 μm), whereas silica is ~1 mm",
+      "Both cores are identically 50 μm",
+      "POF has no core, only cladding"
+    ],
+    "answer": "A",
+    "correct_option": "POF core is very large (~980 μm to 1000 μm), whereas singlemode silica is ~9 μm",
+    "difficulty": "medium",
+    "global_id": 297,
+    "explanation": "Standard step-index POF has an enormous 1 mm outer diameter with a ~980 μm core, making alignment easy with visible light."
+  },
+  {
+    "id": 28,
+    "question": "What is a key advantage of POF's large core diameter in laboratory experiments?",
+    "options": [
+      "High coupling tolerance and easy mechanical alignment without sub-micron positioning equipment",
+      "Near-zero attenuation below 0.01 dB/km",
+      "Ability to transmit terahertz radio waves",
+      "Immunity to all forms of macrobending"
+    ],
+    "answer": "A",
+    "correct_option": "High coupling tolerance and easy mechanical alignment without sub-micron positioning equipment",
+    "difficulty": "easy",
+    "global_id": 298,
+    "explanation": "With a ~1 mm core, light can be coupled efficiently with inexpensive connectors and relaxed alignment tolerances."
+  },
+  {
+    "id": 29,
+    "question": "If a student records P_in = 2.50 mW and P_out = 2.50 mW for an ideal 0 m link, what is total attenuation?",
+    "options": [
+      "0.00 dB",
+      "1.00 dB",
+      "10.00 dB",
+      "Undefined"
+    ],
+    "answer": "A",
+    "correct_option": "0.00 dB",
+    "difficulty": "easy",
+    "global_id": 299,
+    "explanation": "A_dB = 10 · log10(2.50 / 2.50) = 10 · log10(1) = 0.00 dB (zero attenuation corresponds to unity power transmission)."
+  },
+  {
+    "id": 30,
+    "question": "If 10% of input power is lost during propagation (so P_out = 0.90 · P_in), what is the total attenuation?",
+    "options": [
+      "~0.46 dB",
+      "~1.00 dB",
+      "~10.00 dB",
+      "~4.60 dB"
+    ],
+    "answer": "A",
+    "correct_option": "~0.46 dB",
+    "difficulty": "medium",
+    "global_id": 300,
+    "explanation": "A_dB = 10 · log10(1 / 0.90) = 10 · log10(1.111) ≈ 10 · 0.04576 = 0.46 dB."
+  },
+  {
+    "id": 31,
+    "question": "If 90% of input power is lost during propagation (so P_out = 0.10 · P_in), what is the total attenuation?",
+    "options": [
+      "10.0 dB",
+      "9.0 dB",
+      "90.0 dB",
+      "1.0 dB"
+    ],
+    "answer": "A",
+    "correct_option": "10.0 dB",
+    "difficulty": "easy",
+    "global_id": 301,
+    "explanation": "A_dB = 10 · log10(1 / 0.10) = 10 · log10(10) = 10.0 dB."
+  },
+  {
+    "id": 32,
+    "question": "If 99% of input power is lost during propagation (P_out = 0.01 · P_in), what is the total attenuation?",
+    "options": [
+      "20.0 dB",
+      "99.0 dB",
+      "2.0 dB",
+      "40.0 dB"
+    ],
+    "answer": "A",
+    "correct_option": "20.0 dB",
+    "difficulty": "easy",
+    "global_id": 302,
+    "explanation": "A_dB = 10 · log10(1 / 0.01) = 10 · log10(100) = 10 · 2 = 20.0 dB."
+  },
+  {
+    "id": 33,
+    "question": "What is the primary trade-off of Plastic Optical Fiber compared to Silica Glass Optical Fiber?",
+    "options": [
+      "POF has much higher attenuation (~180 dB/km vs ~0.2 dB/km) but offers superior flexibility, ruggedness, and low installation cost",
+      "POF is much more brittle and shatters upon touch",
+      "POF cannot guide visible light wavelengths",
+      "POF requires cryogenic cooling to operate"
+    ],
+    "answer": "A",
+    "correct_option": "POF has much higher attenuation (~180 dB/km vs ~0.2 dB/km) but offers superior flexibility, ruggedness, and low installation cost",
+    "difficulty": "medium",
+    "global_id": 303,
+    "explanation": "While silica fiber has ultra-low loss (~0.2 dB/km at 1550 nm) for long-haul networks, POF's higher loss restricts it to short-distance links (<100 m) where mechanical toughness is key."
+  },
+  {
+    "id": 34,
+    "question": "How does the cutback method determine fiber attenuation in professional laboratory practice?",
+    "options": [
+      "By measuring output power, cutting the fiber back to a short reference length, and taking the ratio of measured powers without disturbing input coupling",
+      "By slicing the fiber horizontally to observe core cross-section under an electron microscope",
+      "By increasing laser voltage until the fiber burns back",
+      "By measuring reflection while cutting off the power supply"
+    ],
+    "answer": "A",
+    "correct_option": "By measuring output power, cutting the fiber back to a short reference length, and taking the ratio of measured powers without disturbing input coupling",
+    "difficulty": "hard",
+    "global_id": 304,
+    "explanation": "The cutback method measures long-length power P2, then cuts back to short reference length L1 (measuring P1) without changing input launch conditions, yielding α = [10/(L2-L1)] log10(P1/P2)."
+  },
+  {
+    "id": 35,
+    "question": "Why is the cutback technique effective at eliminating connector and coupling loss errors?",
+    "options": [
+      "Because input coupling conditions remain strictly unchanged between long and short measurements",
+      "Because it cools the fiber down to absolute zero",
+      "Because cutting the fiber eliminates all internal Rayleigh scattering",
+      "Because it converts multimode light into singlemode light"
+    ],
+    "answer": "A",
+    "correct_option": "Because input coupling conditions remain strictly unchanged between long and short measurements",
+    "difficulty": "hard",
+    "global_id": 305,
+    "explanation": "Since the input launch coupling chuck is untouched, input coupling efficiency η_in is identical in both measurements and cancels out in the power ratio."
+  },
+  {
+    "id": 36,
+    "question": "What physical unit is used to express optical power in the digital meter?",
+    "options": [
+      "Milliwatts (mW) or Microwatts (μW)",
+      "Volts (V) or Amperes (A)",
+      "Joules per second squared (J/s²)",
+      "Pascals (Pa)"
+    ],
+    "answer": "A",
+    "correct_option": "Milliwatts (mW) or Microwatts (μW)",
+    "difficulty": "easy",
+    "global_id": 306,
+    "explanation": "Optical power is the time rate of radiant optical energy transfer, measured in milliwatts (mW) or microwatts (μW), or in logarithmic dBm."
+  },
+  {
+    "id": 37,
+    "question": "How is optical power in milliwatts (mW) related to microwatts (μW)?",
+    "options": [
+      "1 mW = 1000 μW",
+      "1 mW = 0.001 μW",
+      "1 mW = 100 μW",
+      "1 mW = 1,000,000 μW"
+    ],
+    "answer": "A",
+    "correct_option": "1 mW = 1000 μW",
+    "difficulty": "easy",
+    "global_id": 307,
+    "explanation": "Milli means 10⁻³ and micro means 10⁻⁶; thus, 1 mW = 1000 μW."
+  },
+  {
+    "id": 38,
+    "question": "If a power meter reads 450 μW, what is the equivalent power in mW?",
+    "options": [
+      "0.450 mW",
+      "4.500 mW",
+      "45.00 mW",
+      "0.045 mW"
+    ],
+    "answer": "A",
+    "correct_option": "0.450 mW",
+    "difficulty": "easy",
+    "global_id": 308,
+    "explanation": "450 μW / 1000 = 0.450 mW."
+  },
+  {
+    "id": 39,
+    "question": "How is optical power expressed in dBm related to power in milliwatts (P_mW)?",
+    "options": [
+      "P_dBm = 10 · log10(P_mW / 1 mW)",
+      "P_dBm = 20 · log10(P_mW)",
+      "P_dBm = P_mW · 10",
+      "P_dBm = ln(P_mW)"
+    ],
+    "answer": "A",
+    "correct_option": "P_dBm = 10 · log10(P_mW / 1 mW)",
+    "difficulty": "medium",
+    "global_id": 309,
+    "explanation": "dBm is decibels referenced to 1 milliwatt: P_dBm = 10 · log10(P_mW / 1 mW). For example, 1 mW = 0 dBm."
+  },
+  {
+    "id": 40,
+    "question": "What is 0 dBm in milliwatts?",
+    "options": [
+      "1.0 mW",
+      "0.0 mW",
+      "10.0 mW",
+      "0.1 mW"
+    ],
+    "answer": "A",
+    "correct_option": "1.0 mW",
+    "difficulty": "easy",
+    "global_id": 310,
+    "explanation": "By definition, 0 dBm corresponds to 1.0 mW (10 · log10(1.0) = 0 dBm)."
+  },
+  {
+    "id": 41,
+    "question": "If an input power is +3 dBm and output power is 0 dBm, what is the link attenuation in dB?",
+    "options": [
+      "3 dB",
+      "0 dB",
+      "-3 dB",
+      "1 dB"
+    ],
+    "answer": "A",
+    "correct_option": "3 dB",
+    "difficulty": "easy",
+    "global_id": 311,
+    "explanation": "Attenuation in dB is the difference between input and output levels in dBm: A = P_in(dBm) - P_out(dBm) = 3 dBm - 0 dBm = 3 dB."
+  },
+  {
+    "id": 42,
+    "question": "Why does bending a plastic fiber into a tight loop (small radius of curvature) increase attenuation?",
+    "options": [
+      "Guided rays strike the core-cladding boundary at angles steeper than the critical angle and escape as radiation loss",
+      "The copper core experiences work hardening and increased resistance",
+      "The wavelength of light shifts into the ultraviolet regime",
+      "The speed of light inside the core drops to zero"
+    ],
+    "answer": "A",
+    "correct_option": "Guided rays strike the core-cladding boundary at angles steeper than the critical angle and escape as radiation loss",
+    "difficulty": "medium",
+    "global_id": 312,
+    "explanation": "Tight curvature alters the local boundary orientation so rays exceed the critical angle (θ < θ_c), refracting into the cladding as radiative macrobending loss."
+  },
+  {
+    "id": 43,
+    "question": "What role does the cladding layer play in reducing attenuation in optical fibers?",
+    "options": [
+      "It provides a lower refractive index boundary (n2 < n1) enabling total internal reflection while protecting the core from surface contamination",
+      "It amplifies light through stimulated emission",
+      "It filters out red wavelengths to only pass infrared",
+      "It acts as an electrical ground plane"
+    ],
+    "answer": "A",
+    "correct_option": "It provides a lower refractive index boundary (n2 < n1) enabling total internal reflection while protecting the core from surface contamination",
+    "difficulty": "medium",
+    "global_id": 313,
+    "explanation": "The lower-index cladding (n2 < n1) establishes the boundary for total internal reflection and isolates the evanescent optical field from dirt and moisture."
+  },
+  {
+    "id": 44,
+    "question": "In a laboratory experiment, if a student forgets to switch ON the optical transmitter, what will the power meter indicate?",
+    "options": [
+      "0.00 mW (No optical signal reaching the sensor)",
+      "Maximum scale deflection (Overload)",
+      "5.00 mW automatically",
+      "Negative infinity (-∞)"
+    ],
+    "answer": "A",
+    "correct_option": "0.00 mW (No optical signal reaching the sensor)",
+    "difficulty": "easy",
+    "global_id": 314,
+    "explanation": "Without light emission from the transmitter, the photodetector generates zero photocurrent, reading 0.00 mW."
+  },
+  {
+    "id": 45,
+    "question": "If measured output powers are 2.88 mW (at 1 m) and 2.44 mW (at 5 m) for P_in = 3.00 mW, what trend is verified?",
+    "options": [
+      "Transmitted optical power decreases monotonically as fiber length increases",
+      "Transmitted power is completely independent of length",
+      "Optical power increases over distance",
+      "The fiber generates optical power from ambient heat"
+    ],
+    "answer": "A",
+    "correct_option": "Transmitted optical power decreases monotonically as fiber length increases",
+    "difficulty": "easy",
+    "global_id": 315,
+    "explanation": "As propagation length increases, cumulative absorption and scattering losses increase, causing monotonic decrease in transmitted power."
+  },
+  {
+    "id": 46,
+    "question": "What is the numerical aperture (NA) of standard step-index POF typically around?",
+    "options": [
+      "High NA (~0.45 to 0.50), providing a wide acceptance angle (θ_a ≈ 27° to 30°)",
+      "Extremely low NA (~0.05)",
+      "Zero NA",
+      "Infinite NA"
+    ],
+    "answer": "A",
+    "correct_option": "High NA (~0.45 to 0.50), providing a wide acceptance angle (θ_a ≈ 27° to 30°)",
+    "difficulty": "medium",
+    "global_id": 316,
+    "explanation": "Standard PMMA POF features a high index contrast (n1 ≈ 1.492, n2 ≈ 1.402), yielding a large NA ≈ 0.50 and wide acceptance cone."
+  },
+  {
+    "id": 47,
+    "question": "How does the large numerical aperture of POF affect coupling efficiency from an LED source?",
+    "options": [
+      "It significantly improves coupling efficiency because the wide acceptance cone captures a large fraction of diverging LED rays",
+      "It prevents any LED rays from entering the core",
+      "It converts the LED into a monochromatic laser",
+      "It reduces output power by 90%"
+    ],
+    "answer": "A",
+    "correct_option": "It significantly improves coupling efficiency because the wide acceptance cone captures a large fraction of diverging LED rays",
+    "difficulty": "medium",
+    "global_id": 317,
+    "explanation": "A high NA (0.50) creates an acceptance cone of ~60° full angle, capturing substantial radiant flux from divergent surface-emitting LEDs."
+  },
+  {
+    "id": 48,
+    "question": "What is an important precaution when handling plastic optical fibers in an undergraduate physics lab?",
+    "options": [
+      "Avoid sharp kinks or bending below minimum bend radius, and keep connector end facets clean",
+      "Never expose the outer jacket to visible room lighting",
+      "Always submerge the cable in water before powering the laser",
+      "Connect the fiber only when power supply is set to 220 V AC"
+    ],
+    "answer": "A",
+    "correct_option": "Avoid sharp kinks or bending below minimum bend radius, and keep connector end facets clean",
+    "difficulty": "easy",
+    "global_id": 318,
+    "explanation": "Sharp bends induce permanent mechanical crazing and radiation loss, while dirty facets degrade coupling efficiency."
+  },
+  {
+    "id": 49,
+    "question": "If linear regression of A_dB against L (in metres) yields a slope m = 0.180 dB/m, what is the attenuation coefficient in dB/km?",
+    "options": [
+      "180 dB/km",
+      "18 dB/km",
+      "1.8 dB/km",
+      "0.18 dB/km"
+    ],
+    "answer": "A",
+    "correct_option": "180 dB/km",
+    "difficulty": "easy",
+    "global_id": 319,
+    "explanation": "Since 1 km = 1000 m, α_dB/km = slope_dB/m · 1000 = 0.180 · 1000 = 180 dB/km."
+  },
+  {
+    "id": 50,
+    "question": "In optical engineering, why is decibels (dB) preferred over percentage transmission for cascaded links?",
+    "options": [
+      "Because decibel losses of successive components add linearly instead of multiplying",
+      "Because decibels eliminate all physical loss",
+      "Because decibels work only with integer numbers",
+      "Because percentage cannot exceed 50%"
+    ],
+    "answer": "A",
+    "correct_option": "Because decibel losses of successive components add linearly instead of multiplying",
+    "difficulty": "medium",
+    "global_id": 320,
+    "explanation": "In decibels, total loss A_total = A_fiber + A_coupler + A_splice (addition of dB terms instead of multiplying fractional transmission factors)."
+  }
+]
+};
+
 export function generateRandom10QuestionQuiz(expId = "projectile") {
   let bank = PROJECTILE_QUESTION_BANK;
   if (expId === "optical" || expId === "exp-optical" || expId === "exp2") {
@@ -4396,6 +5157,8 @@ export function generateRandom10QuestionQuiz(expId = "projectile") {
     bank = DIFFRACTION_QUESTION_BANK;
   } else if (expId === "sandbox" || expId === "exp-sandbox" || expId === "exp6" || expId === "physics-sandbox") {
     bank = SANDBOX_QUESTION_BANK;
+  } else if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "attenuation" || expId === "pof") {
+    bank = POF_ATTENUATION_QUESTION_BANK;
   }
 
   // 1. Shuffle the full 50-question bank

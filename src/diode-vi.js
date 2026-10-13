@@ -786,8 +786,12 @@ export function createDiodeExperiment(callbacks = {}) {
     const chassis = document.querySelector(".diode-chassis-card");
     if (!chassis) return;
 
-    const chassisRect = chassis.getBoundingClientRect();
-    svg.setAttribute("viewBox", `0 0 ${chassisRect.width} ${chassisRect.height}`);
+    // Use SVG overlay element's client bounding rect for exact 1:1 pixel coordinates
+    const svgRect = svg.getBoundingClientRect();
+    if (svgRect.width === 0 || svgRect.height === 0) return;
+
+    svg.setAttribute("viewBox", `0 0 ${svgRect.width} ${svgRect.height}`);
+    svg.removeAttribute("preserveAspectRatio");
     svg.innerHTML = "";
 
     state.wires.forEach(wire => {
@@ -795,17 +799,20 @@ export function createDiodeExperiment(callbacks = {}) {
       const toEl = document.querySelector(`[data-terminal="${wire.to}"]`);
       if (!fromEl || !toEl) return;
 
-      const r1 = fromEl.getBoundingClientRect();
-      const r2 = toEl.getBoundingClientRect();
+      const fromHole = fromEl.querySelector(".terminal-hole") || fromEl;
+      const toHole = toEl.querySelector(".terminal-hole") || toEl;
 
-      const x1 = r1.left + r1.width / 2 - chassisRect.left;
-      const y1 = r1.top + r1.height / 2 - chassisRect.top;
-      const x2 = r2.left + r2.width / 2 - chassisRect.left;
-      const y2 = r2.top + r2.height / 2 - chassisRect.top;
+      const r1 = fromHole.getBoundingClientRect();
+      const r2 = toHole.getBoundingClientRect();
+
+      const x1 = Math.round((r1.left + r1.right) / 2 - svgRect.left);
+      const y1 = Math.round((r1.top + r1.bottom) / 2 - svgRect.top);
+      const x2 = Math.round((r2.left + r2.right) / 2 - svgRect.left);
+      const y2 = Math.round((r2.top + r2.bottom) / 2 - svgRect.top);
 
       // Natural cable catenary sag (gravity dip)
       const dist = Math.hypot(x2 - x1, y2 - y1);
-      const sag = Math.min(Math.max(dist * 0.28, 25), 85);
+      const sag = Math.min(Math.max(dist * 0.28, 22), 80);
       const cx1 = x1;
       const cy1 = y1 + sag;
       const cx2 = x2;
@@ -837,7 +844,7 @@ export function createDiodeExperiment(callbacks = {}) {
       });
       svg.appendChild(wirePath);
 
-      // Metallic Banana Plug Tips
+      // Metallic Banana Plug Tips precisely centered on socket holes
       [ { x: x1, y: y1 }, { x: x2, y: y2 } ].forEach(pt => {
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", pt.x);
@@ -1265,13 +1272,15 @@ export function createDiodeExperiment(callbacks = {}) {
     const maxV = 1.5;
     const maxI = 10.0;
 
+    const isLight = document.documentElement.getAttribute("data-theme") === "light" || document.body.classList.contains("light-mode");
+
     // Background
-    ctx.fillStyle = "#030712";
+    ctx.fillStyle = isLight ? "#f8fafc" : "#030712";
     ctx.fillRect(0, 0, w, h);
 
     // Grid lines: 15 vertical lines (0.1 V steps), 10 horizontal lines (1 mA steps)
     ctx.lineWidth = 0.5;
-    ctx.strokeStyle = "rgba(56, 189, 248, 0.12)";
+    ctx.strokeStyle = isLight ? "rgba(148, 163, 184, 0.28)" : "rgba(56, 189, 248, 0.12)";
 
     for (let v = 0.1; v <= maxV; v += 0.1) {
       const gx = padL + (v / maxV) * plotW;
@@ -1291,7 +1300,7 @@ export function createDiodeExperiment(callbacks = {}) {
 
     // Axes in 1st Quadrant (Origin at bottom-left)
     ctx.lineWidth = 1.8;
-    ctx.strokeStyle = "#38bdf8";
+    ctx.strokeStyle = isLight ? "#0284c7" : "#38bdf8";
 
     // Y-axis
     ctx.beginPath();
@@ -1307,7 +1316,7 @@ export function createDiodeExperiment(callbacks = {}) {
 
     // Axis Labels & Ticks
     ctx.font = "bold 9px 'JetBrains Mono', monospace";
-    ctx.fillStyle = "#94a3b8";
+    ctx.fillStyle = isLight ? "#334155" : "#94a3b8";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
 
@@ -1318,7 +1327,7 @@ export function createDiodeExperiment(callbacks = {}) {
       ctx.beginPath();
       ctx.moveTo(gx, padT + plotH);
       ctx.lineTo(gx, padT + plotH + 4);
-      ctx.strokeStyle = "#38bdf8";
+      ctx.strokeStyle = isLight ? "#0284c7" : "#38bdf8";
       ctx.stroke();
     }
 
@@ -1331,13 +1340,13 @@ export function createDiodeExperiment(callbacks = {}) {
       ctx.beginPath();
       ctx.moveTo(padL - 4, gy);
       ctx.lineTo(padL, gy);
-      ctx.strokeStyle = "#38bdf8";
+      ctx.strokeStyle = isLight ? "#0284c7" : "#38bdf8";
       ctx.stroke();
     }
 
     // Axis Titles
     ctx.font = "bold 11px 'Space Grotesk', sans-serif";
-    ctx.fillStyle = "#f8fafc";
+    ctx.fillStyle = isLight ? "#0f172a" : "#f8fafc";
     ctx.textAlign = "center";
     ctx.fillText("Forward Voltage Vf (Volt) → [Scale: 1 cm = 0.1 V]", padL + plotW / 2, h - 12);
 
@@ -1349,19 +1358,19 @@ export function createDiodeExperiment(callbacks = {}) {
 
     // Header Tag
     ctx.font = "bold 10.5px 'Space Grotesk', sans-serif";
-    ctx.fillStyle = "#fbbf24";
+    ctx.fillStyle = isLight ? "#b45309" : "#fbbf24";
     ctx.textAlign = "left";
     ctx.fillText("V-I CHARACTERISTICS • 1ST QUADRANT (FORWARD BIAS)", padL, 18);
 
     // Plot Actual Recorded Observations (or empty state)
     if (state.forwardObservations.length === 0) {
       ctx.font = "bold 13px 'Space Grotesk', sans-serif";
-      ctx.fillStyle = "#64748b";
+      ctx.fillStyle = isLight ? "#475569" : "#64748b";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("No Forward Observations Logged", padL + plotW / 2, padT + plotH / 2 - 8);
       ctx.font = "11px sans-serif";
-      ctx.fillStyle = "#475569";
+      ctx.fillStyle = isLight ? "#64748b" : "#475569";
       ctx.fillText("Adjust voltage with > and click 'Record Observation' to plot curve points.", padL + plotW / 2, padT + plotH / 2 + 14);
       return;
     }
@@ -1377,10 +1386,10 @@ export function createDiodeExperiment(callbacks = {}) {
       if (idx === 0) ctx.moveTo(px, py);
       else ctx.lineTo(px, py);
     });
-    ctx.strokeStyle = "#00f0ff";
+    ctx.strokeStyle = isLight ? "#0284c7" : "#00f0ff";
     ctx.lineWidth = 2.5;
-    ctx.shadowColor = "#00f0ff";
-    ctx.shadowBlur = 8;
+    ctx.shadowColor = isLight ? "rgba(2, 132, 199, 0.3)" : "#00f0ff";
+    ctx.shadowBlur = isLight ? 2 : 8;
     ctx.stroke();
     ctx.shadowBlur = 0;
 
@@ -1391,14 +1400,14 @@ export function createDiodeExperiment(callbacks = {}) {
 
       ctx.beginPath();
       ctx.arc(px, py, 4.5, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = isLight ? "#0284c7" : "#ffffff";
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "#0284c7";
+      ctx.strokeStyle = isLight ? "#ffffff" : "#0284c7";
       ctx.stroke();
 
       ctx.font = "bold 8.5px 'JetBrains Mono', monospace";
-      ctx.fillStyle = "#38bdf8";
+      ctx.fillStyle = isLight ? "#0369a1" : "#38bdf8";
       ctx.textAlign = "center";
       ctx.textBaseline = "bottom";
       ctx.fillText(`(${pt.vf.toFixed(2)}, ${pt.if_mA.toFixed(2)})`, px, py - 6);
@@ -1442,17 +1451,18 @@ export function createDiodeExperiment(callbacks = {}) {
       if (uA > maxIr) maxIr = Math.ceil(uA / 10) * 10;
     });
 
-    // Dark slate laboratory canvas background
-    ctx.fillStyle = "#030712";
+    // Canvas background
+    const isLight = document.documentElement.getAttribute("data-theme") === "light" || document.body.classList.contains("light-mode");
+    ctx.fillStyle = isLight ? "#f8fafc" : "#030712";
     ctx.fillRect(0, 0, w, h);
 
     // Origin is at Top-Right
     const originX = padL + plotW;
     const originY = padT;
 
-    // 1. Graph Paper Grid (Fine cyan grid matching standard engineering graph paper)
+    // 1. Graph Paper Grid
     ctx.lineWidth = 0.5;
-    ctx.strokeStyle = "rgba(6, 182, 212, 0.12)";
+    ctx.strokeStyle = isLight ? "rgba(148, 163, 184, 0.28)" : "rgba(6, 182, 212, 0.12)";
 
     // Minor vertical grid lines (every 2.5 V)
     for (let v = 2.5; v <= maxVr; v += 2.5) {
@@ -1474,7 +1484,7 @@ export function createDiodeExperiment(callbacks = {}) {
 
     // Major grid lines
     ctx.lineWidth = 0.8;
-    ctx.strokeStyle = "rgba(6, 182, 212, 0.25)";
+    ctx.strokeStyle = isLight ? "rgba(148, 163, 184, 0.45)" : "rgba(6, 182, 212, 0.25)";
     const majorVSteps = [5, 10, 15, 20, 25, 30];
     majorVSteps.forEach(v => {
       const gx = originX - (v / maxVr) * plotW;
@@ -1497,7 +1507,7 @@ export function createDiodeExperiment(callbacks = {}) {
 
     // 2. Main Axes with Directional Arrows
     ctx.lineWidth = 2.0;
-    ctx.strokeStyle = "#00f0ff";
+    ctx.strokeStyle = isLight ? "#0891b2" : "#00f0ff";
 
     // Top Horizontal Axis: Origin (Right) -> Left
     ctx.beginPath();
@@ -1511,7 +1521,7 @@ export function createDiodeExperiment(callbacks = {}) {
     ctx.lineTo(padL - 3, originY - 4);
     ctx.lineTo(padL - 3, originY + 4);
     ctx.closePath();
-    ctx.fillStyle = "#00f0ff";
+    ctx.fillStyle = isLight ? "#0891b2" : "#00f0ff";
     ctx.fill();
 
     // Right Vertical Axis: Origin (Top) -> Downwards
@@ -1526,12 +1536,12 @@ export function createDiodeExperiment(callbacks = {}) {
     ctx.lineTo(originX - 4, originY + plotH + 3);
     ctx.lineTo(originX + 4, originY + plotH + 3);
     ctx.closePath();
-    ctx.fillStyle = "#00f0ff";
+    ctx.fillStyle = isLight ? "#0891b2" : "#00f0ff";
     ctx.fill();
 
     // 3. Ticks and Labels for Reverse Voltage Axis (Top, Left-facing)
     ctx.font = "bold 9.5px 'JetBrains Mono', monospace";
-    ctx.fillStyle = "#94a3b8";
+    ctx.fillStyle = isLight ? "#334155" : "#94a3b8";
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
 
@@ -1542,7 +1552,7 @@ export function createDiodeExperiment(callbacks = {}) {
       ctx.beginPath();
       ctx.moveTo(gx, originY - 5);
       ctx.lineTo(gx, originY);
-      ctx.strokeStyle = "#00f0ff";
+      ctx.strokeStyle = isLight ? "#0891b2" : "#00f0ff";
       ctx.lineWidth = 1.2;
       ctx.stroke();
     });
@@ -1558,7 +1568,7 @@ export function createDiodeExperiment(callbacks = {}) {
         ctx.beginPath();
         ctx.moveTo(originX, gy);
         ctx.lineTo(originX + 5, gy);
-        ctx.strokeStyle = "#00f0ff";
+        ctx.strokeStyle = isLight ? "#0891b2" : "#00f0ff";
         ctx.lineWidth = 1.2;
         ctx.stroke();
       }
@@ -1566,31 +1576,32 @@ export function createDiodeExperiment(callbacks = {}) {
 
     // 5. Axis Titles Matching Textbook Spec
     ctx.font = "bold 12px 'Space Grotesk', sans-serif";
-    ctx.fillStyle = "#00f0ff";
+    ctx.fillStyle = isLight ? "#0f172a" : "#00f0ff";
     ctx.textAlign = "center";
     ctx.fillText("Reverse bias voltage (VR) in V", originX - plotW / 2, originY - 26);
 
     ctx.save();
     ctx.translate(w - 12, originY + plotH / 2);
     ctx.rotate(Math.PI / 2);
+    ctx.fillStyle = isLight ? "#0f172a" : "#00f0ff";
     ctx.fillText("Reverse Current in μA", 0, 0);
     ctx.restore();
 
     // 6. Graph Heading / Subtitle at bottom
     ctx.font = "bold 11px 'Space Grotesk', sans-serif";
-    ctx.fillStyle = "#cbd5e1";
+    ctx.fillStyle = isLight ? "#0e7490" : "#cbd5e1";
     ctx.textAlign = "center";
     ctx.fillText("I-V Characteristic Curve of a P-N Junction in Reverse Bias", originX - plotW / 2, h - 12);
 
     // 7. Plot Observations
     if (state.reverseObservations.length === 0) {
       ctx.font = "bold 12.5px 'Space Grotesk', sans-serif";
-      ctx.fillStyle = "#64748b";
+      ctx.fillStyle = isLight ? "#475569" : "#64748b";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("No Reverse Observations Logged", originX - plotW / 2, originY + plotH / 2 - 8);
       ctx.font = "11px sans-serif";
-      ctx.fillStyle = "#475569";
+      ctx.fillStyle = isLight ? "#64748b" : "#475569";
       ctx.fillText("Adjust reverse voltage knob and click 'Record Observation' to plot points.", originX - plotW / 2, originY + plotH / 2 + 14);
       return;
     }
@@ -1608,10 +1619,10 @@ export function createDiodeExperiment(callbacks = {}) {
       ctx.lineTo(px, py);
     });
 
-    ctx.strokeStyle = "#3b82f6";
+    ctx.strokeStyle = isLight ? "#0891b2" : "#3b82f6";
     ctx.lineWidth = 3.0;
-    ctx.shadowColor = "rgba(59, 130, 246, 0.7)";
-    ctx.shadowBlur = 10;
+    ctx.shadowColor = isLight ? "rgba(8, 145, 178, 0.4)" : "rgba(59, 130, 246, 0.7)";
+    ctx.shadowBlur = isLight ? 2 : 10;
     ctx.stroke();
     ctx.shadowBlur = 0;
 
@@ -1623,14 +1634,14 @@ export function createDiodeExperiment(callbacks = {}) {
 
       ctx.beginPath();
       ctx.arc(px, py, 5.0, 0, Math.PI * 2);
-      ctx.fillStyle = "#ec4899"; // Pink marker like textbook point dots
+      ctx.fillStyle = isLight ? "#db2777" : "#ec4899";
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "#ffffff";
+      ctx.strokeStyle = isLight ? "#ffffff" : "#ffffff";
       ctx.stroke();
 
       ctx.font = "bold 9px 'JetBrains Mono', monospace";
-      ctx.fillStyle = "#f8fafc";
+      ctx.fillStyle = isLight ? "#0f172a" : "#f8fafc";
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.fillText(` (${pt.vr.toFixed(0)}, ${uA.toFixed(0)})`, px + 6, py + 2);
@@ -1722,6 +1733,14 @@ export function createDiodeExperiment(callbacks = {}) {
   // UNIVERSAL PDF REPORT EXPORT ENGINE
   // --------------------------------------------------------------------------
   function exportLabReportPdf() {
+    const exportBtn = document.getElementById("diode-btn-export-pdf");
+    if (exportBtn && exportBtn.disabled) return;
+    if (exportBtn) {
+      exportBtn.disabled = true;
+      exportBtn.setAttribute("data-orig-html", exportBtn.innerHTML);
+      exportBtn.innerHTML = `<span>Generating Report...</span>`;
+    }
+
     try {
       const fwdCanvas = document.getElementById("diode-fwd-graph-canvas");
       const revCanvas = document.getElementById("diode-rev-graph-canvas");
@@ -1730,8 +1749,10 @@ export function createDiodeExperiment(callbacks = {}) {
       const revGraphImg = revCanvas ? revCanvas.toDataURL("image/png") : null;
 
       const userProfile = (typeof getStoredUserProfile === "function") ? getStoredUserProfile() : null;
-      const sName = userProfile?.displayName || userProfile?.name || "Student Physicist";
+      const sName = (userProfile?.name || userProfile?.displayName || "").trim() || "Guest Student";
+      const sCollege = (userProfile?.college || userProfile?.occ || "").trim() || "---";
       const sEmail = userProfile?.email || "guest@physix.lab";
+      const sRole = userProfile?.edu || "Student Researcher";
 
       const summaryMetrics = [
         { label: "Apparatus State", value: state.powerOn ? "ENERGIZED" : "STANDBY", color: [16, 185, 129] },
@@ -1759,7 +1780,7 @@ export function createDiodeExperiment(callbacks = {}) {
           rows: fwdRows.length > 0 ? fwdRows : [["1", "0.00", "0.00"]]
         },
         {
-          title: "Table 2: Reverse Bias P-N Junction Characteristics (Least Count: V = 0.5 V, μA = 2 μA = 0.002 mA)",
+          title: "Table 2: Reverse Bias P-N Junction Characteristics (Least Count: V = 0.5 V, uA = 2 uA = 0.002 mA)",
           columns: ["S.No.", "Reverse Voltage Vr (Volt)", "Reverse Current Ir (mA)"],
           rows: revRows.length > 0 ? revRows : [["1", "0.0", "0.0000"]]
         }
@@ -1768,7 +1789,7 @@ export function createDiodeExperiment(callbacks = {}) {
       const graphs = [];
       if (fwdGraphImg) {
         graphs.push({
-          title: "Figure 1: V-I Characteristics — Forward Bias (1st Quadrant: 1 cm = 0.1 V, 1 cm = 1 mA)",
+          title: "Figure 1: V-I Characteristics - Forward Bias (1st Quadrant: 1 cm = 0.1 V, 1 cm = 1 mA)",
           imageData: fwdGraphImg,
           height: 65,
           caption: "Live dynamic plot of experimental Forward Voltage Vf vs Forward Current If showing exponential cut-in."
@@ -1776,7 +1797,7 @@ export function createDiodeExperiment(callbacks = {}) {
       }
       if (revGraphImg) {
         graphs.push({
-          title: "Figure 2: V-I Characteristics — Reverse Bias (3rd Quadrant: 1 cm = 2 V, 1 cm = 10 μA)",
+          title: "Figure 2: V-I Characteristics - Reverse Bias (3rd Quadrant: 1 cm = 2 V, 1 cm = 10 uA)",
           imageData: revGraphImg,
           height: 65,
           caption: "Live dynamic plot of experimental Reverse Voltage Vr vs Reverse Current Ir confirming minimal leakage."
@@ -1788,8 +1809,9 @@ export function createDiodeExperiment(callbacks = {}) {
         labSubtitle: "Scientific Virtual Physics Logbook & Experimental Telemetry Record",
         experimentCode: "EXP-06-DIODE",
         studentName: sName,
+        collegeName: sCollege,
         studentEmail: sEmail,
-        studentRole: "Student Physicist",
+        studentRole: sRole,
         aim: "To study the voltage - current (V-I) characteristics of a forward and reverse bias P-N Junction diode.",
         apparatus: "A P-N Junction diode, milliammeter, Voltmeter, micro-ammeter, power supply & connection wires.",
         summaryMetrics,
@@ -1801,10 +1823,20 @@ export function createDiodeExperiment(callbacks = {}) {
       if (typeof showToast === "function") {
         showToast("Laboratory Report with Live Graphs exported successfully!");
       }
+      if (exportBtn) {
+        exportBtn.innerHTML = `<span>Report Exported!</span>`;
+      }
     } catch (err) {
       console.error("[Diode VI] PDF Export error:", err);
       if (typeof showToast === "function") {
         showToast("Error generating PDF report.");
+      }
+    } finally {
+      if (exportBtn) {
+        setTimeout(() => {
+          exportBtn.disabled = false;
+          exportBtn.innerHTML = exportBtn.getAttribute("data-orig-html") || `<span>Export PDF Logbook</span>`;
+        }, 1500);
       }
     }
   }
@@ -1844,11 +1876,11 @@ export function createDiodeExperiment(callbacks = {}) {
     // Preset Wire Buttons
     document.getElementById("diode-btn-auto-fwd")?.addEventListener("click", () => {
       setBiasMode("forward");
-      if (typeof showToast === "function") showToast("Forward Bias Circuit Wired Successfully!");
+      autoConnectForward(true);
     });
     document.getElementById("diode-btn-auto-rev")?.addEventListener("click", () => {
       setBiasMode("reverse");
-      if (typeof showToast === "function") showToast("Reverse Bias Circuit Wired Successfully!");
+      autoConnectReverse(true);
     });
     document.getElementById("diode-btn-clear-wires")?.addEventListener("click", clearAllWires);
 
@@ -1885,17 +1917,19 @@ export function createDiodeExperiment(callbacks = {}) {
       let startVal = 0;
 
       const onMouseDown = (e) => {
+        e.preventDefault();
         isDragging = true;
         startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
         startVal = state.forwardVoltageKnob;
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
-        document.addEventListener("touchmove", onMouseMove);
+        document.addEventListener("touchmove", onMouseMove, { passive: false });
         document.addEventListener("touchend", onMouseUp);
       };
 
       const onMouseMove = (e) => {
         if (!isDragging) return;
+        if (e.cancelable) e.preventDefault();
         const currentY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
         const delta = (startY - currentY) * 0.008;
         setForwardVoltage(startVal + delta);
@@ -1910,7 +1944,7 @@ export function createDiodeExperiment(callbacks = {}) {
       };
 
       fwdKnob.addEventListener("mousedown", onMouseDown);
-      fwdKnob.addEventListener("touchstart", onMouseDown, { passive: true });
+      fwdKnob.addEventListener("touchstart", onMouseDown, { passive: false });
       fwdKnob.addEventListener("wheel", (e) => {
         e.preventDefault();
         const delta = e.deltaY < 0 ? 0.05 : -0.05;
@@ -1939,17 +1973,19 @@ export function createDiodeExperiment(callbacks = {}) {
       let startVal = 0;
 
       const onMouseDown = (e) => {
+        e.preventDefault();
         isDragging = true;
         startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
         startVal = state.reverseVoltageKnob;
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
-        document.addEventListener("touchmove", onMouseMove);
+        document.addEventListener("touchmove", onMouseMove, { passive: false });
         document.addEventListener("touchend", onMouseUp);
       };
 
       const onMouseMove = (e) => {
         if (!isDragging) return;
+        if (e.cancelable) e.preventDefault();
         const currentY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
         const delta = (startY - currentY) * 0.15;
         setReverseVoltage(startVal + delta);
@@ -1964,7 +2000,7 @@ export function createDiodeExperiment(callbacks = {}) {
       };
 
       revKnob.addEventListener("mousedown", onMouseDown);
-      revKnob.addEventListener("touchstart", onMouseDown, { passive: true });
+      revKnob.addEventListener("touchstart", onMouseDown, { passive: false });
       revKnob.addEventListener("wheel", (e) => {
         e.preventDefault();
         const delta = e.deltaY < 0 ? 1.0 : -1.0;

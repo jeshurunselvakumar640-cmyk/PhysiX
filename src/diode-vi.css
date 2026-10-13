@@ -82,6 +82,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 20px;
+  align-items: start;
 }
 
 @media (max-width: 1080px) {
@@ -398,9 +399,11 @@
   padding: 10px 8px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 8px;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
   position: relative;
+  min-height: 180px;
 }
 
 .lower-box-caption {
@@ -411,7 +414,8 @@
   font-size: 10.5px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  margin-top: 6px;
+  margin-top: auto;
+  padding-top: 4px;
 }
 
 /* Supply Zone Content: Knob + Arc + Ports */
@@ -428,12 +432,19 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+  width: 84px;
+  height: 118px;
+  min-height: 118px;
+  max-height: 118px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  justify-content: flex-start;
 }
 
 .knob-arc-indicator {
   position: absolute;
   top: -8px;
-  left: -8px;
+  left: 4px;
   width: 76px;
   height: 76px;
   pointer-events: none;
@@ -448,7 +459,10 @@
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.25);
   cursor: grab;
   position: relative;
-  transition: transform 0.05s linear;
+  transform-origin: center center;
+  flex-shrink: 0;
+  user-select: none;
+  touch-action: none;
 }
 
 .rotary-knob:active {
@@ -482,6 +496,13 @@
   font-weight: 700;
   color: #38bdf8;
   margin-top: 4px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  width: 84px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
 }
 
 /* DC Output Ports Block */
@@ -490,6 +511,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .dc-out-title {
@@ -525,22 +547,26 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.3);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: box-shadow 0.15s, filter 0.15s;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .banana-terminal:hover {
-  transform: scale(1.15);
+  filter: brightness(1.25);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.7), inset 0 1px 3px rgba(255, 255, 255, 0.5);
 }
 
 .banana-terminal.terminal-selected {
   outline: 2px solid #00f0ff;
-  box-shadow: 0 0 12px #00f0ff, inset 0 0 4px #00f0ff;
+  box-shadow: 0 0 14px #00f0ff, inset 0 0 5px #00f0ff;
+  filter: brightness(1.3);
   animation: pulse-terminal 1s infinite alternate;
 }
 
 @keyframes pulse-terminal {
-  from { transform: scale(1.1); box-shadow: 0 0 8px #00f0ff; }
-  to { transform: scale(1.2); box-shadow: 0 0 16px #00f0ff; }
+  from { box-shadow: 0 0 8px #00f0ff; }
+  to { box-shadow: 0 0 18px #00f0ff, 0 0 4px #ffffff; }
 }
 
 /* Red Positive Terminal Socket */
@@ -621,6 +647,7 @@
   height: 100%;
   pointer-events: none;
   z-index: 20;
+  overflow: visible;
 }
 
 .wire-path {
@@ -1493,3 +1520,74 @@ body.light-mode #exp-diode-section #diode-btn-mode-rev.active {
   border-color: #9333ea;
 }
 
+
+/* ==========================================================================
+   LIGHT MODE ADDITIONAL OVERRIDES FOR WORKSTATION, TABS & OBSERVATIONS
+   ========================================================================== */
+body.light-mode #exp-diode-section .graph-canvas-container,
+[data-theme="light"] #exp-diode-section .graph-canvas-container {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-mode #exp-diode-section .graph-scale-legend,
+[data-theme="light"] #exp-diode-section .graph-scale-legend {
+  color: #475569 !important;
+}
+
+body.light-mode #exp-diode-section .obs-tab-btn,
+[data-theme="light"] #exp-diode-section .obs-tab-btn {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+body.light-mode #exp-diode-section .obs-tab-btn:hover,
+[data-theme="light"] #exp-diode-section .obs-tab-btn:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+body.light-mode #exp-diode-section .obs-tab-btn.active,
+[data-theme="light"] #exp-diode-section .obs-tab-btn.active {
+  background: #e0f2fe !important;
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+}
+
+body.light-mode #exp-diode-section .least-count-strip,
+[data-theme="light"] #exp-diode-section .least-count-strip {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body.light-mode #exp-diode-section .lc-item strong,
+[data-theme="light"] #exp-diode-section .lc-item strong {
+  color: #b45309 !important;
+}
+
+body.light-mode #exp-diode-section .obs-table-scroll,
+[data-theme="light"] #exp-diode-section .obs-table-scroll {
+  border-color: #cbd5e1 !important;
+  background: #ffffff !important;
+}
+
+body.light-mode #exp-diode-section .diode-obs-table th,
+[data-theme="light"] #exp-diode-section .diode-obs-table th {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+
+body.light-mode #exp-diode-section .diode-obs-table td,
+[data-theme="light"] #exp-diode-section .diode-obs-table td {
+  color: #1e293b !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode #exp-diode-section .diode-obs-table tbody tr:hover,
+[data-theme="light"] #exp-diode-section .diode-obs-table tbody tr:hover {
+  background: #f0f9ff !important;
+}

@@ -24,6 +24,9 @@ body.light-mode,
   --text-main: #0f172a;
   --text-muted: #334155;
   --text-dim: #64748b;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --border-color: #bae6fd;
 }
 
 /* =====================================
@@ -5188,3 +5191,136 @@ body.light-mode ::-webkit-scrollbar-thumb:hover,
 }
 
 
+
+
+/* References & Further Reading in Light Mode */
+body.light-mode .ref-card,
+[data-theme="light"] .ref-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.94) 100%) !important;
+  border-color: #bae6fd !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.12) !important;
+}
+
+body.light-mode .ref-card-title,
+[data-theme="light"] .ref-card-title {
+  color: #0f172a !important;
+}
+
+body.light-mode .ref-card-desc,
+[data-theme="light"] .ref-card-desc {
+  color: #334155 !important;
+}
+
+body.light-mode .ref-card-source,
+[data-theme="light"] .ref-card-source {
+  color: #0284c7 !important;
+}
+
+body.light-mode .ref-card-link,
+[data-theme="light"] .ref-card-link {
+  color: #0284c7 !important;
+}
+
+body.light-mode .refs-empty,
+[data-theme="light"] .refs-empty {
+  color: #475569 !important;
+  border-color: rgba(14, 165, 233, 0.3) !important;
+}
+
+/* ==========================================================================
+   HELP & GUIDE EXPERIMENT-SPECIFIC & GENERAL LIGHT MODE ENHANCEMENTS
+   ========================================================================== */
+.help-nav-tabs.hidden,
+#help-nav-tabs.hidden,
+body.light-mode #help-nav-tabs.hidden,
+[data-theme="light"] #help-nav-tabs.hidden {
+  display: none !important;
+}
+
+body.light-mode .help-steps-grid,
+[data-theme="light"] .help-steps-grid,
+body.light-mode .help-ui-showcase-grid,
+[data-theme="light"] .help-ui-showcase-grid {
+  gap: 12px;
+}
+
+body.light-mode .help-step-item,
+[data-theme="light"] .help-step-item,
+body.light-mode .help-ui-item,
+[data-theme="light"] .help-ui-item,
+body.light-mode .help-card-inner,
+[data-theme="light"] .help-card-inner {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-mode .help-step-item h5,
+[data-theme="light"] .help-step-item h5,
+body.light-mode .help-ui-label,
+[data-theme="light"] .help-ui-label,
+body.light-mode .help-card-inner-header h5,
+[data-theme="light"] .help-card-inner-header h5 {
+  color: #0f172a !important;
+}
+
+body.light-mode .help-step-item p,
+[data-theme="light"] .help-step-item p,
+body.light-mode .help-ui-desc,
+[data-theme="light"] .help-ui-desc,
+body.light-mode .help-card-inner p,
+[data-theme="light"] .help-card-inner p {
+  color: #334155 !important;
+}
+
+body.light-mode .help-step-item code,
+[data-theme="light"] .help-step-item code,
+body.light-mode .help-card-inner code,
+[data-theme="light"] .help-card-inner code {
+  background: #e2e8f0 !important;
+  color: #0369a1 !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+}
+
+/* ==========================================================================
+   KATEX & FORMULA LIGHT MODE CONTRAST & ACCENTS
+   ========================================================================== */
+body.light-mode .katex,
+[data-theme="light"] .katex {
+  color: #0f172a;
+}
+
+body.light-mode .katex .mfrac .frac-line,
+[data-theme="light"] .katex .mfrac .frac-line {
+  border-color: #334155 !important;
+}
+
+body.light-mode .katex .mopen,
+body.light-mode .katex .mclose,
+[data-theme="light"] .katex .mopen,
+[data-theme="light"] .katex .mclose {
+  color: #0f172a !important;
+}
+
+body.light-mode .math-callout .katex,
+[data-theme="light"] .math-callout .katex,
+body.light-mode .f-eq .katex,
+[data-theme="light"] .f-eq .katex,
+body.light-mode .formula-latex .katex,
+[data-theme="light"] .formula-latex .katex {
+  color: #0369a1 !important;
+}
+
+body.light-mode .formula-latex,
+[data-theme="light"] .formula-latex {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-mode .tutorial-card-desc .katex,
+[data-theme="light"] .tutorial-card-desc .katex {
+  color: #0284c7 !important;
+}

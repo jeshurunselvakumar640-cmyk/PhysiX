@@ -16,9 +16,24 @@ export const EXPERIMENT_DETAILS = {
     engine: "Matter.js 2D Newtonian Kinematics",
 accentColor: "#38bdf8",
     referenceBooks: [
-      { title: "Projectile Motion", source: "BCcampus Physics", url: "https://pressbooks.bccampus.ca/physics0312chooge/chapter/3-4-projectile-motion/", description: "Covers principles and equations of projectile motion." },
-      { title: "Projectile Motion", source: "OpenStax Physics", url: "https://openstax.org/books/physics/pages/5-3-projectile-motion", description: "Textbook section on projectile motion and two-dimensional kinematics." },
-      { title: "Two-Dimensional Kinematics", source: "Physics LibreTexts", url: "https://phys.libretexts.org/Bookshelves/University_Physics/Physics_(Boundless)/3.3%3A_Projectile_Motion", description: "Additional material on projectile motion and two-dimensional motion." }
+      {
+        title: "Projectile Motion",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion",
+        description: "Learn about projectile trajectories, horizontal and vertical motion, time of flight, maximum height, and horizontal range."
+      },
+      {
+        title: "Motion in Two and Three Dimensions",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-1/pages/4-introduction",
+        description: "Review the vector and kinematic principles used to describe two-dimensional motion."
+      },
+      {
+        title: "Motion in Two and Three Dimensions: Chapter Summary",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-1/pages/4-summary",
+        description: "Review important concepts and equations for motion in two and three dimensions."
+      }
     ],
     aim: `<p class="manual-aim-text">To investigate the two-dimensional kinematic motion of a projectile fired at an initial elevation angle θ and launch speed v₀ in a gravitational field, to verify that horizontal and vertical motions are independent, and to determine how launch parameters affect the maximum apex height (H<sub>max</sub>), total flight duration (T), and horizontal ground range (R).</p>`,
     theory: `
@@ -244,9 +259,24 @@ accentColor: "#38bdf8",
     engine: "Waveguide Ray Tracing & Conical Divergence Solver",
 accentColor: "#00f0ff",
     referenceBooks: [
-      { title: "Fiber Optics Engineering", source: "M. Azadeh", url: "https://www-hep.phys.sinica.edu.tw/RadWork_www/Publications/Reference_Books/Fiber_Optics_Engineering_M.Azadeh/978-1-4419-0304-4.pdf", description: "Technical reference book on fibre-optic engineering." },
-      { title: "Total Internal Reflection", source: "OpenStax University Physics, Volume 3", url: "https://openstax.org/books/university-physics-volume-3/pages/1-4-total-internal-reflection", description: "Explains total internal reflection, the fundamental principle behind optical fibre light guidance." },
-      { title: "University Physics, Volume 3", source: "OpenStax", url: "https://openstax.org/details/books/university-physics-volume-3", description: "Broader physics textbook covering optics and related principles." }
+      {
+        title: "Measurement of Numerical Aperture",
+        source: "IIT Roorkee Virtual Labs",
+        url: "https://oc-iitr.vlabs.ac.in/exp/measurement-numerical-aperture/theory.html",
+        description: "Study numerical aperture, acceptance angle, and the theoretical basis of its measurement."
+      },
+      {
+        title: "Numerical Aperture Measurement",
+        source: "IIT Kanpur Virtual Labs",
+        url: "https://bop-iitk.vlabs.ac.in/exp/numerical-aperture-measurement/theory.html",
+        description: "Learn about optical-fiber numerical aperture and the principles behind its experimental measurement."
+      },
+      {
+        title: "Total Internal Reflection",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-3/pages/1-4-total-internal-reflection",
+        description: "Understand the optical principle that enables light propagation through an optical fiber."
+      }
     ],
     aim: `<p class="manual-aim-text">To determine the Numerical Aperture (NA) and maximum Acceptance Angle (θ<sub>a</sub>) of a step-index multimode optical fibre cable by measuring the divergence diameter of the output laser beam spot at varying distances on a calibrated optical bench.</p>`,
     theory: `
@@ -466,9 +496,24 @@ accentColor: "#00f0ff",
     accentColor: "#10b981",
 
     referenceBooks: [
-      { title: "Adafruit Color Sensors Guide", source: "Adafruit", url: "https://learn.adafruit.com/adafruit-color-sensors", description: "Practical material on colour sensors, their operation, and interfacing." },
-      { title: "Introduction to Physics", source: "OpenStax", url: "https://openstax.org/books/physics/pages/1-introduction", description: "Foundational physics concepts supporting understanding of light and measurement." },
-      { title: "TCS34725 Color Sensor", source: "ams OSRAM", url: "https://ams-osram.com/products/sensor-solutions/ambient-light-color-spectral-proximity-sensors/ams-tcs34725-color-sensor", description: "Manufacturer information on a colour-sensing device and its technical characteristics." }
+      {
+        title: "Color Sensors",
+        source: "Adafruit Learning System",
+        url: "https://learn.adafruit.com/adafruit-color-sensors",
+        description: "Explore colour-sensor operation, RGB measurements, and practical implementation."
+      },
+      {
+        title: "TCS34725 Color Sensor",
+        source: "ams OSRAM",
+        url: "https://ams-osram.com/products/sensor-solutions/ambient-light-color-spectral-proximity-sensors/ams-tcs34725-color-sensor",
+        description: "Review technical information about RGB colour sensing and the capabilities of the TCS34725 sensor."
+      },
+      {
+        title: "RGB Color Sensor (Retired Product Reference)",
+        source: "SparkFun",
+        url: "https://www.sparkfun.com/sparkfun-rgb-light-sensor-isl29125.html",
+        description: "Explore supplementary hardware information about a colour-sensor implementation. (Note: Retired product page; maintained for educational reference)."
+      }
     ],
     aim: `<p class="manual-aim-text">To investigate the operational principles, spectral sensitivity, programmable frequency scaling, and RGB color identification accuracy of the TCS3200 programmable light-to-frequency optoelectronic sensor using sample swatches at varying calibrated distances.</p>`,
     theory: `
@@ -701,9 +746,24 @@ accentColor: "#00f0ff",
     engine: "Matter.js Velocity Verlet Rigid-Body Engine",
     accentColor: "#a855f7",
     referenceBooks: [
-      { title: "University Physics, Volume 1", source: "OpenStax", url: "https://openstax.org/books/university-physics-volume-1/pages/preface", description: "General university physics textbook covering mechanics and foundational physical principles." },
-      { title: "Newton's Second Law", source: "OpenStax University Physics, Volume 1", url: "https://openstax.org/books/university-physics-volume-1/pages/5-3-newtons-second-law", description: "Explains the relationship between force, mass, and acceleration." },
-      { title: "Introduction to Work and Kinetic Energy", source: "OpenStax University Physics, Volume 1", url: "https://openstax.org/books/university-physics-volume-1/pages/7-introduction", description: "Introduces work and kinetic energy, providing additional context for mechanics simulations." }
+      {
+        title: "Newton's Second Law",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-1/pages/5-3-newtons-second-law",
+        description: "Learn how force, mass, and acceleration are related through Newton's second law."
+      },
+      {
+        title: "University Physics, Volume 1: Work and Energy Chapter",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-1/pages/7-introduction",
+        description: "Review work, kinetic energy, and related mechanics concepts."
+      },
+      {
+        title: "University Physics, Volume 1",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-1/pages/preface",
+        description: "Use the textbook as a broader reference for mechanics, forces, motion, and energy."
+      }
     ],
 
     aim: `<p class="manual-aim-text">To investigate Newtonian rigid-body mechanics, conservation of linear momentum, coefficient of restitution (e), and the exchange between kinetic and gravitational potential energy in an interactive computational 2D physics environment.</p>`,
@@ -908,9 +968,24 @@ accentColor: "#00f0ff",
     engine: "Fourier Wave Optics & Fraunhofer Multi-Slit Interference Solver",
     accentColor: "#a855f7",
     referenceBooks: [
-      { title: "Diffraction Gratings", source: "OpenStax University Physics, Volume 3", url: "https://openstax.org/books/university-physics-volume-3/pages/4-4-diffraction-gratings", description: "Explains diffraction gratings and the physical principles governing their behaviour." },
-      { title: "Applications of Diffraction, Interference, and Coherence", source: "OpenStax Physics", url: "https://openstax.org/books/physics/pages/17-2-applications-of-diffraction-interference-and-coherence", description: "Covers applications of diffraction and interference phenomena." },
-      { title: "Understanding Diffraction and Interference", source: "OpenStax Physics", url: "https://openstax.org/books/physics/pages/17-1-understanding-diffraction-and-interference", description: "Introduces diffraction and interference and explains their underlying principles." }
+      {
+        title: "Diffraction Gratings",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-3/pages/4-4-diffraction-gratings",
+        description: "Learn about diffraction-grating equations, diffraction angles, interference, and wavelength determination."
+      },
+      {
+        title: "Applications of Diffraction, Interference, and Coherence",
+        source: "OpenStax",
+        url: "https://openstax.org/books/physics/pages/17-2-applications-of-diffraction-interference-and-coherence",
+        description: "Explore applications of diffraction and interference in physical systems."
+      },
+      {
+        title: "Understanding Diffraction and Interference",
+        source: "OpenStax",
+        url: "https://openstax.org/books/physics/pages/17-1-understanding-diffraction-and-interference",
+        description: "Understand the wave principles that produce diffraction and interference patterns."
+      }
     ],
 
     aim: `<p class="manual-aim-text">To study the diffraction of monochromatic light through a diffraction grating, observe the formation of principal maxima for different orders, verify the grating equation <strong>d sin θ = mλ</strong>, determine the wavelength of incident spectral lines, and analyze angular dispersion as a function of grating line density.</p>`,
@@ -1378,6 +1453,26 @@ accentColor: "#00f0ff",
     duration: "45 Minutes",
     engine: "Lorentz Force Magnetotransport & Carrier Dynamics Solver",
     accentColor: "#8b5cf6",
+    referenceBooks: [
+      {
+        title: "University Physics, Volume 3: Introduction",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-3/pages/9-introduction",
+        description: "Review the semiconductor and charge-carrier concepts relevant to Hall-effect measurements."
+      },
+      {
+        title: "Magnetic Force on a Current-Carrying Conductor",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-2/pages/11-4-magnetic-force-on-a-current-carrying-conductor",
+        description: "Understand the magnetic forces acting on moving charges and current-carrying conductors."
+      },
+      {
+        title: "Virtual Physical Sciences Laboratory Portal",
+        source: "IIT Kanpur Virtual Labs",
+        url: "https://bop-iitk.vlabs.ac.in/",
+        description: "Explore the virtual-laboratory portal for related experimental physics material."
+      }
+    ],
     aim: `<p class="manual-aim-text">To investigate the Hall Effect in semiconductor and metallic specimens placed in a uniform perpendicular magnetic field, to determine the sign of the charge carriers, to measure the transverse Hall voltage (V<sub>H</sub>) as a function of specimen current (I) and magnetic flux density (B), and to calculate the Hall coefficient (R<sub>H</sub>), carrier concentration (n), and carrier mobility (μ<sub>H</sub>).</p>`,
     theory: `
       <div class="theory-block">
@@ -1632,9 +1727,24 @@ accentColor: "#00f0ff",
     accentColor: "#f59e0b",
 
     referenceBooks: [
-      { title: "Semiconductor Devices", source: "OpenStax University Physics, Volume 3", url: "https://openstax.org/books/university-physics-volume-3/pages/9-7-semiconductor-devices", description: "Educational material on semiconductor devices and their underlying physical principles." },
-      { title: "Introduction to Diodes", source: "Electronics Tutorials", url: "https://www.electronics-tutorials.ws/diode/diode_1.html", description: "Explains diode fundamentals, operation, and basic electrical characteristics." },
-      { title: "Diode Applications and Operation", source: "Electronics Tutorials", url: "https://www.electronics-tutorials.ws/diode/diode_2.html", description: "Additional learning material on diode behaviour and applications." }
+      {
+        title: "Semiconductor Devices",
+        source: "OpenStax",
+        url: "https://openstax.org/books/university-physics-volume-3/pages/9-7-semiconductor-devices",
+        description: "Study semiconductor devices and the physical principles behind PN-junction operation."
+      },
+      {
+        title: "PN Junction Diode",
+        source: "Electronics Tutorials",
+        url: "https://www.electronics-tutorials.ws/diode/diode_1.html",
+        description: "Learn about diode operation, junction behaviour, and forward and reverse bias."
+      },
+      {
+        title: "Diode Characteristics",
+        source: "Electronics Tutorials",
+        url: "https://www.electronics-tutorials.ws/diode/diode_2.html",
+        description: "Explore diode current-voltage characteristics and the behaviour of a diode under different bias conditions."
+      }
     ],
     aim: `<p class="manual-aim-text">To study the voltage - current (V-I) characteristics of a forward and reverse bias P-N Junction diode, determine the cut-in (knee) voltage, and evaluate the static and dynamic resistance in forward and reverse operating regions.</p>`,
     apparatus: `<p class="manual-aim-text">A P-N Junction diode, milliammeter, Voltmeter, micro-ammeter, power supply & connection wires.</p>`,
@@ -2281,7 +2391,222 @@ accentColor: "#00f0ff",
         </ol>
       </div>
 `
+  },
+
+  "pof-attenuation": {
+    id: "pof-attenuation",
+    title: "Measuring Optical Power Attenuation in Plastic Optical Fiber",
+    category: "Fiber Optics & Guided-Wave Photonics",
+    shortDescription: "Measure reference optical input power and transmitted output power in plastic optical fiber (POF) across varying lengths, evaluate total loss in dB, and determine the attenuation coefficient α in dB/km.",
+    difficulty: "Undergraduate Optical Engineering Practical",
+    duration: "45 Minutes",
+    engine: "Bouguer-Lambert-Beer Guided-Wave Photonic Solver",
+    accentColor: "#eab308",
+
+    referenceBooks: [
+      {
+        title: "Fiber Optics Course",
+        source: "NPTEL",
+        url: "https://onlinecourses-archive.nptel.ac.in/noc18_ph06/preview",
+        description: "Study optical-fiber transmission, attenuation, and optical signal losses."
+      },
+      {
+        title: "Attenuation of Radiation",
+        source: "IOP Spark",
+        url: "https://spark.iop.org/attenuation-radiation",
+        description: "Explore a practical introduction to attenuation and the reduction of transmitted radiation."
+      },
+      {
+        title: "Plastic Optical Fiber-Based Optical Sensors",
+        source: "PMC / NCBI",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3478834/",
+        description: "Review research on plastic optical fibers, their properties, and optical-sensing applications."
+      }
+    ],
+
+    aim: `<p class="manual-aim-text">To measure the optical power attenuation in a step-index Plastic Optical Fiber (POF) using an optical power meter, record transmission losses at multiple fiber lengths, plot optical power and decibel attenuation against cable length, and determine the attenuation coefficient ($\\alpha$) in $\\text{dB/km}$.</p>`,
+
+    apparatus: `<p class="manual-aim-text">Stabilized optical transmitter (650 nm visible red LED / diode source), regulated DC power supply, calibrated digital optical power meter with high-sensitivity photodetector (measuring in mW and µW), precision fiber coupling jigs with micrometer X-Y alignment stages, step-index PMMA plastic optical fiber patch cables of calibrated lengths (1 m to 25 m), and dual cylindrical guide rail optical bench.</p>`,
+
+    theory: `
+      <div class="theory-block">
+        <h3>1. Optical Waveguide Attenuation &amp; Loss Mechanisms</h3>
+        <p>Optical attenuation is the reduction of optical power as light propagates through an optical fiber waveguide. In a dielectric waveguide such as a step-index plastic optical fiber (POF) with a polymethyl methacrylate (PMMA) core and fluorinated polymer cladding, power decreases continuously with distance due to several physical processes:</p>
+        <ul class="manual-list">
+          <li><strong>Rayleigh Scattering:</strong> Microscopic density fluctuations and refractive index inhomogeneities frozen into the polymer matrix scatter light in all directions, attenuating power inversely with the fourth power of wavelength ($\\propto 1/\\lambda^4$).</li>
+          <li><strong>Material Absorption:</strong> Intrinsic electronic bandgap transitions in the ultraviolet region and carbon-hydrogen (C-H) vibrational overtone harmonics in the near-infrared region produce strong intrinsic absorption bands, leaving transmission windows in the visible spectrum (notably at $\\lambda \\approx 650\\text{ nm}$). Extrinsic impurities like moisture (O-H bonds) and residual monomer groups add absorption peaks.</li>
+          <li><strong>Radiation &amp; Bending Losses:</strong> Macrobending occurs when the fiber is bent into a curve whose radius of curvature is comparable to critical limits, causing higher-order guided rays to exceed the critical angle at the core-cladding boundary and refract into the cladding. Microbending consists of microscopic axial deformations along the fiber jacket.</li>
+          <li><strong>Coupling &amp; Connector Losses:</strong> Fresnel reflection at the air-polymer interface facets, lateral/angular misalignment between source and core, and numerical aperture (NA) mismatches introduce localized insertion losses distinct from distributed waveguide attenuation.</li>
+        </ul>
+      </div>
+
+      <div class="theory-block">
+        <h3>2. Distributed Attenuation &amp; Bouguer-Lambert-Beer Law</h3>
+        <p>For a homogeneous optical fiber with continuous distributed attenuation coefficient $\\alpha$, the optical power $P(z)$ at distance $z$ along the fiber obeys the differential rate equation:</p>
+        <div class="math-callout">\\frac{dP}{dz} = -\\alpha_p P(z) \\implies P(z) = P_{\\text{in}} e^{-\\alpha_p z}</div>
+        <p>where $\\alpha_p$ is the linear power attenuation coefficient in $\\text{m}^{-1}$ and $P_{\\text{in}}$ is the coupled optical input power at $z = 0$. In optical communications engineering, attenuation is universally expressed on a logarithmic decibel scale:</p>
+        <div class="math-callout formula-highlight">P_{\\text{out}} = P_{\\text{in}} \\times 10^{-\\frac{\\alpha L}{10}}</div>
+        <p>where $L$ is the fiber length and $\\alpha$ is the attenuation coefficient in $\\text{dB/unit length}$.</p>
+      </div>
+
+      <div class="theory-block">
+        <h3>3. Decibel Attenuation &amp; Attenuation Coefficient Formulation</h3>
+        <p>The total optical power attenuation $A_{\\text{dB}}$ experienced by light propagating through length $L$ from input power $P_{\\text{in}}$ to output power $P_{\\text{out}}$ is defined as:</p>
+        <div class="math-callout formula-highlight">A_{\\text{dB}} = 10 \\log_{10}\\left(\\frac{P_{\\text{in}}}{P_{\\text{out}}}\\right)</div>
+        <p>To obtain the normalized attenuation coefficient per kilometre ($\\alpha_{\\text{dB/km}}$) when fiber length is measured in metres ($L_{\\text{m}}$):</p>
+        <div class="math-callout">L_{\\text{km}} = \\frac{L_{\\text{m}}}{1000} \\implies \\alpha_{\\text{dB/km}} = \\frac{A_{\\text{dB}}}{L_{\\text{km}}} = \\left(\\frac{1000}{L_{\\text{m}}}\\right) \\times 10 \\log_{10}\\left(\\frac{P_{\\text{in}}}{P_{\\text{out}}}\\right)</div>
+        <p>Because $P_{\\text{in}}$ and $P_{\\text{out}}$ appear as a dimensionless quotient, both must be evaluated in identical units (e.g., milliwatts $\\text{mW}$ or microwatts $\\mu\\text{W}$).</p>
+      </div>
+    `,
+
+    howToPerform: `
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-badge">1</div>
+          <div class="step-info">
+            <h4>Apparatus Inspection &amp; Power On</h4>
+            <p>Inspect the optical bench components from left to right: Optical Source, Input Coupler, POF Cable, Output Coupling Assembly, and Optical Power Detector. Switch ON the transmitter power supply and verify stable 650 nm red light emission.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">2</div>
+          <div class="step-info">
+            <h4>Measure Reference Power ($P_{\\text{in}}$)</h4>
+            <p>Configure the Optical Power Meter to REFERENCE mode. Align the detector with the calibrated transmitter aperture and trigger a measurement to record the stable optical input power $P_{\\text{in}}$ in mW.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">3</div>
+          <div class="step-info">
+            <h4>Connect POF &amp; Set Fiber Length</h4>
+            <p>Connect the plastic optical fiber patch cable between the input coupling chuck and the output detector receiver. Adjust modeled cable length $L$ (e.g., 1 m, 2 m, 5 m, 10 m, 15 m, 20 m) and verify tight mechanical coupling.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">4</div>
+          <div class="step-info">
+            <h4>Measure Transmitted Output Power ($P_{\\text{out}}$)</h4>
+            <p>Switch the meter to POF OUTPUT mode. Trigger the power measurement to acquire $P_{\\text{out}}$. Observe how transmitted power decreases systematically as fiber length increases.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">5</div>
+          <div class="step-info">
+            <h4>Calculate Total Attenuation &amp; Attenuation Coefficient</h4>
+            <p>Compute total loss $A_{\\text{dB}} = 10 \\log_{10}(P_{\\text{in}} / P_{\\text{out}})$ and normalize to $\\alpha = (1000/L) \\times A_{\\text{dB}}$ in $\\text{dB/km}$. Record the observation in the logbook table.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">6</div>
+          <div class="step-info">
+            <h4>Analyze Telemetry Plots &amp; Deduce $\\alpha$</h4>
+            <p>Log multiple fiber lengths. Observe the exponential curve of $P_{\\text{out}}$ vs $L$ and linear slope of $A_{\\text{dB}}$ vs $L$. Compute the average attenuation coefficient across all measurement trials.</p>
+          </div>
+        </div>
+      </div>
+    `,
+
+    procedure: `
+      <div class="procedure-block">
+        <ol class="manual-ordered-list">
+          <li>Place the optical transmitter, input coupler, POF cable holder, and optical detector on the parallel cylindrical guide rails of the optical bench.</li>
+          <li>Power on the optical source unit. Allow the transmitter LED/laser to stabilize for 2 minutes to ensure constant emission irradiance.</li>
+          <li>Position the detector at the reference measurement port to measure direct transmitter output power. Record this value as $P_{\\text{in}}$ in milliwatts (mW).</li>
+          <li>Clean both optical fiber facets with isopropyl lens wipes. Insert the input end into the input coupler chuck and the output end into the detector coupling mount.</li>
+          <li>Select an initial fiber length $L = 1.0\\text{ m}$. Ensure the cable rests along a smooth, unbent trajectory without mechanical microbends.</li>
+          <li>Optimize alignment knobs for maximum transmitted signal on the digital power meter. Press <strong>Measure Power</strong> and record $P_{\\text{out}}$.</li>
+          <li>Calculate total attenuation: $A_{\\text{dB}} = 10 \\log_{10}(P_{\\text{in}} / P_{\\text{out}})$.</li>
+          <li>Calculate attenuation coefficient: $\\alpha_{\\text{dB/km}} = \\frac{1000}{L_{\\text{m}}} \\times A_{\\text{dB}}$.</li>
+          <li>Repeat measurements for $L = 2.0\\text{ m}$, $5.0\\text{ m}$, $10.0\\text{ m}$, $15.0\\text{ m}$, and $20.0\\text{ m}$.</li>
+          <li>Record all observations in the tabular column. Plot $P_{\\text{out}}$ vs $L$ and total attenuation $A_{\\text{dB}}$ vs $L$. Determine the mean slope and attenuation coefficient.</li>
+        </ol>
+      </div>
+    `,
+
+    formulas: `
+      <div class="formulas-container">
+        <div class="formula-card">
+          <h4>1. Total Power Attenuation (Decibels)</h4>
+          <div class="math-callout formula-highlight">A_{\\text{dB}} = 10 \\log_{10}\\left(\\frac{P_{\\text{in}}}{P_{\\text{out}}}\\right)</div>
+          <p class="formula-desc">Where $P_{\\text{in}}$ is optical power entering the fiber and $P_{\\text{out}}$ is optical power emerging from the fiber. Both values must be in the same units (mW or µW).</p>
+        </div>
+
+        <div class="formula-card">
+          <h4>2. Attenuation Coefficient per Kilometre</h4>
+          <div class="math-callout formula-highlight">\\alpha_{\\text{dB/km}} = \\frac{A_{\\text{dB}}}{L_{\\text{km}}} = \\left(\\frac{1000}{L_{\\text{m}}}\\right) \\times 10 \\log_{10}\\left(\\frac{P_{\\text{in}}}{P_{\\text{out}}}\\right)</div>
+          <p class="formula-desc">Where $L_{\\text{m}}$ is fiber length in metres and $L_{\\text{km}} = L_{\\text{m}} / 1000$ is fiber length in kilometres.</p>
+        </div>
+
+        <div class="formula-card">
+          <h4>3. Transmitted Output Power Propagation Model</h4>
+          <div class="math-callout">P_{\\text{out}} = P_{\\text{in}} \\times 10^{-\\frac{\\alpha L_{\\text{km}}}{10}} = P_{\\text{in}} \\times 10^{-\\frac{\\alpha L_{\\text{m}}}{10000}}</div>
+          <p class="formula-desc">Demonstrates exponential power reduction over propagation distance in a uniform optical waveguide.</p>
+        </div>
+
+        <div class="formula-card">
+          <h4>4. Total Transmission Loss with Insertion &amp; Bending Loss</h4>
+          <div class="math-callout">A_{\\text{total}} = A_{\\text{fiber}} + A_{\\text{coupling}} + A_{\\text{bend}}</div>
+          <p class="formula-desc">Accounts for distributed fiber loss alongside localized end-face Fresnel coupling reflection and macrobending radiation loss.</p>
+        </div>
+      </div>
+    `,
+
+    observations: `
+      <div class="observations-block">
+        <p style="margin-bottom:12px; color:var(--text-secondary, #cbd5e1); font-size:13px;">
+          <strong>Calibrated Optical Source Wavelength:</strong> $\\lambda = 650\\text{ nm}$ (Visible Red Diode Emitter)<br>
+          <strong>Calibrated Reference Input Power:</strong> $P_{\\text{in}} = 3.00\\text{ mW}$ ($3000\\;\\mu\\text{W}$)
+        </p>
+        <table class="manual-table">
+          <thead>
+            <tr>
+              <th>S. No.</th>
+              <th>Fiber Length $L$ (m)</th>
+              <th>Input Power $P_{\\text{in}}$ (mW)</th>
+              <th>Output Power $P_{\\text{out}}$ (mW)</th>
+              <th>Total Attenuation $A$ (dB)</th>
+              <th>Attenuation $\\alpha$ (dB/km)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>1.0</td><td>3.00</td><td>2.88</td><td>0.177</td><td>177.3</td></tr>
+            <tr><td>2</td><td>2.0</td><td>3.00</td><td>2.76</td><td>0.362</td><td>181.0</td></tr>
+            <tr><td>3</td><td>5.0</td><td>3.00</td><td>2.44</td><td>0.899</td><td>179.8</td></tr>
+            <tr><td>4</td><td>10.0</td><td>3.00</td><td>1.98</td><td>1.805</td><td>180.5</td></tr>
+            <tr><td>5</td><td>15.0</td><td>3.00</td><td>1.61</td><td>2.704</td><td>180.2</td></tr>
+            <tr><td>6</td><td>20.0</td><td>3.00</td><td>1.31</td><td>3.600</td><td>180.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    result: `
+      <div class="result-box">
+        <h4>Experimental Conclusions:</h4>
+        <ol class="manual-ordered-list">
+          <li>The optical power emerging from the plastic optical fiber decreases exponentially with cable length, validating the Bouguer-Lambert-Beer waveguide transmission relation $P_{\\text{out}} = P_{\\text{in}} 10^{-\\alpha L / 10}$.</li>
+          <li>The mean attenuation coefficient of the step-index polymethyl methacrylate (PMMA) plastic optical fiber at $\\lambda = 650\\text{ nm}$ was determined to be <strong>$\\alpha \\approx 180 \\pm 5\\text{ dB/km}$</strong> ($0.18\\text{ dB/m}$), matching standard optical engineering benchmarks for PMMA POF.</li>
+          <li>Plotting total attenuation in decibels ($A_{\\text{dB}}$) against length ($L$) yields a linear trend whose gradient equals the attenuation coefficient $\\alpha$.</li>
+          <li>Sharp macrobending and facet misalignment introduce additional extrinsic radiative losses, demonstrating the importance of proper mechanical radius management and precision coupler alignment in fiber optic links.</li>
+        </ol>
+      </div>
+    `,
+
+    precautions: `
+      <div class="precautions-block">
+        <ul class="manual-list">
+          <li><strong>Source Power Stabilization:</strong> Allow the transmitter to warm up before taking the reference power measurement to avoid thermal drift errors.</li>
+          <li><strong>Consistent Facet Cleanliness:</strong> Inspect and clean fiber end facets before insertion into coupling chucks; particulate contamination causes significant localized Fresnel scattering.</li>
+          <li><strong>Unit Consistency:</strong> Always ensure input power ($P_{\\text{in}}$) and output power ($P_{\\text{out}}$) use identical units (mW or µW) before computing decibel ratios ($10 \\log_{10}[P_{\\text{in}}/P_{\\text{out}}]$).</li>
+          <li><strong>Careful Fiber Handling:</strong> Never bend the plastic optical fiber below its minimum permissible bending radius ($R_{\\text{bend}} < 25\\text{ mm}$), which causes high radiation loss or permanent mechanical deformation.</li>
+          <li><strong>Coupling Repeatability:</strong> Maintain consistent alignment chuck locking pressure throughout all length variations to ensure identical input coupling conditions.</li>
+        </ul>
+      </div>
+    `
   }
 };
 
 EXPERIMENT_DETAILS["diode-vi"] = EXPERIMENT_DETAILS["diode"];
+EXPERIMENT_DETAILS["optical-attenuation"] = EXPERIMENT_DETAILS["pof-attenuation"];
+EXPERIMENT_DETAILS["pof"] = EXPERIMENT_DETAILS["pof-attenuation"];
+

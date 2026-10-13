@@ -61,7 +61,6 @@ PhysiX hosts 15 physics laboratories in its catalog: 4 fully implemented interac
 | `experiment.diffraction-grating` | Wavelength Determination using Diffraction Grating | Wave Optics & Spectra | Fully Implemented & Interactive |
 | `experiment.planck-constant` | Determination of Planck's Constant using Photocell | Quantum Mechanics | In Calibration |
 | `experiment.udm-parameters` | Determine Ultrasonic Distance Measurement Parameters | Sensors & Instrumentation | In Calibration |
-| `experiment.nanotech-simulation`| Nanotechnology Computational Modeling | Nanoscience & Devices | In Calibration |
 | `experiment.fiber-attenuation` | Measuring Optical Power Attenuation in Plastic Fibers | Fiber Optics | In Calibration |
 | `experiment.semiconductor-diodes`| I-V Characteristics of PN / Zener / Photo Diodes | Semiconductor Devices | In Calibration |
 | `experiment.rtd-sensor` | Characteristics of Resistance Temperature Detectors (RTD) | Thermal Sensors | In Calibration |

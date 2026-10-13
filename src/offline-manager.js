@@ -142,7 +142,7 @@ async function forceNetworkCheck() {
  * Returns true only if we're confidently online
  */
 function canPerformCloudOperation() {
-  return isOnline && networkQuality === "online";
+  return isOnline && networkQuality !== "offline";
 }
 
 /**

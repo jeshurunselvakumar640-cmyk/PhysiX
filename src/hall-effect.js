@@ -1426,8 +1426,10 @@ export function createHallEffectExperiment(callbacks = {}) {
     }
 
     const profile = getStoredUserProfile ? getStoredUserProfile() : {};
-    const studentName = profile.name || "Student Physicist";
-    const studentEmail = getActiveUserId && getActiveUserId() !== "guest" ? `${getActiveUserId()}` : "Guest Mode";
+    const studentName = (profile?.name || "").trim() || "Guest Student";
+    const collegeName = (profile?.college || profile?.occ || "").trim() || "---";
+    const studentEmail = profile?.email || (getActiveUserId && getActiveUserId() !== "guest" && String(getActiveUserId()).includes("@") ? `${getActiveUserId()}` : "guest@physix.lab");
+    const studentRole = profile?.edu || "Student Researcher";
 
     const totalVh = state.observations.reduce((acc, o) => acc + o.vHMv, 0);
     const meanVh = (totalVh / state.observations.length).toFixed(2);
@@ -1457,14 +1459,23 @@ export function createHallEffectExperiment(callbacks = {}) {
       obs.timestamp
     ]);
 
+    const btn = document.getElementById("hall-btn-export-pdf");
+    if (btn && btn.disabled) return;
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute("data-orig-html", btn.innerHTML);
+      btn.innerHTML = `<span>Generating Report...</span>`;
+    }
+
     try {
       generateLabReportPdf({
         labTitle: "Hall Effect in Semiconductor & Metal Probes Logbook",
         labSubtitle: "Lorentz Force Magnetotransport, Carrier Concentration & Hall Coefficient Evaluation",
         experimentCode: "EXP-04",
         studentName,
+        collegeName,
         studentEmail,
-        studentRole: profile.occ || "Student Physicist",
+        studentRole,
         summaryMetrics: [
           { label: "Total Observations", value: `${state.observations.length} Readings`, color: [139, 92, 246] },
           { label: "Mean Hall Voltage", value: `${meanVh} mV`, color: [56, 189, 248] },
@@ -1478,9 +1489,17 @@ export function createHallEffectExperiment(callbacks = {}) {
       });
 
       if (showToast) showToast("Generated official Hall Effect Laboratory Report (PDF)!");
+      if (btn) btn.innerHTML = `<span>Report Exported!</span>`;
     } catch (err) {
       console.error("[PDF Export] Error generating report:", err);
       if (showToast) showToast("Failed to generate PDF. Check console for details.");
+    } finally {
+      if (btn) {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = btn.getAttribute("data-orig-html") || `<span>Export PDF Logbook</span>`;
+        }, 1500);
+      }
     }
   }
 

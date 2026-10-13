@@ -20,3 +20,7 @@ dist-ssr
 # Environment
 .env
 .env*.local
+
+# Test outputs
+test-output-pdfs/
+*.pdf

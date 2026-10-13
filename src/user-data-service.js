@@ -156,6 +156,8 @@ export async function syncUserToFirestore(user, customData = {}) {
         totalXP: initialXp,
         level: rankInfo.level,
         streak: customData.streak || 1,
+        highestStreak: Math.max(customData.highestStreak || 0, customData.streak || 1),
+        lastLoginDate: customData.lastLoginDate || null,
         lastActiveDate: now,
         experimentsPerformed: customData.experimentsPerformed || 0,
         quizzesAttempted: customData.quizzesAttempted || 0,
@@ -194,7 +196,34 @@ export async function syncUserToFirestore(user, customData = {}) {
       // Derived authoritative level strictly calculated from authoritative totalXP
       updates.level = calculateRankFromXp(targetXp).level;
 
-      if (typeof customData.streak === "number") updates.streak = customData.streak;
+      // Authoritative Streak preservation:
+      // Existing Firestore streak and highestStreak MUST NEVER be blindly overwritten or downgraded by a stale write
+      const currentStreak = Number(current.streak) || 0;
+      const incomingStreak = typeof customData.streak === "number" ? customData.streak : currentStreak;
+      const currentHighest = Math.max(Number(current.highestStreak) || 0, currentStreak);
+      const incomingHighest = typeof customData.highestStreak === "number" ? customData.highestStreak : 0;
+
+      updates.highestStreak = Math.max(currentHighest, incomingHighest, incomingStreak);
+
+      if (typeof customData.streak === "number") {
+        const currentLoginDate = current.lastLoginDate || null;
+        const incomingLoginDate = customData.lastLoginDate || null;
+        if (incomingLoginDate && (!currentLoginDate || incomingLoginDate >= currentLoginDate)) {
+          updates.streak = customData.streak;
+          updates.lastLoginDate = incomingLoginDate;
+        } else if (incomingStreak >= currentStreak) {
+          updates.streak = incomingStreak;
+          if (incomingLoginDate) updates.lastLoginDate = incomingLoginDate;
+        } else {
+          // Preserve valid existing streak
+          updates.streak = currentStreak;
+        }
+      } else {
+        updates.streak = currentStreak;
+      }
+      if (customData.lastLoginDate && !updates.lastLoginDate) {
+        updates.lastLoginDate = customData.lastLoginDate;
+      }
       // Never overwrite a higher Firestore experimentsPerformed with a lower local count
       if (typeof customData.experimentsPerformed === "number") {
         updates.experimentsPerformed = Math.max(current.experimentsPerformed || 0, customData.experimentsPerformed);

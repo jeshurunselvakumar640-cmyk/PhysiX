@@ -1736,25 +1736,62 @@ export function createDiffractionGratingExperiment(callbacks = {}) {
         ? validTrials.reduce((sum, o) => sum + o.wavelengthCalculated, 0) / validTrials.length
         : state.wavelengthNm;
 
-    generateLabReportPdf({
-      labTitle: "Diffraction Grating Wave Optics Telemetry Logbook",
-      labSubtitle: "Determination of Wavelength & Angular Dispersion Analysis",
-      experimentCode: "EXP-05-DIFFRACTION",
-      aimText:
-        "To study the diffraction of monochromatic light through a diffraction grating, observe the formation of principal maxima for different orders, and verify the grating equation d sin θ = mλ.",
-      apparatusList:
-        "Tunable Monochromatic Laser Source, Transmission Diffraction Grating (300-1200 lines/mm), High-Precision Calibrated Optical Rail, Linear Scale Observation Screen.",
-      kpis: [
-        { label: "Mean Computed Wavelength", value: `${avgWl.toFixed(1)} nm` },
-        { label: "Active Grating Spacing (d)", value: `${(state.gratingSpacingD * 1e6).toFixed(3)} μm` },
-        { label: "Max Observable Order", value: `m = ±${state.maxObservableOrder}` },
-        { label: "Total Recorded Trials", value: `${state.observations.length}` }
-      ],
-      columns,
-      rows,
-      conclusionText:
-        "The experimental observations conclusively substantiate the grating equation d sin θ = mλ. Angular dispersion increases proportionally with line density and diffraction order while maintaining strict spatial symmetry."
-    });
+    const btn = document.getElementById("dg-btn-export-pdf");
+    if (btn && btn.disabled) return;
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute("data-orig-html", btn.innerHTML);
+      btn.innerHTML = `<span>Generating Report...</span>`;
+    }
+
+    const profile = (typeof getStoredUserProfile === "function") ? getStoredUserProfile() : {};
+    const studentName = (profile?.name || "").trim() || "Guest Student";
+    const collegeName = (profile?.college || profile?.occ || "").trim() || "---";
+    const studentEmail = profile?.email || "guest@physix.lab";
+    const studentRole = profile?.edu || "Student Researcher";
+
+    try {
+      generateLabReportPdf({
+        labTitle: "Diffraction Grating Wave Optics Telemetry Logbook",
+        labSubtitle: "Determination of Wavelength & Angular Dispersion Analysis",
+        experimentCode: "EXP-05-DIFFRACTION",
+        studentName,
+        collegeName,
+        studentEmail,
+        studentRole,
+        aimText:
+          "To study the diffraction of monochromatic light through a diffraction grating, observe the formation of principal maxima for different orders, and verify the grating equation d sin theta = m*lambda.",
+        apparatusList:
+          "Tunable Monochromatic Laser Source, Transmission Diffraction Grating (300-1200 lines/mm), High-Precision Calibrated Optical Rail, Linear Scale Observation Screen.",
+        kpis: [
+          { label: "Mean Computed Wavelength", value: `${avgWl.toFixed(1)} nm` },
+          { label: "Active Grating Spacing (d)", value: `${(state.gratingSpacingD * 1e6).toFixed(3)} um` },
+          { label: "Max Observable Order", value: `m = +/- ${state.maxObservableOrder}` },
+          { label: "Total Recorded Trials", value: `${state.observations.length}` }
+        ],
+        columns,
+        rows,
+        conclusionText:
+          "The experimental observations conclusively substantiate the grating equation d sin theta = m*lambda. Angular dispersion increases proportionally with line density and diffraction order while maintaining strict spatial symmetry."
+      });
+
+      if (typeof showToast === "function") {
+        showToast("Diffraction Grating PDF Report exported successfully!");
+      }
+      if (btn) btn.innerHTML = `<span>Report Exported!</span>`;
+    } catch (err) {
+      console.error("[Diffraction Grating] PDF Export error:", err);
+      if (typeof showToast === "function") {
+        showToast("Error generating PDF report.");
+      }
+    } finally {
+      if (btn) {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = btn.getAttribute("data-orig-html") || `<span>Export PDF Logbook</span>`;
+        }, 1500);
+      }
+    }
   }
 
   // ==========================================

@@ -1,0 +1,1415 @@
+/* ==========================================================================
+   PhysiX • Measuring Optical Power Attenuation in Plastic Optical Fiber
+   Photorealistic Undergraduate Physics Laboratory UI & Optical Bench Stylesheet
+   Precision Engineering College Apparatus with Tactile Controls & High-DPI Canvas
+   Dark Mode & Light Mode Compatible • Fully Audited Responsive Design
+   ========================================================================== */
+
+#exp-pof-attenuation-section {
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 16px 24px 60px;
+  color: var(--text-primary, #e2e8f0);
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* 1. PROCEDURE GUIDE RIBBON (CONSISTENT WITH EXP-OPTICAL & EXP-COLOUR-SENSOR) */
+.pof-procedure-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pof-procedure-ribbon .of-proc-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 160px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.25s ease;
+}
+
+.pof-procedure-ribbon .of-proc-step.active {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+.pof-procedure-ribbon .of-proc-step.completed-step {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.pof-procedure-ribbon .step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.pof-procedure-ribbon .of-proc-step.active .step-num {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.pof-procedure-ribbon .of-proc-step.completed-step .step-num {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.pof-procedure-ribbon .step-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pof-procedure-ribbon .step-details strong {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pof-procedure-ribbon .step-details span {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pof-procedure-ribbon .proc-arrow {
+  color: rgba(148, 163, 184, 0.4);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* 2. MAIN DASHBOARD WORKSTATION */
+.pof-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+/* 3. SIMULATION CARD & HIGH-DPI OPTICAL BENCH VIEWPORT */
+.pof-bench-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 15, 28, 0.98) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pof-bench-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  background: radial-gradient(circle at 50% 25%, #182238 0%, #0c1220 100%);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.7), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+#pof-bench-canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 960 / 380;
+  display: block;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* 4. COMPONENT INSPECTOR MODAL */
+.pof-inspector-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+
+.pof-inspector-modal.hidden {
+  display: none !important;
+}
+
+.pof-insp-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(5px);
+}
+
+.pof-insp-card {
+  position: relative;
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(234, 179, 8, 0.45);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  padding: 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(234, 179, 8, 0.2);
+  z-index: 10;
+  animation: pofModalPop 0.22s ease-out;
+}
+
+@keyframes pofModalPop {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.pof-insp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.pof-insp-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #eab308;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.pof-insp-header h4 {
+  margin: 4px 0 0 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.pof-insp-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.15s ease;
+}
+
+.pof-insp-close:hover {
+  color: #f8fafc;
+}
+
+.pof-insp-desc {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: #cbd5e1;
+  margin-bottom: 16px;
+}
+
+.pof-insp-params-block h5 {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  margin: 0 0 8px 0;
+}
+
+.pof-insp-params {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pof-insp-param-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.pof-insp-param-row span {
+  color: #94a3b8;
+}
+
+.pof-insp-param-row strong {
+  color: #f1f5f9;
+}
+
+.pof-insp-footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 5. HARDWARE DECK GRID & INSTRUMENT CARDS */
+.pof-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pof-deck-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pof-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  min-width: 0;
+}
+
+.pof-card-header h4 {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.4px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pof-card-header h4 svg {
+  color: #38bdf8;
+  flex-shrink: 0;
+}
+
+/* 5.1 DIGITAL OPTICAL POWER METER INSTRUMENT */
+.pof-meter-card {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 20px rgba(56, 189, 248, 0.1);
+}
+
+.pof-meter-status-pill {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.pof-meter-status-pill.pof-status-measuring {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: rgba(234, 179, 8, 0.5);
+  color: #facc15;
+  animation: pofPulseStatus 1s infinite alternate;
+}
+
+@keyframes pofPulseStatus {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+.pof-meter-display-chassis {
+  background: #090e17;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.pof-meter-lcd {
+  background: #04121a;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: inset 0 0 15px rgba(6, 182, 212, 0.15);
+}
+
+.pof-meter-lcd-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0284c7;
+  letter-spacing: 0.5px;
+  gap: 8px;
+}
+
+.pof-meter-lcd-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pof-meter-val {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+  line-height: 1;
+}
+
+.pof-meter-unit {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fde047;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+}
+
+.pof-meter-controls-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pof-meter-modes, .pof-meter-units {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Master Primary Trigger: MEASURE POWER BUTTON */
+.pof-btn-measure {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  background: linear-gradient(135deg, #0284c7 0%, #0f766e 100%);
+  border: 1.5px solid #38bdf8;
+  color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.pof-btn-measure:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #115e59 100%);
+  border-color: #7dd3fc;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.6);
+}
+
+.pof-btn-measure:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+}
+
+/* Meter Mode Buttons (Reference vs Output) */
+.pof-meter-modes .btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #94a3b8;
+  font-size: 0.74rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pof-meter-modes .btn.active {
+  background: rgba(2, 132, 199, 0.25);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.pof-meter-units .btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #94a3b8;
+  min-width: 40px;
+  font-size: 0.74rem;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pof-meter-units .btn.active {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: #facc15;
+  color: #facc15;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.35);
+}
+
+/* Master Rocker/Toggle Buttons: Power Switch & Fiber Connect */
+.pof-tx-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pof-ctrl-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pof-ctrl-row label {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+/* Master Top Bar Controls & Power Button */
+.pof-top-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pof-master-power-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1.5px solid rgba(239, 68, 68, 0.5);
+  border-radius: 20px;
+  color: #cbd5e1;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  user-select: none;
+}
+
+.pof-master-power-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.pof-master-power-btn.on {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+  color: #f0fdf4;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.35);
+}
+
+.pof-power-pilot-lamp {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.pof-master-power-btn.on .pof-power-pilot-lamp {
+  background: #22c55e;
+  box-shadow: 0 0 12px #22c55e, 0 0 4px #ffffff;
+  animation: pofPulseStatus 1.2s infinite alternate;
+}
+
+/* Master Power Button in Deck Card */
+.pof-btn-power-main {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1.5px solid #475569;
+  border-radius: 12px;
+  color: #cbd5e1;
+  font-weight: 800;
+  font-size: 0.86rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.pof-btn-power-main:hover {
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.pof-btn-power-main.on {
+  border-color: #22c55e;
+  background: linear-gradient(180deg, rgba(20, 83, 45, 0.35) 0%, rgba(15, 23, 42, 0.95) 100%);
+  color: #f0fdf4;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+.pof-power-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.pof-btn-power-main.on .pof-power-indicator {
+  background: #22c55e;
+  box-shadow: 0 0 12px #22c55e, 0 0 4px #ffffff;
+}
+
+.pof-power-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(234, 179, 8, 0.2);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  color: #facc15;
+  letter-spacing: 0.6px;
+}
+
+.pof-btn-power-main.on .pof-power-badge {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: #4ade80;
+}
+
+/* Legacy & secondary buttons */
+.pof-btn-power, .pof-btn-connect {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1.5px solid #334155;
+  border-radius: 10px;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.pof-conn-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.pof-btn-connect.connected {
+  border-color: #38bdf8;
+  color: #f0fdf4;
+}
+
+.pof-btn-connect.connected .pof-conn-indicator {
+  background: #38bdf8;
+  box-shadow: 0 0 12px #38bdf8;
+}
+
+/* Transverse Micrometer Alignment Controls */
+.pof-align-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.pof-align-col {
+  flex: 1 1 140px;
+  min-width: 0;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.pof-align-lbl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.pof-align-lbl strong {
+  color: #38bdf8;
+  font-family: monospace;
+}
+
+/* Range Sliders */
+.pof-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #1e293b;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  display: block;
+}
+
+.pof-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #38bdf8;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.pof-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Fiber Length Deck & Presets */
+.pof-fiber-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pof-length-control-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pof-length-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.pof-length-header label {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.pof-length-val {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.05rem;
+  color: #facc15;
+  font-weight: 800;
+}
+
+.pof-length-presets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pof-preset-lbl {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.pof-preset-chip {
+  padding: 4px 10px;
+  background: #1e293b;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 6px;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pof-preset-chip:hover {
+  background: #334155;
+  color: #ffffff;
+  border-color: #facc15;
+}
+
+.pof-preset-chip.active {
+  background: rgba(234, 179, 8, 0.25);
+  border-color: #facc15;
+  color: #fde047;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.4);
+}
+
+/* Macrobending Condition Chips */
+.pof-bend-control-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pof-bend-control-box label {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.pof-bend-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pof-bend-chip {
+  padding: 8px 12px;
+  background: #1e293b;
+  border: 1.5px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.pof-bend-chip:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.pof-bend-chip.active {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: #a855f7;
+  color: #f3e8ff;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+}
+
+/* 6. TELEMETRY RESULTS CONTAINER (SHARED PHYSIX PATTERN) */
+.pof-results-container {
+  width: 100%;
+  margin: 0;
+}
+
+.pof-results-container .results-card {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.pof-results-container .result-box {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pof-results-container .result-meta {
+  min-width: 0;
+}
+
+.pof-results-container .result-val {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.pof-results-container .result-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 7. WORKSTATION CARDS: CHALLENGES, OBSERVATIONS & TELEMETRY */
+.pof-workstation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+/* 7.1 CHALLENGES CARD & GRID */
+#exp-pof-attenuation-section .challenges-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+#exp-pof-attenuation-section .challenges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 8px;
+}
+
+#exp-pof-attenuation-section .challenge-item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#exp-pof-attenuation-section .challenge-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#exp-pof-attenuation-section .challenge-title-row h4 {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  min-width: 0;
+}
+
+#exp-pof-attenuation-section .challenge-info p {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 7.2 OBSERVATIONS CARD & SUMMARY STRIP */
+#exp-pof-attenuation-section .observations-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.obs-table-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.obs-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 12px;
+  margin-top: 14px;
+}
+
+.obs-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.82rem;
+}
+
+.obs-table th {
+  background: #0f172a;
+  color: #38bdf8;
+  font-weight: 700;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  white-space: nowrap;
+}
+
+.obs-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  color: #cbd5e1;
+  font-family: "JetBrains Mono", monospace;
+  white-space: nowrap;
+}
+
+.obs-table tr:hover td {
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.pof-empty-obs {
+  text-align: center;
+  padding: 28px !important;
+  color: #64748b !important;
+  font-family: inherit !important;
+  font-style: italic;
+}
+
+.pof-btn-del-row {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pof-btn-del-row:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+}
+
+/* 7.3 TELEMETRY GRAPH & ANALYSIS GRID */
+.pof-analysis-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.pof-graph-card, .pof-interp-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pof-graph-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pof-graph-tabs .btn {
+  background: #1e293b;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+  font-size: 0.76rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pof-graph-tabs .btn.active {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+
+.pof-graph-canvas-container {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: #090e17;
+}
+
+#pof-graph-canvas {
+  width: 100%;
+  height: 280px;
+  display: block;
+}
+
+/* Physical Loss Interpretation */
+.pof-interp-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pof-interp-prompt {
+  font-size: 0.86rem;
+  color: #e2e8f0;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.pof-interp-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pof-interp-opt-btn {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  word-break: break-word;
+}
+
+.pof-interp-opt-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #f8fafc;
+}
+
+.pof-interp-opt-btn.active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+.pof-interp-feedback {
+  padding: 10px 14px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.pof-interp-feedback.success {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+}
+
+/* ==========================================================================
+   8. RESPONSIVE BREAKPOINTS (1440px, 1024px, 768px, 480px, 375px)
+   ========================================================================== */
+
+/* Laptop / Narrow Desktop (<= 1200px) */
+@media (max-width: 1200px) {
+  .pof-deck-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pof-meter-card {
+    grid-column: span 2;
+  }
+
+  #exp-pof-attenuation-section .challenges-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet Landscape (<= 1024px) */
+@media (max-width: 1024px) {
+  .pof-results-container .results-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pof-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet Portrait (<= 768px) */
+@media (max-width: 768px) {
+  #exp-pof-attenuation-section {
+    padding: 12px 14px 40px;
+  }
+
+  .pof-procedure-ribbon {
+    gap: 8px;
+    padding: 12px 14px;
+  }
+
+  .pof-procedure-ribbon .of-proc-step {
+    min-width: 140px;
+    padding: 6px 10px;
+  }
+
+  .pof-deck-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pof-meter-card {
+    grid-column: span 1;
+  }
+
+  #exp-pof-attenuation-section .challenges-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pof-align-row {
+    flex-direction: column;
+  }
+
+  .obs-actions-group {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* Mobile (<= 480px) */
+@media (max-width: 480px) {
+  .pof-results-container .results-card {
+    grid-template-columns: 1fr;
+  }
+
+  .pof-meter-val {
+    font-size: 1.8rem;
+  }
+
+  .pof-meter-controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pof-meter-modes, .pof-meter-units {
+    justify-content: stretch;
+  }
+
+  .pof-meter-modes .btn, .pof-meter-units .btn {
+    flex: 1;
+    text-align: center;
+  }
+
+  .pof-length-presets {
+    gap: 4px;
+  }
+
+  .pof-preset-chip {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Narrow Mobile (<= 375px) */
+@media (max-width: 375px) {
+  #exp-pof-attenuation-section {
+    padding: 8px 10px 32px;
+  }
+
+  .pof-meter-val {
+    font-size: 1.6rem;
+  }
+
+  .pof-btn-measure {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
+
+  .pof-card-header h4 {
+    font-size: 0.82rem;
+  }
+}
+
+/* ==========================================================================
+   9. LIGHT MODE THEME OVERRIDES
+   ========================================================================== */
+body.light-mode #exp-pof-attenuation-section,
+[data-theme="light"] #exp-pof-attenuation-section {
+  color: #0f172a;
+}
+
+body.light-mode .pof-procedure-ribbon,
+[data-theme="light"] .pof-procedure-ribbon {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.95) 100%);
+  border-color: #bae6fd;
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.12);
+}
+
+body.light-mode .pof-procedure-ribbon .of-proc-step,
+[data-theme="light"] .pof-procedure-ribbon .of-proc-step {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+body.light-mode .pof-procedure-ribbon .step-details strong,
+[data-theme="light"] .pof-procedure-ribbon .step-details strong {
+  color: #0f172a;
+}
+
+body.light-mode .pof-bench-card,
+[data-theme="light"] .pof-bench-card,
+body.light-mode .pof-deck-card,
+[data-theme="light"] .pof-deck-card,
+body.light-mode #exp-pof-attenuation-section .challenges-card,
+[data-theme="light"] #exp-pof-attenuation-section .challenges-card,
+body.light-mode #exp-pof-attenuation-section .observations-card,
+[data-theme="light"] #exp-pof-attenuation-section .observations-card,
+body.light-mode .pof-graph-card,
+[data-theme="light"] .pof-graph-card,
+body.light-mode .pof-interp-card,
+[data-theme="light"] .pof-interp-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border-color: #e2e8f0;
+  box-shadow: 0 8px 24px rgba(148, 163, 184, 0.15);
+}
+
+body.light-mode .pof-card-header h4,
+[data-theme="light"] .pof-card-header h4,
+body.light-mode #exp-pof-attenuation-section .challenge-title-row h4,
+[data-theme="light"] #exp-pof-attenuation-section .challenge-title-row h4 {
+  color: #0f172a;
+}
+
+body.light-mode .pof-bench-viewport,
+[data-theme="light"] .pof-bench-viewport {
+  background: radial-gradient(circle at 50% 25%, #f8fafc 0%, #e2e8f0 100%);
+  border-color: #cbd5e1;
+}
+
+body.light-mode .obs-table th,
+[data-theme="light"] .obs-table th {
+  background: #f1f5f9;
+  color: #0284c7;
+  border-color: #cbd5e1;
+}
+
+body.light-mode .obs-table td,
+[data-theme="light"] .obs-table td {
+  color: #1e293b;
+  border-color: #e2e8f0;
+}
+
+body.light-mode .pof-meter-display-chassis,
+[data-theme="light"] .pof-meter-display-chassis {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+body.light-mode .pof-meter-lcd,
+[data-theme="light"] .pof-meter-lcd {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+}
+
+body.light-mode .pof-meter-val,
+[data-theme="light"] .pof-meter-val {
+  color: #0369a1;
+  text-shadow: none;
+}
+
+body.light-mode .pof-btn-power,
+[data-theme="light"] .pof-btn-power,
+body.light-mode .pof-btn-connect,
+[data-theme="light"] .pof-btn-connect {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+body.light-mode .pof-preset-chip,
+[data-theme="light"] .pof-preset-chip,
+body.light-mode .pof-bend-chip,
+[data-theme="light"] .pof-bend-chip {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+body.light-mode .pof-interp-opt-btn,
+[data-theme="light"] .pof-interp-opt-btn {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+body.light-mode .pof-graph-canvas-container,
+[data-theme="light"] .pof-graph-canvas-container {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* ==========================================================================
+   LIGHT MODE ADDITIONAL OVERRIDES FOR TABS, SLIDERS & GAUGES
+   ========================================================================== */
+body.light-mode .pof-graph-tabs .btn,
+[data-theme="light"] .pof-graph-tabs .btn {
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-mode .pof-graph-tabs .btn.active,
+[data-theme="light"] .pof-graph-tabs .btn.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+
+body.light-mode .pof-slider,
+[data-theme="light"] .pof-slider {
+  background: #cbd5e1 !important;
+}
+
+body.light-mode .pof-interp-feedback,
+[data-theme="light"] .pof-interp-feedback {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-mode .pof-align-gauge-track,
+[data-theme="light"] .pof-align-gauge-track {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
