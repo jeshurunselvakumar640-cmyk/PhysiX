@@ -6,6 +6,14 @@
 
 ---
 
+## 🌐 Live Deployments & Repositories
+
+* 🚀 **Secondary Branch / Mirror Live App**: [https://physi-x-orcin.vercel.app/](https://physi-x-orcin.vercel.app/)
+* 📦 **Secondary Repository**: [https://github.com/jeshurunselvakumar640-cmyk/physics.git](https://github.com/jeshurunselvakumar640-cmyk/physics.git)
+* 📦 **Primary Repository**: [https://github.com/jeshurunselvakumar640-cmyk/PhysiX](https://github.com/jeshurunselvakumar640-cmyk/PhysiX)
+
+---
+
 ## 🔬 Virtual Experiments & Laboratories
 
 PhysiX features a comprehensive suite of rigorous, curriculum-aligned virtual laboratory experiments across Classical Mechanics, Wave Optics, Fiber Optics, Semiconductor Physics, and Sensor Instrumentation:

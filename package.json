@@ -2,6 +2,7 @@
   "name": "physix",
   "version": "0.0.0",
   "private": true,
+  "homepage": "https://physi-x-orcin.vercel.app/",
   "type": "module",
   "scripts": {
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"node server/index.js\" \"vite\"",
