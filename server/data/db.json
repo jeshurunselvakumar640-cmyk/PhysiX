@@ -14,14 +14,14 @@
         "updatedAt": "2026-09-01T13:27:28.653Z"
       },
       "telemetry": {
-        "totalLaunches": 0,
+        "totalLaunches": 2,
         "maxRange": 0,
         "maxHeight": 0,
-        "maxVelocity": 0,
+        "maxVelocity": 25,
         "totalAirtime": 0,
         "targetHits": 0,
         "planetsUsed": {
-          "Earth": 0,
+          "Earth": 2,
           "Moon": 0,
           "Mars": 0,
           "Jupiter": 0
@@ -532,11 +532,11 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-09-21T16:15:28.210Z",
-        "updatedAt": "2026-10-13T12:37:56.387Z",
+        "updatedAt": "2026-10-16T19:10:29.582Z",
         "email": "jeshurunselvakumar640@gmail.com",
         "streak": 2,
         "highestStreak": 2,
-        "lastLoginDate": "2026-10-13"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -648,10 +648,10 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-10-12T13:53:08.986Z",
-        "updatedAt": "2026-10-12T15:32:11.500Z",
+        "updatedAt": "2026-10-16T19:10:36.768Z",
         "streak": 1,
         "highestStreak": 1,
-        "lastLoginDate": "2026-10-12"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -687,10 +687,10 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-10-12T13:53:09.626Z",
-        "updatedAt": "2026-10-12T15:32:12.426Z",
+        "updatedAt": "2026-10-16T19:10:37.593Z",
         "streak": 4,
         "highestStreak": 4,
-        "lastLoginDate": "2026-10-12"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -726,10 +726,10 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-10-12T13:53:10.273Z",
-        "updatedAt": "2026-10-12T15:32:13.474Z",
+        "updatedAt": "2026-10-16T19:10:38.243Z",
         "streak": 4,
         "highestStreak": 4,
-        "lastLoginDate": "2026-10-12"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -765,10 +765,10 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-10-12T13:53:10.971Z",
-        "updatedAt": "2026-10-12T15:32:14.360Z",
+        "updatedAt": "2026-10-16T19:10:38.845Z",
         "streak": 1,
         "highestStreak": 7,
-        "lastLoginDate": "2026-10-12"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -804,10 +804,10 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-10-12T13:53:11.853Z",
-        "updatedAt": "2026-10-12T15:32:15.097Z",
+        "updatedAt": "2026-10-16T19:10:39.504Z",
         "streak": 6,
         "highestStreak": 6,
-        "lastLoginDate": "2026-10-12"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -843,10 +843,10 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-10-12T13:53:12.669Z",
-        "updatedAt": "2026-10-12T15:32:15.784Z",
+        "updatedAt": "2026-10-16T19:10:40.141Z",
         "streak": 5,
         "highestStreak": 5,
-        "lastLoginDate": "2026-10-12"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,
@@ -882,10 +882,10 @@
         "interests": "",
         "bio": "",
         "createdAt": "2026-10-12T13:53:13.429Z",
-        "updatedAt": "2026-10-12T15:32:16.452Z",
+        "updatedAt": "2026-10-16T19:10:40.868Z",
         "streak": 15,
         "highestStreak": 20,
-        "lastLoginDate": "2026-10-12"
+        "lastLoginDate": "2026-10-17"
       },
       "telemetry": {
         "totalLaunches": 0,

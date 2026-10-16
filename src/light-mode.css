@@ -4280,6 +4280,99 @@ body.light-mode .btn-explore-simulations:hover,
   box-shadow: 0 12px 30px rgba(2, 132, 199, 0.5) !important;
 }
 
+body.light-mode .achievement-premium-card,
+[data-theme="light"] .achievement-premium-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: #bae6fd !important;
+  box-shadow:
+    0 20px 45px rgba(14, 165, 233, 0.12),
+    0 0 25px rgba(245, 158, 11, 0.12),
+    inset 0 1px 2px #ffffff !important;
+}
+
+body.light-mode .achievement-premium-card:hover,
+[data-theme="light"] .achievement-premium-card:hover {
+  border-color: #38bdf8 !important;
+  box-shadow:
+    0 24px 55px rgba(14, 165, 233, 0.18),
+    0 0 30px rgba(245, 158, 11, 0.2) !important;
+}
+
+body.light-mode .achievement-flare-tl,
+[data-theme="light"] .achievement-flare-tl {
+  background: radial-gradient(circle at top left, rgba(14, 165, 233, 0.1), transparent 70%) !important;
+}
+
+body.light-mode .achievement-flare-br,
+[data-theme="light"] .achievement-flare-br {
+  background: radial-gradient(circle at bottom right, rgba(245, 158, 11, 0.1), transparent 70%) !important;
+}
+
+body.light-mode .achievement-grid-overlay,
+[data-theme="light"] .achievement-grid-overlay {
+  background-image:
+    linear-gradient(rgba(14, 165, 233, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.08) 1px, transparent 1px) !important;
+}
+
+body.light-mode .achievement-trophy-hex,
+[data-theme="light"] .achievement-trophy-hex {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.8) 100%) !important;
+  border-color: #f59e0b !important;
+  box-shadow:
+    0 0 20px rgba(245, 158, 11, 0.25),
+    inset 0 1px 2px #ffffff !important;
+}
+
+body.light-mode .achievement-award-icon,
+[data-theme="light"] .achievement-award-icon {
+  color: #b45309 !important;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.4)) !important;
+}
+
+body.light-mode .achievement-emblem-orbit,
+[data-theme="light"] .achievement-emblem-orbit {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+body.light-mode .achievement-standing-badge,
+[data-theme="light"] .achievement-standing-badge {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(253, 230, 138, 0.85)) !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.3) !important;
+}
+
+body.light-mode .achievement-standing-badge .badge-text,
+[data-theme="light"] .achievement-standing-badge .badge-text {
+  color: #78350f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .achievement-category-tag,
+[data-theme="light"] .achievement-category-tag {
+  color: #0284c7 !important;
+}
+
+body.light-mode .achievement-event-title,
+[data-theme="light"] .achievement-event-title {
+  color: #0f172a !important;
+}
+
+body.light-mode .achievement-venue-pin,
+[data-theme="light"] .achievement-venue-pin {
+  color: #0284c7 !important;
+}
+
+body.light-mode .achievement-institution-text,
+[data-theme="light"] .achievement-institution-text {
+  color: #0369a1 !important;
+}
+
+body.light-mode .achievement-tagline-motto,
+[data-theme="light"] .achievement-tagline-motto {
+  color: #475569 !important;
+}
+
 body.light-mode .home-scroll-hint,
 [data-theme="light"] .home-scroll-hint {
   color: #0369a1 !important;

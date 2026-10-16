@@ -53,7 +53,8 @@ import {
 import {
   processUserDailyStreak,
   getStoredUserStreak,
-  getNextStreakMilestone
+  getNextStreakMilestone,
+  getLocalDateString
 } from "./streak.js";
 import {
   initPwaSystem,
@@ -4919,6 +4920,13 @@ function switchExperiment(expId, updateUrl = true) {
   else if (expId === "optical-fibre") normalizedId = "optical";
   else if (expId === "physics-sandbox") normalizedId = "sandbox";
 
+  // Ensure standalone / landing page wrappers don't suppress the simulator
+  document.body.classList.remove("on-homepage");
+  document.body.classList.remove("on-standalone-page");
+  physixHome?.classList.add("hidden");
+  document.getElementById("physix-experiment-detail-page")?.classList.add("hidden");
+  document.getElementById("physix-experiments-page")?.classList.add("hidden");
+
   activeExperimentId = normalizedId;
   trackExperimentEngagement(normalizedId);
 
@@ -5219,6 +5227,8 @@ function switchExperiment(expId, updateUrl = true) {
     showToast("Switched to Exp 7: Plastic Optical Fiber Attenuation");
   } else {
     expProjSection?.classList.remove("hidden");
+    updateLauncher(Number(angleSlider?.value || DEFAULT_ANGLE), Number(heightSlider?.value || DEFAULT_HEIGHT));
+    calculateTheoreticalResults();
 
     showToast("Switched to Exp 1: 2D Projectile Motion");
   }

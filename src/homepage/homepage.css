@@ -1099,6 +1099,33 @@ body.on-homepage .ai-context-strip {
   .explore-physics-card {
     padding: 36px 24px;
   }
+
+  .home-section-achievement {
+    padding: 24px 20px 36px 20px;
+  }
+
+  .achievement-card-layout {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .achievement-details {
+    align-items: center;
+    text-align: center;
+  }
+
+  .achievement-badge-strip {
+    justify-content: center;
+  }
+
+  .achievement-venue-line {
+    justify-content: center;
+  }
+
+  .achievement-premium-card {
+    padding: 32px 24px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1116,6 +1143,322 @@ body.on-homepage .ai-context-strip {
   .home-section {
     padding: 70px 18px;
   }
+
+  .home-section-achievement {
+    padding: 16px 14px 28px 14px;
+  }
+
+  .achievement-premium-card {
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  .achievement-emblem-wrap {
+    width: 90px;
+    height: 90px;
+  }
+
+  .achievement-emblem-orbit {
+    width: 88px;
+    height: 88px;
+  }
+
+  .achievement-trophy-hex {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+  }
+
+  .achievement-award-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .achievement-standing-badge {
+    padding: 3px 12px;
+  }
+
+  .achievement-standing-badge .badge-text {
+    font-size: 13px;
+  }
+
+  .achievement-event-title {
+    font-size: 1.25rem;
+  }
+
+  .achievement-institution-text {
+    font-size: 12px;
+  }
+
+  .achievement-tagline-motto {
+    font-size: 12.5px;
+  }
+}
+
+/* ==========================================================================
+   SECTION: HONORS & RECOGNITION (CONVERGENCE 2026)
+   ========================================================================== */
+.home-section-achievement {
+  padding: 30px 24px 45px 24px;
+  position: relative;
+  z-index: 8;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.achievement-showcase-container {
+  width: 100%;
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
+.achievement-premium-card {
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(14, 23, 44, 0.88) 0%, rgba(9, 14, 28, 0.94) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    0 0 35px rgba(56, 189, 248, 0.12),
+    0 0 20px rgba(251, 191, 36, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  padding: 38px 46px;
+  overflow: hidden;
+  cursor: default;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.achievement-premium-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.55);
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, 0.72),
+    0 0 45px rgba(56, 189, 248, 0.22),
+    0 0 30px rgba(251, 191, 36, 0.16),
+    inset 0 1px 2px rgba(255, 255, 255, 0.28);
+}
+
+/* Ambient Corner Flares */
+.achievement-corner-flare {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.achievement-flare-tl {
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle at top left, rgba(0, 240, 255, 0.16), transparent 70%);
+}
+
+.achievement-flare-br {
+  bottom: 0;
+  right: 0;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle at bottom right, rgba(251, 191, 36, 0.14), transparent 70%);
+}
+
+/* Cosmic Grid FX */
+.achievement-card-bg-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.achievement-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.7;
+}
+
+.achievement-halo-glow {
+  position: absolute;
+  top: -50px;
+  left: 30%;
+  width: 40%;
+  height: 120px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(56, 189, 248, 0.18), transparent 75%);
+}
+
+/* Card Layout */
+.achievement-card-layout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 38px;
+}
+
+/* Emblem Wrap */
+.achievement-emblem-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 116px;
+  height: 116px;
+}
+
+.achievement-emblem-orbit {
+  position: absolute;
+  width: 114px;
+  height: 114px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(251, 191, 36, 0.38);
+  animation: emblemOrbitSpin 28s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes emblemOrbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.achievement-trophy-hex {
+  width: 86px;
+  height: 86px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.22) 0%, rgba(245, 158, 11, 0.1) 100%);
+  border: 1.5px solid rgba(251, 191, 36, 0.55);
+  box-shadow:
+    0 0 24px rgba(251, 191, 36, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+}
+
+.achievement-premium-card:hover .achievement-trophy-hex {
+  transform: scale(1.08) rotate(2deg);
+  box-shadow:
+    0 0 32px rgba(251, 191, 36, 0.5),
+    inset 0 1px 3px rgba(255, 255, 255, 0.5);
+}
+
+.achievement-award-icon {
+  width: 44px;
+  height: 44px;
+  color: #fbbf24;
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.7));
+}
+
+.achievement-pedestal-light {
+  position: absolute;
+  bottom: 0;
+  width: 60px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(251, 191, 36, 0.5), transparent 70%);
+  pointer-events: none;
+}
+
+/* Details Hierarchy */
+.achievement-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.achievement-badge-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.achievement-standing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.28), rgba(245, 158, 11, 0.14));
+  border: 1.5px solid rgba(251, 191, 36, 0.65);
+  box-shadow: 0 0 18px rgba(251, 191, 36, 0.35);
+}
+
+.achievement-standing-badge .badge-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.achievement-standing-badge .badge-text {
+  font-family: var(--font-space, 'Orbitron', 'Space Grotesk', sans-serif);
+  font-size: 14.5px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+}
+
+.achievement-category-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.achievement-event-title {
+  margin: 2px 0 0 0;
+  font-family: var(--font-space, 'Orbitron', 'Space Grotesk', 'Outfit', sans-serif);
+  font-size: clamp(1.45rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+  color: #ffffff;
+}
+
+.achievement-venue-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1px;
+}
+
+.achievement-venue-pin {
+  width: 17px;
+  height: 17px;
+  color: #00f0ff;
+  flex-shrink: 0;
+}
+
+.achievement-institution-text {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 14px;
+  font-weight: 600;
+  color: #a5f3fc;
+  letter-spacing: 0.04em;
+}
+
+.achievement-tagline-motto {
+  margin: 6px 0 0 0;
+  font-family: var(--font-sans, 'Space Grotesk', 'Outfit', sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #94a3b8;
+  font-style: italic;
+  letter-spacing: 0.02em;
 }
 
 /* ==========================================================================
@@ -1322,9 +1665,13 @@ body.light-mode .dev-social-btn:hover {
     transform: none !important;
   }
   .btn-explore-simulations,
+  .achievement-premium-card,
+  .achievement-trophy-hex,
+  .achievement-emblem-orbit,
   .developer-card,
   .dev-social-btn {
     transition: none !important;
+    animation: none !important;
   }
 }
 
