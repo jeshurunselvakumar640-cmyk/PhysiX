@@ -735,6 +735,17 @@ export function getExperimentNameById(id) {
     case "diode-vi":
     case "exp-diode":
       return "Diode V-I Characteristics";
+    case "pof":
+    case "pof-attenuation":
+    case "optical-attenuation":
+    case "exp-pof":
+    case "exp-pof-attenuation":
+      return "Plastic Optical Fiber Attenuation";
+    case "planck":
+    case "planck-constant":
+    case "plancks-constant":
+    case "exp-planck":
+      return "Determination of Planck’s Constant";
     default:
       return id;
   }

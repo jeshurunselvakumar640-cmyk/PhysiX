@@ -249,6 +249,7 @@ function getExperimentDetails(expCodeOrId) {
   else if (raw.includes("hall")) normId = "hall-effect";
   else if (raw.includes("colour") || raw.includes("color")) normId = "colour-sensor";
   else if (raw.includes("optical") || raw.includes("aperture") || raw.includes("fibre") || raw.includes("fiber")) normId = "optical";
+  else if (raw.includes("planck")) normId = "planck";
   else if (raw.includes("sandbox")) normId = "sandbox";
   else if (raw.includes("proj")) normId = "projectile";
   else if (EXPERIMENT_DETAILS[raw]) normId = raw;

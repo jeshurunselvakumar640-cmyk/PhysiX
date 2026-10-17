@@ -26,6 +26,8 @@ import { createDiffractionGratingExperiment } from "./diffraction-grating.js";
 import { createDiodeExperiment } from "./diode-vi.js";
 import { createPofAttenuationExperiment } from "./pof-attenuation.js";
 import "./pof-attenuation.css";
+import { createPlanckExperiment } from "./planck.js";
+import "./planck.css";
 import {
   tutorialManager,
   normalizeExpId,
@@ -1728,6 +1730,22 @@ function syncChallengeToLocalState(challengeId, persistToStorage = true) {
       diodeExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
     }
   }
+
+  // Exp 8: Planck's Constant
+  if (challengeId.startsWith("planck.")) {
+    const planckKey = challengeId.replace("planck.", "");
+    if (persistToStorage && canPerformCloudOperation()) {
+      try {
+        const savedPlanck = JSON.parse(localStorage.getItem("physix_planck_challenges") || "{}");
+        if (!savedPlanck[planckKey]) savedPlanck[planckKey] = {};
+        savedPlanck[planckKey].completed = true;
+        localStorage.setItem("physix_planck_challenges", JSON.stringify(savedPlanck));
+      } catch (e) {}
+    }
+    if (planckExperimentInstance && typeof planckExperimentInstance.hydrateChallenges === "function") {
+      planckExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
+    }
+  }
 }
 
 export async function completeChallengeAuthoritatively({ challengeId, xp, badgeId, badgeTitle, title }) {
@@ -1973,6 +1991,23 @@ function hydrateAllExperimentChallenges(completedChallengeIds) {
 
   if (diodeExperimentInstance && typeof diodeExperimentInstance.hydrateChallenges === "function") {
     diodeExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
+  }
+
+  // 7. Exp 8: Planck's Constant
+  try {
+    const savedPlanck = JSON.parse(localStorage.getItem("physix_planck_challenges") || "{}");
+    const planckKeys = ["zeroNullStopping", "multiFrequencySweep", "planckConstantExtraction"];
+    planckKeys.forEach(k => {
+      if (set.has(`planck.${k}`)) {
+        if (!savedPlanck[k]) savedPlanck[k] = {};
+        savedPlanck[k].completed = true;
+      }
+    });
+    localStorage.setItem("physix_planck_challenges", JSON.stringify(savedPlanck));
+  } catch (e) {}
+
+  if (planckExperimentInstance && typeof planckExperimentInstance.hydrateChallenges === "function") {
+    planckExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
   }
 }
 
@@ -4188,7 +4223,8 @@ function showTheoryForExperiment(expId) {
     "diffraction": document.getElementById("theory-pane-exp5"),
     "sandbox": document.getElementById("theory-pane-exp6"),
     "diode": document.getElementById("theory-pane-exp-diode"),
-    "pof-attenuation": document.getElementById("theory-pane-exp-pof")
+    "pof-attenuation": document.getElementById("theory-pane-exp-pof"),
+    "planck": document.getElementById("theory-pane-exp-planck")
   };
 
   const titles = {
@@ -4223,6 +4259,10 @@ function showTheoryForExperiment(expId) {
     "pof-attenuation": {
       title: "Exp 7: Plastic Optical Fiber Attenuation — Theory & Formulas",
       desc: "Bouguer-Lambert-Beer attenuation, decibel loss, and coupling loss models"
+    },
+    "planck": {
+      title: "Exp 8: Planck's Constant — Theory & Formulas",
+      desc: "Einstein's photoelectric equation, stopping potential, work function, and LED knee voltage"
     }
   };
 
@@ -4504,6 +4544,23 @@ function getLiveSimulationContext() {
     };
   }
 
+  if ((activeExperimentId === "planck" || activeExperimentId === "plancks-constant") && planckExperimentInstance) {
+    const pState = planckExperimentInstance.getState();
+    return {
+      experiment: "Determination of Planck's Constant",
+      activeLab: "Photoelectric Effect Stopping Potential & LED Bandgap Recombination",
+      mode: pState.mode,
+      powerOn: pState.powerOn,
+      lightOn: pState.lightOn,
+      appliedVoltage: pState.appliedVoltageV,
+      photocurrentNa: pState.photocurrentNa,
+      stoppingVoltage: pState.theoreticalVsV,
+      deducedPlanckH: pState.calculatedPlanckH,
+      errorPct: pState.calculatedErrorPct,
+      observationsCount: Array.isArray(pState.observations) ? pState.observations.length : 0
+    };
+  }
+
   if (activeExperimentId === "sandbox") {
     return {
       experiment: "Physics Sandbox",
@@ -4574,6 +4631,11 @@ function updateAiContextStrip() {
     if (aiCtxAngle) aiCtxAngle.textContent = "Bodies: 2D Rigid";
     if (aiCtxH0) aiCtxH0.textContent = "Engine: Verlet";
     if (aiCtxG) aiCtxG.textContent = "Physics: Active";
+  } else if (ctx.experiment === "Determination of Planck's Constant") {
+    if (aiCtxV0) aiCtxV0.textContent = `V: ${(ctx.appliedVoltage >= 0 ? "+" : "") + ctx.appliedVoltage.toFixed(2)} V`;
+    if (aiCtxAngle) aiCtxAngle.textContent = `I: ${ctx.photocurrentNa.toFixed(2)} nA`;
+    if (aiCtxH0) aiCtxH0.textContent = `V_s: ${ctx.stoppingVoltage.toFixed(2)} V`;
+    if (aiCtxG) aiCtxG.textContent = `h: ${ctx.deducedPlanckH.toFixed(2)}e-34`;
   } else {
     if (aiCtxV0) aiCtxV0.textContent = `v₀: ${Number(ctx.v0 || 20).toFixed(1)} m/s`;
     if (aiCtxAngle) aiCtxAngle.textContent = `θ: ${ctx.angleDeg || 45}°`;
@@ -4868,7 +4930,9 @@ const expSandboxSection = document.getElementById("exp-sandbox-section");
 const expDiffractionSection = document.getElementById("exp-diffraction-section");
 const expDiodeSection = document.getElementById("exp-diode-section");
 const expPofSection = document.getElementById("exp-pof-attenuation-section");
+const expPlanckSection = document.getElementById("exp-planck-section");
 let pofExperimentInstance = null;
+let planckExperimentInstance = null;
 
 async function trackExperimentEngagement(expId) {
   if (!canPerformCloudOperation()) return;
@@ -4916,6 +4980,7 @@ function switchExperiment(expId, updateUrl = true) {
   let normalizedId = expId;
   if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof") normalizedId = "pof-attenuation";
   else if (expId === "diode" || expId === "diode-vi" || expId === "pn-junction") normalizedId = "diode";
+  else if (expId === "planck" || expId === "plancks-constant" || expId === "planck-constant") normalizedId = "planck";
   else if (expId === "diffraction-grating") normalizedId = "diffraction";
   else if (expId === "optical-fibre") normalizedId = "optical";
   else if (expId === "physics-sandbox") normalizedId = "sandbox";
@@ -4938,14 +5003,17 @@ function switchExperiment(expId, updateUrl = true) {
   expDiffractionSection?.classList.add("hidden");
   expDiodeSection?.classList.add("hidden");
   expPofSection?.classList.add("hidden");
+  expPlanckSection?.classList.add("hidden");
 
-  const routeSlug = normalizedId === "pof-attenuation"
-    ? "pof-attenuation"
-    : (normalizedId === "diode"
-      ? "diode-vi"
-      : (normalizedId === "diffraction"
-        ? "diffraction-grating"
-        : (normalizedId === "optical" ? "optical-fibre" : normalizedId)));
+  const routeSlug = normalizedId === "planck"
+    ? "plancks-constant"
+    : (normalizedId === "pof-attenuation"
+      ? "pof-attenuation"
+      : (normalizedId === "diode"
+        ? "diode-vi"
+        : (normalizedId === "diffraction"
+          ? "diffraction-grating"
+          : (normalizedId === "optical" ? "optical-fibre" : normalizedId))));
 
   if (updateUrl && !document.body.classList.contains("on-homepage")) {
     const targetUrl = `/simulations/${routeSlug}`;
@@ -5225,6 +5293,47 @@ function switchExperiment(expId, updateUrl = true) {
     }
 
     showToast("Switched to Exp 7: Plastic Optical Fiber Attenuation");
+  } else if (normalizedId === "planck") {
+    expPlanckSection?.classList.remove("hidden");
+
+    if (!planckExperimentInstance) {
+      planckExperimentInstance = createPlanckExperiment({
+        onXpAwarded: (amount, reason) => addStudentXp(amount, reason),
+        onExperimentRecorded: (id, data) => {
+          if (auth.currentUser && canPerformCloudOperation()) {
+            recordExperimentInFirestore(auth.currentUser.uid, id, data).then(res => {
+              if (res && typeof res.totalXP === "number") {
+                setAuthoritativeUserXp(auth.currentUser.uid, res.totalXP);
+                loadUserProfile();
+              }
+              if (res && res.experimentsPerformed >= 5) {
+                unlockBadge("badge-lab-veteran", "Laboratory Veteran (Explored Labs 5+ Times)");
+              }
+            }).catch(() => {});
+          }
+        },
+        showToast,
+        getActiveUserId,
+        loadUserProfile,
+        getStoredUserProfile,
+        unlockBadge: (badgeId, badgeName) => unlockBadge(badgeId, badgeName),
+        isUserAuthenticated,
+        openLoginModal,
+        onChallengeCompleted: (data) => completeChallengeAuthoritatively(data)
+      });
+      planckExperimentInstance.init();
+      window.planckExperimentInstance = planckExperimentInstance;
+      if (activeAuthoritativeCompletedChallenges.length > 0 && typeof planckExperimentInstance.hydrateChallenges === "function") {
+        planckExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
+      }
+    } else {
+      if (activeAuthoritativeCompletedChallenges.length > 0 && typeof planckExperimentInstance.hydrateChallenges === "function") {
+        planckExperimentInstance.hydrateChallenges(activeAuthoritativeCompletedChallenges);
+      }
+      planckExperimentInstance.renderAll();
+    }
+
+    showToast("Switched to Exp 8: Planck's Constant Experiment");
   } else {
     expProjSection?.classList.remove("hidden");
     updateLauncher(Number(angleSlider?.value || DEFAULT_ANGLE), Number(heightSlider?.value || DEFAULT_HEIGHT));
@@ -5254,7 +5363,8 @@ allExperimentCards.forEach(card => {
     const name = card.getAttribute("data-name") || "";
 
     let expId = null;
-    if (target === "pof-attenuation" || target === "pof" || name.toLowerCase().includes("attenuation") || name.toLowerCase().includes("plastic optical fiber")) expId = "pof-attenuation";
+    if (target === "planck" || target === "plancks-constant" || name.toLowerCase().includes("planck")) expId = "planck";
+    else if (target === "pof-attenuation" || target === "pof" || name.toLowerCase().includes("attenuation") || name.toLowerCase().includes("plastic optical fiber")) expId = "pof-attenuation";
     else if (target === "diode" || target === "diode-vi" || name.toLowerCase().includes("diode") || name.toLowerCase().includes("p-n junction")) expId = "diode";
     else if (target === "diffraction" || target === "diffraction-grating" || name.toLowerCase().includes("diffraction")) expId = "diffraction-grating";
     else if (target === "hall-effect" || name.toLowerCase().includes("hall effect")) expId = "hall-effect";
@@ -5867,9 +5977,11 @@ export function openExperimentDetailsPage(expId) {
   tutorialManager.destroyTour();
   const normalizedId = (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof")
     ? "pof-attenuation"
+    : ((expId === "planck" || expId === "plancks-constant" || expId === "planck-constant")
+    ? "planck"
     : ((expId === "sandbox" || expId === "hall-effect" || expId === "colour-sensor" || expId === "optical" || expId === "projectile" || expId === "diffraction" || expId === "diffraction-grating" || expId === "diode" || expId === "diode-vi")
     ? (expId === "diffraction-grating" ? "diffraction" : (expId === "diode-vi" ? "diode" : expId))
-    : "projectile");
+    : "projectile"));
 
   const data = EXPERIMENT_DETAILS[normalizedId] || EXPERIMENT_DETAILS["projectile"];
   currentActiveDetailExpId = normalizedId;
@@ -6025,7 +6137,8 @@ function initExperimentsPage() {
     const name = card.getAttribute("data-name") || "";
 
     let expId = null;
-    if (target === "pof-attenuation" || target === "pof" || name.toLowerCase().includes("attenuation") || name.toLowerCase().includes("plastic optical fiber")) expId = "pof-attenuation";
+    if (target === "planck" || target === "plancks-constant" || name.toLowerCase().includes("planck")) expId = "planck";
+    else if (target === "pof-attenuation" || target === "pof" || name.toLowerCase().includes("attenuation") || name.toLowerCase().includes("plastic optical fiber")) expId = "pof-attenuation";
     else if (target === "diode" || target === "diode-vi" || name.toLowerCase().includes("diode") || name.toLowerCase().includes("p-n junction")) expId = "diode";
     else if (target === "diffraction" || target === "diffraction-grating" || name.toLowerCase().includes("diffraction")) expId = "diffraction-grating";
     else if (target === "hall-effect" || name.toLowerCase().includes("hall effect")) expId = "hall-effect";
@@ -6119,7 +6232,8 @@ export function handleRoute(path = window.location.pathname, hash = window.locat
     document.body.classList.remove("on-standalone-page");
     physixHome?.classList.add("hidden");
     let mappedId = expId;
-    if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof") mappedId = "pof-attenuation";
+    if (expId === "planck" || expId === "plancks-constant" || expId === "planck-constant") mappedId = "planck";
+    else if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof") mappedId = "pof-attenuation";
     else if (expId === "diode" || expId === "diode-vi" || expId === "pn-junction") mappedId = "diode";
     else if (expId === "diffraction-grating" || expId === "diffraction") mappedId = "diffraction";
     else if (expId === "optical-fibre" || expId === "optical") mappedId = "optical";
@@ -6146,7 +6260,7 @@ export function handleRoute(path = window.location.pathname, hash = window.locat
     expPage?.classList.remove("hidden");
     initExperimentsPage();
     window.scrollTo({ top: 0, behavior: "instant" });
-  } else if (cleanHash === "#diffraction" || cleanHash === "#diffraction-grating" || cleanHash === "#hall-effect" || cleanHash === "#sandbox" || cleanHash === "#pof-attenuation" || cleanHash === "#optical" || cleanHash === "#colour-sensor" || cleanHash === "#projectile") {
+  } else if (cleanHash === "#planck" || cleanHash === "#plancks-constant" || cleanHash === "#diffraction" || cleanHash === "#diffraction-grating" || cleanHash === "#hall-effect" || cleanHash === "#sandbox" || cleanHash === "#pof-attenuation" || cleanHash === "#optical" || cleanHash === "#colour-sensor" || cleanHash === "#projectile") {
     // Direct link to simulation
     document.body.classList.remove("on-homepage");
     document.body.classList.remove("on-standalone-page");
@@ -6154,6 +6268,7 @@ export function handleRoute(path = window.location.pathname, hash = window.locat
     let mapped = cleanHash.replace("#", "");
     if (mapped === "diode-vi" || mapped === "pn-junction") mapped = "diode";
     else if (mapped === "diffraction-grating") mapped = "diffraction";
+    else if (mapped === "plancks-constant" || mapped === "planck-constant") mapped = "planck";
     switchExperiment(mapped, false);
   } else if (cleanPath.endsWith("/profile") || cleanHash === "#profile") {
     document.body.classList.remove("on-standalone-page");
@@ -6342,12 +6457,13 @@ if (initialPath.startsWith("/experiment/") || initialPath.startsWith("/simulatio
   initSplashScreen(() => {
     handleRoute(initialPath, initialHash);
   });
-} else if (initialHash === "#diffraction" || initialHash === "#diffraction-grating" || initialHash === "#hall-effect" || initialHash === "#sandbox" || initialHash === "#optical" || initialHash === "#colour-sensor" || initialHash === "#projectile") {
+} else if (initialHash === "#planck" || initialHash === "#plancks-constant" || initialHash === "#diffraction" || initialHash === "#diffraction-grating" || initialHash === "#hall-effect" || initialHash === "#sandbox" || initialHash === "#optical" || initialHash === "#colour-sensor" || initialHash === "#projectile") {
   document.body.classList.remove("on-homepage");
   physixHome?.classList.add("hidden");
   initSplashScreen(() => {
     let target = initialHash.replace("#", "");
     if (target === "diffraction-grating") target = "diffraction";
+    else if (target === "plancks-constant" || target === "planck-constant") target = "planck";
     switchExperiment(target, false);
   });
 } else {

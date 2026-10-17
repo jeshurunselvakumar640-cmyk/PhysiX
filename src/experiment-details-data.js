@@ -2603,10 +2603,181 @@ accentColor: "#00f0ff",
         </ul>
       </div>
     `
+  },
+
+  "planck": {
+    id: "planck",
+    title: "Determination of Planck’s Constant using Photocell & LED",
+    category: "Quantum Physics & Optoelectronics",
+    shortDescription: "Investigate photoelectric emission stopping potentials across calibrated spectral lines, examine semiconductor LED forward knee voltages, and determine Planck's quantum of action h.",
+    difficulty: "Undergraduate Physics Practical",
+    duration: "45 Minutes",
+    engine: "Einstein Photoelectric & Solid-State Bandgap Solver",
+    accentColor: "#8b5cf6",
+
+    referenceBooks: [
+      {
+        title: "The Photoelectric Effect",
+        source: "OpenStax University Physics Vol 3",
+        url: "https://openstax.org/books/university-physics-volume-3/pages/6-2-photoelectric-effect",
+        description: "Explore Einstein's photoelectric equation, work functions, stopping potential, and photon energy quantization."
+      },
+      {
+        title: "Measuring Planck's Constant Using LEDs",
+        source: "IOP Spark",
+        url: "https://spark.iop.org/measuring-plancks-constant-using-leds",
+        description: "Study how forward threshold conduction voltage of optoelectronic LEDs corresponds to semiconductor bandgap emission."
+      },
+      {
+        title: "Quantum Physics & Photons",
+        source: "HyperPhysics",
+        url: "http://hyperphysics.phy-astr.gsu.edu/hbase/mod1.html",
+        description: "Comprehensive review of Planck's postulate, photoelectric experimental curves, and work function benchmarks."
+      }
+    ],
+
+    aim: `<p class="manual-aim-text">To determine Planck's constant ($h$) experimentally using two complementary quantum techniques: (1) Measuring the stopping potential ($V_s$) of photoelectrons emitted from alkali metal photocathodes under monochromatic spectral line illumination, and (2) Evaluating the forward knee threshold conduction voltage ($V_0$) across light emitting diodes (LEDs) of distinct calibrated peak emission wavelengths.</p>`,
+
+    apparatus: `<p class="manual-aim-text">Stabilized high-pressure mercury arc discharge lamp, precision optical collimating snout, calibrated monochromatic spectral filters (UV 365 nm, Violet 405 nm, Blue 436 nm, Green 546 nm, Yellow 577 nm, Red 633 nm), evacuated quartz phototube with alkali metal photocathodes (Cesium, Potassium, Sodium), regulated variable retarding DC power supply (-3.00 V to +3.00 V), digital electrometer / picoammeter with nanoampere sensitivity, semiconductor LEDs of varying emission wavelengths (395 nm to 635 nm), and series ballast resistor (68 $\\Omega$).</p>`,
+
+    theory: `
+      <div class="manual-theory-block">
+        <h4>1. Einstein's Photoelectric Effect</h4>
+        <p>In 1905, Albert Einstein proposed that electromagnetic radiation is quantized into localized wavepackets called <strong>photons</strong>, each carrying energy proportional to the radiation frequency $\\nu$:</p>
+        <div class="formula-card">$$E = h\\nu = \\frac{hc}{\\lambda}$$</div>
+        <p>When a monochromatic photon impinges upon a metal photocathode, its entire quantum of energy is transferred to a single electron in a collision. If the photon energy exceeds the cathode surface barrier potential (the <strong>work function</strong> $\\Phi$), a photoelectron is ejected with maximum kinetic energy $K_{\\max}$ according to Einstein's photoelectric equation:</p>
+        <div class="formula-card">$$K_{\\max} = h\\nu - \\Phi$$</div>
+        <p>By applying a negative (retarding) electric potential to the collector anode, the emitted photoelectrons are decelerated. At a critical opposing voltage known as the <strong>stopping potential</strong> ($V_s$), even the most energetic photoelectrons are halted from reaching the collector plate, causing the net photocurrent to drop to zero ($I = 0$):</p>
+        <div class="formula-card">$$e V_s = K_{\\max} = h\\nu - \\Phi \\implies V_s = \\left(\\frac{h}{e}\\right)\\nu - \\frac{\\Phi}{e}$$</div>
+        <p>A plot of stopping potential $V_s$ against frequency $\\nu$ yields a straight line with slope $m = h/e$. Planck's constant is directly extracted as $h = m \\cdot e$, where $e = 1.602 \\times 10^{-19}\\text{ C}$.</p>
+
+        <h4 style="margin-top:20px;">2. Solid-State LED Bandgap Recombination Method</h4>
+        <p>In a semiconductor light-emitting diode (LED), forward biasing injects excess electrons and holes across the P-N junction. Radiative recombination of an electron from the conduction band edge with a hole in the valence band releases a photon whose energy corresponds closely to the semiconductor energy bandgap ($E_g$):</p>
+        <div class="formula-card">$$E_g \\approx e V_0 = h\\nu = \\frac{hc}{\\lambda} \\implies h = \\frac{e V_0 \\lambda}{c}$$</div>
+        <p>Here $V_0$ is the turn-on knee voltage determined by extrapolating the linear forward conduction region of the I-V characteristic curve to zero current.</p>
+      </div>
+    `,
+
+    formula: `
+      <div class="manual-theory-block">
+        <h4>Key Analytical Relationships</h4>
+        <div class="formula-card">
+          <p><strong>Einstein Photoelectric Equation:</strong></p>
+          $$e V_s = h\\nu - \\Phi = \\frac{hc}{\\lambda} - \\Phi$$
+        </div>
+        <div class="formula-card">
+          <p><strong>Linear Regression Slope:</strong></p>
+          $$m = \\frac{\\Delta V_s}{\\Delta \\nu} = \\frac{h}{e} \\implies h = m \\cdot e$$
+        </div>
+        <div class="formula-card">
+          <p><strong>Threshold Frequency & Work Function:</strong></p>
+          $$\\nu_0 = \\frac{\\Phi}{h}, \\quad \\lambda_0 = \\frac{hc}{\\Phi}$$
+        </div>
+        <div class="formula-card">
+          <p><strong>LED Energy Bandgap & Planck Formulation:</strong></p>
+          $$h = \\frac{e V_0 \\lambda}{c}$$
+        </div>
+      </div>
+    `,
+
+    procedure: `
+      <div class="procedure-block">
+        <h4>Method A: Photoelectric Stopping Potential Extraction</h4>
+        <ol class="manual-ordered-list">
+          <li>Switch on the DC power supply and high-pressure Mercury arc lamp.</li>
+          <li>Insert a calibrated optical spectral filter (e.g., Green line $\\lambda = 546.1\\text{ nm}$) into the collimated beam path.</li>
+          <li>Select the desired photocathode material (Cesium, Potassium, or Sodium).</li>
+          <li>Set the applied voltage to $+1.00\\text{ V}$ (accelerating mode) and confirm steady saturation photocurrent on the electrometer.</li>
+          <li>Gradually sweep the applied voltage into the negative retarding region (e.g., from $0.00\\text{ V}$ toward $-2.00\\text{ V}$) until the electrometer current drops to exactly $0.00\\text{ nA}$.</li>
+          <li>Note the opposing stopping voltage magnitude ($V_s$) and click <strong>Record Observation</strong>.</li>
+          <li>Repeat the measurement for UV ($365.0\\text{ nm}$), Violet ($404.7\\text{ nm}$), Blue ($435.8\\text{ nm}$), Yellow ($577.0\\text{ nm}$), and Red ($632.8\\text{ nm}$) filters.</li>
+          <li>Inspect the live linear regression plot ($V_s$ vs $\\nu$) and deduce Planck's constant from the slope $h = m \\cdot e$.</li>
+        </ol>
+
+        <h4 style="margin-top:20px;">Method B: Semiconductor LED Knee Voltage Method</h4>
+        <ol class="manual-ordered-list">
+          <li>Toggle the laboratory mode selector to <strong>LED Recombination Method</strong>.</li>
+          <li>Select an LED specimen (e.g., Green $525\\text{ nm}$, Blue $470\\text{ nm}$, UV $395\\text{ nm}$, Yellow $585\\text{ nm}$, Red $635\\text{ nm}$).</li>
+          <li>Vary the forward bias voltage from $0.00\\text{ V}$ upwards and record the knee threshold point where conduction begins and optical photon emission initiates.</li>
+          <li>Compute $h = e V_0 \\lambda / c$ and record the observation in the logbook.</li>
+        </ol>
+      </div>
+    `,
+
+    observation: `
+      <div class="observation-block">
+        <h4>Table 1: Photoelectric Effect Stopping Potential vs Frequency (Cesium Cathode, $\\Phi = 2.14\\text{ eV}$)</h4>
+        <table class="manual-table">
+          <thead>
+            <tr>
+              <th>Trial</th>
+              <th>Spectral Line</th>
+              <th>Wavelength $\\lambda$ (nm)</th>
+              <th>Frequency $\\nu$ ($10^{14}$ Hz)</th>
+              <th>Stopping $V_s$ (V)</th>
+              <th>Deduced $h$ ($10^{-34}$ J·s)</th>
+              <th>% Error</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>#1</td><td>UV Line</td><td>365.0</td><td>8.214</td><td>1.26</td><td>6.63</td><td>0.12%</td></tr>
+            <tr><td>#2</td><td>Violet Line</td><td>404.7</td><td>7.408</td><td>0.92</td><td>6.62</td><td>0.08%</td></tr>
+            <tr><td>#3</td><td>Blue Line</td><td>435.8</td><td>6.879</td><td>0.70</td><td>6.63</td><td>0.05%</td></tr>
+            <tr><td>#4</td><td>Green Line</td><td>546.1</td><td>5.490</td><td>0.13</td><td>6.61</td><td>0.21%</td></tr>
+          </tbody>
+        </table>
+
+        <h4 style="margin-top:20px;">Table 2: LED Turn-On Knee Voltage vs Wavelength</h4>
+        <table class="manual-table">
+          <thead>
+            <tr>
+              <th>Trial</th>
+              <th>LED Color</th>
+              <th>Peak Wavelength $\\lambda$ (nm)</th>
+              <th>Knee Voltage $V_0$ (V)</th>
+              <th>Deduced $h$ ($10^{-34}$ J·s)</th>
+              <th>% Error</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>#1</td><td>UV LED</td><td>395</td><td>3.12</td><td>6.58</td><td>0.72%</td></tr>
+            <tr><td>#2</td><td>Blue LED</td><td>470</td><td>2.62</td><td>6.57</td><td>0.81%</td></tr>
+            <tr><td>#3</td><td>Green LED</td><td>525</td><td>2.34</td><td>6.56</td><td>0.96%</td></tr>
+            <tr><td>#4</td><td>Red LED</td><td>635</td><td>1.93</td><td>6.54</td><td>1.25%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+
+    result: `
+      <div class="result-box">
+        <h4>Experimental Conclusions:</h4>
+        <ol class="manual-ordered-list">
+          <li>Einstein's photoelectric equation $e V_s = h\\nu - \\Phi$ is verified experimentally; stopping potential varies linearly with incident radiation frequency $\\nu$.</li>
+          <li>Photocurrent decreases monotonically under opposing retarding voltage and reaches zero at stopping potential $V_s$, confirming that photoelectrons possess a finite maximum kinetic energy $K_{\\max} = e V_s$.</li>
+          <li>From the linear regression slope $m = \\Delta V_s / \\Delta \\nu = 4.14 \\times 10^{-15}\\text{ V·s}$, Planck's constant was determined to be <strong>$h = 6.63 \\times 10^{-34}\\text{ J·s}$</strong>, agreeing with the accepted standard CODATA value ($6.626 \\times 10^{-34}\\text{ J·s}$) within less than $1.5\\%$ experimental deviation.</li>
+          <li>The semiconductor LED optoelectronic forward threshold knee method independently validated the quantum relation $E_g \\approx e V_0 = hc/\\lambda$.</li>
+        </ol>
+      </div>
+    `,
+
+    precautions: `
+      <div class="precautions-block">
+        <ul class="manual-list">
+          <li><strong>Dark Chamber Enclosure:</strong> Ensure stray ambient room light does not leak into the phototube envelope, as ambient illumination causes spurious background photocurrent.</li>
+          <li><strong>Optical Alignment:</strong> Position the monochromatic filter perpendicular to the central collimating optical axis to ensure uniform beam incidence.</li>
+          <li><strong>Fine Voltage Adjustment:</strong> Use the $\\pm 0.02\\text{ V}$ fine adjustment buttons near the null point to pinpoint the precise stopping potential threshold.</li>
+          <li><strong>Thermal Equilibrium:</strong> Allow the Mercury discharge arc source to reach operational thermal stability before recording precision frequency trials.</li>
+        </ul>
+      </div>
+    `
   }
 };
 
 EXPERIMENT_DETAILS["diode-vi"] = EXPERIMENT_DETAILS["diode"];
 EXPERIMENT_DETAILS["optical-attenuation"] = EXPERIMENT_DETAILS["pof-attenuation"];
 EXPERIMENT_DETAILS["pof"] = EXPERIMENT_DETAILS["pof-attenuation"];
+EXPERIMENT_DETAILS["planck"] = EXPERIMENT_DETAILS["planck"];
+EXPERIMENT_DETAILS["plancks-constant"] = EXPERIMENT_DETAILS["planck"];
+EXPERIMENT_DETAILS["planck-constant"] = EXPERIMENT_DETAILS["planck"];
 

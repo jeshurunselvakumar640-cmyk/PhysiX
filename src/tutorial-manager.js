@@ -104,6 +104,7 @@ export function normalizeExpId(expId) {
   if (expId === "hall-effect" || expId === "hall") return "hall-effect";
   if (expId === "diode" || expId === "diode-characteristics") return "diode";
   if (expId === "pof-attenuation" || expId === "optical-attenuation" || expId === "pof") return "pof-attenuation";
+  if (expId === "planck" || expId === "plancks-constant" || expId === "planck-constant") return "planck";
   return "projectile";
 }
 
@@ -117,6 +118,7 @@ export function getExperimentFriendlyName(expId) {
     case "diffraction": return "Exp 5: Diffraction Grating";
     case "diode": return "Exp 6: Diode Characteristics";
     case "pof-attenuation": return "Exp 7: Plastic Optical Fiber Attenuation";
+    case "planck": return "Exp 8: Planck's Constant Experiment";
     case "sandbox": return "Physics Sandbox";
     default: return "Interactive Physics Lab";
   }

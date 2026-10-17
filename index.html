@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="/src/style.css?v=orbitron-v7" />
   <link rel="stylesheet" href="/src/diode-vi.css" />
+  <link rel="stylesheet" href="/src/planck.css" />
   <link rel="stylesheet" href="/src/update-notification.css" />
   <link id="light-mode-stylesheet" rel="stylesheet" href="/src/light-mode.css" disabled />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -5922,6 +5923,259 @@
     </main>
   </div><!-- /#exp-pof-attenuation-section -->
 
+  <!-- =====================================
+       EXPERIMENT 8: DETERMINATION OF PLANCK'S CONSTANT
+  ===================================== -->
+  <div id="exp-planck-section" class="exp-section-wrapper hidden">
+    <div class="planck-lab-shell">
+      <!-- HEADER -->
+      <header class="planck-lab-header">
+        <div>
+          <span class="planck-eyebrow">EXPERIMENT 8 • QUANTUM &amp; SOLID STATE</span>
+          <h1>Determination of Planck's Constant</h1>
+          <p>Investigate Einstein's photoelectric effect, measure photoelectron stopping potentials across calibrated monochromatic spectral lines, evaluate semiconductor LED bandgap recombination, and extract Planck's quantum of action h.</p>
+        </div>
+        <div class="planck-filter-badge" id="planck-filter-hud-badge">
+          <strong>Green Line</strong> &bull; &lambda; = 546.1 nm &bull; &nu; = 5.490 &times; 10¹⁴ Hz
+        </div>
+      </header>
+
+      <!-- WORKSPACE -->
+      <div class="planck-workspace">
+        <!-- LEFT: OPTICAL BENCH & CHAMBER CANVAS -->
+        <div class="planck-panel planck-bench-card">
+          <div class="planck-panel-heading">
+            <h2>Optical Bench &amp; Vacuum Phototube Chamber</h2>
+            <div class="planck-power-controls">
+              <button type="button" class="planck-control-button active" id="planck-btn-power-dc">
+                <span class="planck-led-dot active" id="planck-led-dc"></span> DC Power
+              </button>
+              <button type="button" class="planck-control-button active" id="planck-btn-light">
+                <span class="planck-led-dot active" id="planck-led-light"></span> Light Source
+              </button>
+            </div>
+          </div>
+
+          <canvas id="planck-bench-canvas" width="820" height="380"></canvas>
+
+          <div class="planck-mode-switch">
+            <button type="button" class="planck-control-button active" id="planck-btn-mode-photocell">
+              Photoelectric Effect (Photocell)
+            </button>
+            <button type="button" class="planck-control-button" id="planck-btn-mode-led">
+              LED Recombination Method
+            </button>
+          </div>
+
+          <div class="planck-meter-grid">
+            <div>
+              <span>APPLIED POTENTIAL (V)</span>
+              <strong id="planck-digital-volts">+0.00 V</strong>
+              <small>Retarding / Accelerating Bias</small>
+            </div>
+            <div>
+              <span>MEASURED CURRENT (<span id="planck-amp-unit">nA</span>)</span>
+              <strong id="planck-digital-amps">0.00</strong>
+              <small>Electrometer Telemetry</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: EXPERIMENTAL CONTROLS -->
+        <div class="planck-panel">
+          <div class="planck-panel-heading">
+            <h2>Experimental Controls</h2>
+          </div>
+
+          <!-- Photocell Controls Palette -->
+          <div id="planck-photocell-palette">
+            <div class="planck-control-group">
+              <label>Monochromatic Spectral Filter</label>
+              <div class="planck-chip-row">
+                <button type="button" class="planck-filter-chip" data-filter="uv">UV 365nm</button>
+                <button type="button" class="planck-filter-chip" data-filter="violet">Violet 405nm</button>
+                <button type="button" class="planck-filter-chip" data-filter="blue">Blue 436nm</button>
+                <button type="button" class="planck-filter-chip active" data-filter="green">Green 546nm</button>
+                <button type="button" class="planck-filter-chip" data-filter="yellow">Yellow 577nm</button>
+                <button type="button" class="planck-filter-chip" data-filter="red">Red 633nm</button>
+              </div>
+            </div>
+
+            <div class="planck-control-group">
+              <label for="planck-cathode-select">Photocathode Material</label>
+              <select id="planck-cathode-select">
+                <option value="cesium" selected>Cesium (Cs) Alkali Surface &mdash; &Phi; = 2.14 eV</option>
+                <option value="potassium">Potassium (K) Surface &mdash; &Phi; = 2.30 eV</option>
+                <option value="sodium">Sodium (Na) Surface &mdash; &Phi; = 2.46 eV</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- LED Controls Palette (Initially Hidden) -->
+          <div id="planck-led-palette" class="hidden">
+            <div class="planck-control-group">
+              <label>Semiconductor LED Specimen</label>
+              <div class="planck-chip-row">
+                <button type="button" class="planck-led-chip" data-led="uv-395">UV 395nm</button>
+                <button type="button" class="planck-led-chip" data-led="blue-470">Blue 470nm</button>
+                <button type="button" class="planck-led-chip active" data-led="green-525">Green 525nm</button>
+                <button type="button" class="planck-led-chip" data-led="yellow-585">Yellow 585nm</button>
+                <button type="button" class="planck-led-chip" data-led="amber-605">Amber 605nm</button>
+                <button type="button" class="planck-led-chip" data-led="red-635">Red 635nm</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Applied Voltage Control -->
+          <div class="planck-control-group">
+            <label>
+              <span>Applied Bias Voltage (V)</span>
+              <strong id="planck-volt-slider-val">+0.00 V</strong>
+            </label>
+            <div class="planck-slider-row">
+              <input type="range" id="planck-volt-slider" min="-3.00" max="3.00" step="0.01" value="0.00" />
+            </div>
+            <div class="planck-chip-row" style="margin-top:6px;">
+              <button type="button" class="planck-control-button" id="planck-btn-v-dec-fine">&minus;0.02V</button>
+              <button type="button" class="planck-control-button" id="planck-btn-v-inc-fine">+0.02V</button>
+              <button type="button" class="planck-control-button" id="planck-btn-zero-null">Zero-Null Auto</button>
+            </div>
+            <div class="planck-chip-row" style="margin-top:4px;">
+              <button type="button" class="planck-preset-v" data-v="-1.50">&minus;1.5V</button>
+              <button type="button" class="planck-preset-v" data-v="-0.50">&minus;0.5V</button>
+              <button type="button" class="planck-preset-v" data-v="0.00">0.0V</button>
+              <button type="button" class="planck-preset-v" data-v="1.00">+1.0V</button>
+              <button type="button" class="planck-preset-v" data-v="2.00">+2.0V</button>
+            </div>
+          </div>
+
+          <!-- Light Intensity Control -->
+          <div class="planck-control-group">
+            <label>
+              <span>Radiation Intensity</span>
+              <strong id="planck-intensity-val">100 %</strong>
+            </label>
+            <div class="planck-slider-row">
+              <input type="range" id="planck-intensity-slider" min="20" max="100" step="5" value="100" />
+            </div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <button type="button" class="planck-primary-button planck-wide-button" id="planck-btn-record">
+              Record Observation
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI METRICS GRID -->
+      <div class="planck-kpi-grid">
+        <div class="planck-kpi">
+          <span>PHOTON ENERGY (E)</span>
+          <strong id="planck-kpi-energy">2.27 eV</strong>
+          <small>E = h &middot; &nu;</small>
+        </div>
+        <div class="planck-kpi">
+          <span>FREQUENCY (&nu;)</span>
+          <strong id="planck-kpi-freq">5.490 &times;10¹⁴</strong>
+          <small>Hz</small>
+        </div>
+        <div class="planck-kpi">
+          <span>STOPPING POTENTIAL (V_s)</span>
+          <strong id="planck-kpi-stopping">0.13 V</strong>
+          <small>Null Photocurrent</small>
+        </div>
+        <div class="planck-kpi">
+          <span>DEDUCED PLANCK (h)</span>
+          <strong id="planck-kpi-constant">6.63 &times;10⁻³⁴</strong>
+          <small>J&middot;s</small>
+        </div>
+        <div class="planck-kpi">
+          <span>WORK FUNCTION (&Phi;)</span>
+          <strong id="planck-kpi-work">2.14 eV</strong>
+          <small>Cathode Barrier</small>
+        </div>
+        <div class="planck-kpi">
+          <span>RELATIVE ERROR</span>
+          <strong id="planck-kpi-error">0.00 %</strong>
+          <small>vs CODATA true h</small>
+        </div>
+      </div>
+
+      <!-- CHARACTERISTIC GRAPH PANEL -->
+      <div class="planck-panel planck-graph-panel">
+        <div class="planck-panel-heading">
+          <h2>Characteristic Quantum Analytics</h2>
+          <div class="planck-chip-row">
+            <button type="button" class="planck-control-button active" id="planck-btn-graph-reg">Linear Regression (V_s vs &nu;)</button>
+            <button type="button" class="planck-control-button" id="planck-btn-graph-iv">I-V Characteristic Curve</button>
+          </div>
+        </div>
+        <canvas id="planck-graph-canvas" width="920" height="420"></canvas>
+      </div>
+
+      <!-- WORKSTATION: CHALLENGES & OBSERVATIONS -->
+      <div class="planck-workstation">
+        <!-- MASTERY CHALLENGES -->
+        <div class="planck-panel challenges-card">
+          <div class="planck-panel-heading">
+            <h2>Mastery Challenges</h2>
+            <strong class="mission-progress-text">0 of 3 Completed</strong>
+          </div>
+          <div class="mission-progress-track">
+            <span class="mission-progress-fill"></span>
+          </div>
+          <div class="planck-missions">
+            <div class="planck-mission" data-ch="zeroNullStopping">
+              <strong>Zero-Null Stopping Potential (+100 XP)</strong>
+              <span>Tune retarding potential until photocurrent reaches 0.00 nA for Green spectral line</span>
+            </div>
+            <div class="planck-mission" data-ch="multiFrequencySweep">
+              <strong>Quantum Frequency Sweep (+125 XP)</strong>
+              <span>Record stopping potentials across at least 3 distinct spectral frequencies</span>
+            </div>
+            <div class="planck-mission" data-ch="planckConstantExtraction">
+              <strong>Quantum Action Determination (+150 XP)</strong>
+              <span>Deduce Planck's constant h with relative experimental error under 3.0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBSERVATION LOGBOOK -->
+        <div class="planck-panel observations-card">
+          <div class="planck-panel-heading">
+            <h2>Observation Logbook</h2>
+            <span id="planck-obs-count-badge" class="planck-count-badge">0 Records</span>
+          </div>
+          <div class="planck-table-wrap">
+            <table class="planck-observation-table">
+              <thead>
+                <tr>
+                  <th>Trial</th>
+                  <th>Sample / Line</th>
+                  <th>Wavelength</th>
+                  <th>Frequency</th>
+                  <th>Stopping V</th>
+                  <th>Planck h</th>
+                  <th>Error</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="planck-obs-table-body"></tbody>
+            </table>
+            <div id="planck-obs-empty-state" class="planck-empty-state">
+              No observations recorded yet. Select a spectral line or LED and click "Record Observation".
+            </div>
+          </div>
+          <div class="planck-actions">
+            <button type="button" class="planck-control-button" id="planck-btn-clear-obs">Clear Table</button>
+            <button type="button" class="planck-primary-button" id="planck-btn-export-pdf">Export PDF Report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /#exp-planck-section -->
+
 
 
 
@@ -6519,8 +6773,8 @@
           <div class="card-specular-rim"></div>
         </div>
 
-        <!-- 10. PLANCK'S CONSTANT (EXP 7) -->
-        <div class="lab-card coming-lab" data-category="quantum"
+        <!-- 10. PLANCK'S CONSTANT (ACTIVE EXP 8) -->
+        <div class="lab-card active-lab" data-category="all quantum" data-exp-target="planck"
           data-name="Determination of Planck’s Constant using Photocell">
           <div class="card-header-bar">
             <div class="card-icon-badge">
@@ -8801,6 +9055,52 @@
               <div class="formula-item">
                 <span class="f-name">Coupling Efficiency (&eta;):</span>
                 <code>&eta; = exp[ -(&Delta;r / &omega;)&sup2; ]</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: PLANCK'S CONSTANT -->
+        <div id="theory-pane-exp-planck" class="theory-pane hidden">
+          <div class="formula-block">
+            <h4>Aim &amp; Photoelectric Quantum Theory</h4>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Aim:</strong> To determine Planck's constant ($h$) by measuring the stopping potential of photoelectrons ejected from metal photocathodes illuminated with monochromatic spectral lines, and by evaluating forward knee threshold voltages of semiconductor LEDs.
+            </p>
+            <p style="color:#cbd5e1; font-size:13px; margin-bottom:10px;">
+              <strong>Theory:</strong> When a photon of frequency $\nu$ hits a cathode surface with work function $\Phi$, it imparts energy $E = h\nu$. If $h\nu > \Phi$, photoelectrons escape with kinetic energy $K_{\max} = h\nu - \Phi$. An opposing potential $V_s$ brings the fastest electrons to rest, extinguishing photocurrent:
+              <br>
+            <div class="formula-latex">$e V_s = h\nu - \Phi \implies V_s = \left(\frac{h}{e}\right)\nu - \frac{\Phi}{e}$</div>
+            Plotting $V_s$ versus $\nu$ produces a linear slope $m = h/e$, allowing direct extraction of Planck's constant: $h = m \cdot e$.
+            </p>
+          </div>
+
+          <div class="formula-block" style="margin-top:14px;">
+            <h4>Governing Quantum Equations</h4>
+            <div class="formula-grid">
+              <div class="formula-item">
+                <span class="f-name">Einstein Photoelectric Law:</span>
+                <code>e &middot; V_s = h &middot; &nu; - &Phi;</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Linear Regression Slope:</span>
+                <code>m = &Delta;V_s / &Delta;&nu; = h / e</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Planck's Constant:</span>
+                <code>h = m &middot; e = 6.626 &times; 10⁻³⁴ J&middot;s</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Photon Energy Relation:</span>
+                <code>E = h &middot; &nu; = h &middot; c / &lambda;</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">Threshold Wavelength:</span>
+                <code>&lambda;_0 = h &middot; c / &Phi;</code>
+              </div>
+              <div class="formula-item">
+                <span class="f-name">LED Bandgap Formulation:</span>
+                <code>h = e &middot; V_0 &middot; &lambda; / c</code>
               </div>
             </div>
           </div>

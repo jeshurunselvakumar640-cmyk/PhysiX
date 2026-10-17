@@ -37,6 +37,8 @@ const CORE_PRECACHE_URLS = [
   '/src/hall-effect.js',
   '/src/optical-fibre.js',
   '/src/pdf-export.js',
+  '/src/planck.js',
+  '/src/planck.css',
   '/src/quiz-data.js',
   '/src/splash.js'
 ];
